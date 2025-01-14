@@ -32,7 +32,7 @@ public class GyroIOPigeon2 implements GyroIO {
   /**
    * <a href="https://assets.pokemon.com/assets/cms2/img/pokedex/full//016.png">pidgey</a>
    */
-  private final Pigeon2 pidgey = new Pigeon2(20);
+  private final Pigeon2 pidgey = new Pigeon2(20, DriveConstants.CANIVORE_NAME);
 
   private final StatusSignal<Angle> yaw = pidgey.getYaw();
   private final Queue<Double> yawPositionQueue;
