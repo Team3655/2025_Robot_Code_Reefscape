@@ -173,9 +173,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> -programmingController.getRawAxis(1),
-                () -> -programmingController.getRawAxis(0),
-                () -> -programmingController.getRawAxis(2)));
+                () -> -programmingController.getLeftY(),
+                () -> -programmingController.getLeftX(),
+                () -> -programmingController.getRightX()));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.b().onTrue(drive.zeroDrive());
