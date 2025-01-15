@@ -81,4 +81,9 @@ public class GyroIOPigeon2 implements GyroIO {
   public void resetGyro(){
     pidgey.reset();
   }
+
+  @Override
+  public double getGyroHeading() {
+    return yaw.getValueAsDouble();
+  }
 }

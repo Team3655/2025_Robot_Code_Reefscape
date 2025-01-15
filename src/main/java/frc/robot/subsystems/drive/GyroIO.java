@@ -28,4 +28,7 @@ public interface GyroIO {
 
   public default void updateInputs(GyroIOInputs inputs) {}
   public default void resetGyro() {}
+  public default double getGyroHeading() {
+    return 0.0;
+  }
 }

@@ -73,7 +73,8 @@ public class RobotContainer {
   private final CommandNXT ethanRotation = new CommandNXT(3);
 
   // Operator controller
-  private final CommandGenericHID bellaController = new CommandGenericHID(4);
+  @SuppressWarnings ("unused")
+  private final CommandGenericHID tractorController = new CommandGenericHID(4);
 
   // Dashboard inputs
   // private final LoggedDashboardChooser<Command> autoChooser;
@@ -170,47 +171,37 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    drive.setDefaultCommand(
+    switch (Constants.currentDriver) {
+      case MATT:
+        drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> -programmingController.getLeftY(),
-                () -> -programmingController.getLeftX(),
-                () -> -programmingController.getRightX()));
+                () -> -mattTranslation.StickYAxis(),
+                () -> -mattTranslation.StickXAxis(),
+                () -> -mattRotation.StickXAxis()));
+
+        break;
+      case ETHAN:
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> -ethanTranslation.StickYAxis(),
+                () -> -ethanTranslation.StickXAxis(),
+                () -> -ethanRotation.StickXAxis()));
+
+        break;
+      case PROGRAMMING:
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> -0.6 * programmingController.getLeftY(),
+                () -> -0.6 * programmingController.getLeftX(),
+                () -> 0.6 * programmingController.getRightX()));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.b().onTrue(drive.zeroDrive());
-
-    // switch (Constants.currentDriver) {
-    //   case MATT:
-    //     drive.setDefaultCommand(
-    //         DriveCommands.joystickDrive(
-    //             drive,
-    //             () -> -mattTranslation.StickYAxis(),
-    //             () -> -mattTranslation.StickXAxis(),
-    //             () -> -mattRotation.StickXAxis()));
-
-    //     break;
-    //   case ETHAN:
-    //     drive.setDefaultCommand(
-    //         DriveCommands.joystickDrive(
-    //             drive,
-    //             () -> -ethanTranslation.StickYAxis(),
-    //             () -> -ethanTranslation.StickXAxis(),
-    //             () -> -ethanRotation.StickXAxis()));
-
-    //     break;
-    //   case PROGRAMMING:
-    //     drive.setDefaultCommand(
-    //         DriveCommands.joystickDrive(
-    //             drive,
-    //             () -> -programmingController.getRawAxis(1),
-    //             () -> -programmingController.getRawAxis(0),
-    //             () -> -programmingController.getRawAxis(2)));
-
-    //     programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    //     programmingController.b().onTrue(drive.zeroDrive());
-    //     break;
-    //}
+        break;
+    }
 
 
   }
