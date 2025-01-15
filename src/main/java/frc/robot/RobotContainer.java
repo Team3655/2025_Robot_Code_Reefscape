@@ -180,6 +180,8 @@ public class RobotContainer {
                 () -> -mattTranslation.StickXAxis(),
                 () -> -mattRotation.StickXAxis()));
 
+        mattRotation.B1().onTrue(drive.zeroDrive());
+
         break;
       case ETHAN:
         drive.setDefaultCommand(
@@ -194,9 +196,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> -0.6 * programmingController.getLeftY(),
-                () -> -0.6 * programmingController.getLeftX(),
-                () -> 0.6 * programmingController.getRightX()));
+                () -> -programmingController.getLeftY(),
+                () -> -programmingController.getLeftX(),
+                () -> programmingController.getRightX()));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.b().onTrue(drive.zeroDrive());

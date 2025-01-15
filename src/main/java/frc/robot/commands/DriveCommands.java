@@ -54,10 +54,11 @@ public class DriveCommands {
                     Rotation2d linearDirection = 
                         new Rotation2d(Math.atan2(ySupplier.getAsDouble(), xSupplier.getAsDouble()));
 
+                    SmartDashboard.putNumber("LinearMagnitude", linearMagnitude);
                     SmartDashboard.putNumber("linearDirection", linearDirection.getDegrees());
 
-                    double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
-   
+                    double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);    
+
                     // Square values
                     linearMagnitude = linearMagnitude * linearMagnitude;
                     omega = Math.copySign(omega * omega, omega);
