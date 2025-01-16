@@ -178,7 +178,7 @@ public class RobotContainer {
                 drive,
                 () -> -mattTranslation.StickYAxis(),
                 () -> -mattTranslation.StickXAxis(),
-                () -> -mattRotation.StickXAxis()));
+                () -> mattRotation.StickXAxis()));
 
         mattRotation.B1().onTrue(drive.zeroDrive());
 
