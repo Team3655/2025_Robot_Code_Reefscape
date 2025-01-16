@@ -27,5 +27,5 @@ public interface IntakeIO {
     public default boolean getAirSwitchState(int switchID) {
         return false;
     }
-    public default void updateInputs() {}
+    public default void updateInputs(IntakeIOInputs inputs) {}
 }
