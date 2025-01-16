@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class ArmConstants {
-    public static final String CANBUS_NAME = "bus";
+    public static final String CANBUS_NAME = "rio";
 
     // TODO: make these real values
 

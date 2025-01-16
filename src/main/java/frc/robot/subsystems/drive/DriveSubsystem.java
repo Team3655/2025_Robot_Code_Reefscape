@@ -119,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
           },
           this);
     } catch (Exception e) {
-      DriverStation.reportError("Failed to load pathplanner config !!! :)", e.getStackTrace());
+      DriverStation.reportError("Failed to load pathplanner config !!! :3", e.getStackTrace());
     }
     Pathfinding.setPathfinder(new LocalADStarAK());
 

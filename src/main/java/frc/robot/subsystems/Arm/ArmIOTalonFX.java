@@ -54,7 +54,7 @@ public class ArmIOTalonFX implements ArmIO {
         elbowEncoder = new CANcoder(4, ArmConstants.CANBUS_NAME);
         wristEncoder = new CANcoder(5, ArmConstants.CANBUS_NAME);
 
-        shoulderEncoderOffset = ArmConstants.SHOULDER_ENCODER_OFFSET; // TODO: make these real values
+        shoulderEncoderOffset = ArmConstants.SHOULDER_ENCODER_OFFSET;
         elbowEncoderOffset = ArmConstants.ELBOW_ENCODER_OFFSET;
         wristEncoderOffset = ArmConstants.WRIST_ENCODER_OFFSET;
 
