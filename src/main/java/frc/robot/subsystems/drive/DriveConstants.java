@@ -19,6 +19,9 @@ public class DriveConstants {
   public static final Rotation2d FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.471680);//(0.115479);
   public static final Rotation2d FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(.414062); //(-0.095947);
 
+  public static final double DRIVE_GEAR_RATIO = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);
+  public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
+
   public static final Translation2d[] moduleTranslations = new Translation2d[] {
       new Translation2d(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
       new Translation2d(TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0),
