@@ -28,6 +28,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Arm.ArmIO;
+import frc.robot.subsystems.Arm.ArmIOSim;
+import frc.robot.subsystems.Arm.ArmIOTalonFX;
+import frc.robot.subsystems.Arm.ArmSubsystem;
+import frc.robot.subsystems.Arm.ArmConstants.ArmStates;
+import frc.robot.subsystems.Arm.ArmSubsystem.ArmPose;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -60,6 +66,8 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private final VisionSubsystem vision;
 
+  private final ArmSubsystem arm;
+
   // Controller
   // Programmign contoller
   private final CommandXboxController programmingController = new CommandXboxController(5);
@@ -73,7 +81,7 @@ public class RobotContainer {
   private final CommandNXT ethanRotation = new CommandNXT(3);
 
   // Operator controller
-  @SuppressWarnings ("unused")
+  @SuppressWarnings("unused")
   private final CommandGenericHID tractorController = new CommandGenericHID(4);
 
   // Dashboard inputs
@@ -95,6 +103,8 @@ public class RobotContainer {
 
         vision = new VisionSubsystem(
             new VisionIOLimelight("llone"));
+
+        arm = new ArmSubsystem(new ArmIOTalonFX());
         break;
 
       case SIM:
@@ -118,6 +128,9 @@ public class RobotContainer {
                         0)),
                 Rotation2d.fromDegrees(62.5),
                 Rotation2d.fromDegrees(48.9)));
+
+        arm = new ArmSubsystem(new ArmIOSim());
+
         break;
 
       default:
@@ -136,6 +149,8 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIO() {
             });
+        arm = new ArmSubsystem(new ArmIO() {
+        });
         break;
     }
 
@@ -202,9 +217,9 @@ public class RobotContainer {
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.b().onTrue(drive.zeroDrive());
+        programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.UP), arm));
         break;
     }
-
 
   }
 

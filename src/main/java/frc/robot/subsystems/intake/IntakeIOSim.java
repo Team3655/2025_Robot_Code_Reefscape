@@ -60,6 +60,6 @@ public class IntakeIOSim implements IntakeIO {
     
     @Override
     public void setVacuumVoltage(double voltage) {
-
+        vacMotor.setInputVoltage(voltage);
     }
 }

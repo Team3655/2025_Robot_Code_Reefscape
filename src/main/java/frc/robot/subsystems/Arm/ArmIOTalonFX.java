@@ -2,6 +2,7 @@ package frc.robot.subsystems.Arm;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -106,17 +107,32 @@ public class ArmIOTalonFX implements ArmIO {
     }
 
     @Override
+    public void setShoulderPositionWithFeedForward(Rotation2d position, double feedForward) {
+        shoulder.setControl(new PositionVoltage(position.getRotations()).withFeedForward(feedForward));
+    }
+
+    @Override
+    public void setElbowPositionWithFeedForward(Rotation2d position, double feedForward) {
+        elbow.setControl(new PositionVoltage(position.getRotations()).withFeedForward(feedForward));
+    }
+
+    @Override
+    public void setWristPositionWithFeedForward(Rotation2d position, double feedForward) {
+        wrist.setControl(new PositionVoltage(position.getRotations()).withFeedForward(feedForward));
+    }
+
+    @Override
     public void setShoulderVoltage(double volts) {
         shoulder.setControl(new VoltageOut(volts));
     }
 
     @Override
-    public void setElbowVoltage(double volts){
+    public void setElbowVoltage(double volts) {
         elbow.setControl(new VoltageOut(volts));
     }
 
     @Override
-    public void setWristVoltage(double volts){
+    public void setWristVoltage(double volts) {
         wrist.setControl(new VoltageOut(volts));
     }
 

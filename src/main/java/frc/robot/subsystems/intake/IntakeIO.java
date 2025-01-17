@@ -19,6 +19,7 @@ public interface IntakeIO {
         public double vacuumVoltage = 0.0;
     }
 
+    public default void updateInputs(IntakeIOInputs inputs) {}
     public default void setSolenoid(int solenoidID, boolean state) {}
     public default void setVacuumVoltage(double voltage) {}
     public default boolean getSolenoidState() {
@@ -27,5 +28,4 @@ public interface IntakeIO {
     public default boolean getAirSwitchState(int switchID) {
         return false;
     }
-    public default void updateInputs(IntakeIOInputs inputs) {}
 }

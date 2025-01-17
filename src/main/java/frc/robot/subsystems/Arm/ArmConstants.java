@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.subsystems.Arm.ArmSubsystem.ArmPose;
 import edu.wpi.first.math.util.Units;
 
 public class ArmConstants {
@@ -32,5 +33,13 @@ public class ArmConstants {
     public static final double WRIST_REDUCTION = 1 / 1;
 
 
+    public class ArmStates{
+        public static final ArmPose START = new ArmPose(
+            Rotation2d.fromDegrees(200),
+            Rotation2d.fromDegrees(-180),
+            Rotation2d.fromDegrees(90)
+        );
 
+        public static final ArmPose UP = new ArmPose(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
+    }
 }
