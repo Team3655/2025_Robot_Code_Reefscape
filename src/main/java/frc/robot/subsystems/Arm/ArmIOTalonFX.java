@@ -2,10 +2,13 @@ package frc.robot.subsystems.Arm;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -18,88 +21,142 @@ public class ArmIOTalonFX implements ArmIO {
     private final TalonFX elbow;
     private final TalonFX wrist;
 
-    // TODO: switch these to absolute encoders
-
-    private final CANcoder shoulderEncoder;
-    private final CANcoder elbowEncoder;
-    private final CANcoder wristEncoder;
-
-    private final Rotation2d shoulderEncoderOffset;
-    private final Rotation2d elbowEncoderOffset;
-    private final Rotation2d wristEncoderOffset;
-
-    private final StatusSignal<Angle> shoulderAbsolutePosition;
     private final StatusSignal<Angle> shoulderPosition;
     private final StatusSignal<AngularVelocity> shoulderVelocity;
     private final StatusSignal<Voltage> shoulderAppliedVolts;
     private final StatusSignal<Current> shoulderCurrent;
 
-    private final StatusSignal<Angle> elbowAbsolutePosition;
     private final StatusSignal<Angle> elbowPosition;
     private final StatusSignal<AngularVelocity> elbowVelocity;
     private final StatusSignal<Voltage> elbowAppliedVolts;
     private final StatusSignal<Current> elbowCurrent;
 
-    private final StatusSignal<Angle> wristAbsolutePosition;
     private final StatusSignal<Angle> wristPosition;
     private final StatusSignal<AngularVelocity> wristVelocity;
     private final StatusSignal<Voltage> wristAppliedVolts;
     private final StatusSignal<Current> wristCurrent;
 
+    private final TalonFXConfiguration shoulderConfiguration;
+    private final TalonFXConfiguration elbowConfiguration;
+    private final TalonFXConfiguration wristConfiguration;
+
     public ArmIOTalonFX() {
-        shoulder = new TalonFX(0, ArmConstants.CANBUS_NAME); // TODO: get real id and canbus name
+        shoulder = new TalonFX(0, ArmConstants.CANBUS_NAME); // TODO: get real id
         elbow = new TalonFX(1, ArmConstants.CANBUS_NAME);
         wrist = new TalonFX(2, ArmConstants.CANBUS_NAME);
 
-        shoulderEncoder = new CANcoder(3, ArmConstants.CANBUS_NAME);
-        elbowEncoder = new CANcoder(4, ArmConstants.CANBUS_NAME);
-        wristEncoder = new CANcoder(5, ArmConstants.CANBUS_NAME);
+        switch (ArmConstants.activeEncoders){
+            case ABSOLUTE:
 
-        shoulderEncoderOffset = ArmConstants.SHOULDER_ENCODER_OFFSET;
-        elbowEncoderOffset = ArmConstants.ELBOW_ENCODER_OFFSET;
-        wristEncoderOffset = ArmConstants.WRIST_ENCODER_OFFSET;
+                CANcoder shoulderEncoder = new CANcoder(3, ArmConstants.CANBUS_NAME);
+                CANcoder elbowEncoder = new CANcoder(4, ArmConstants.CANBUS_NAME);
+                CANcoder wristEncoder = new CANcoder(5, ArmConstants.CANBUS_NAME);
 
-        shoulderAbsolutePosition = shoulderEncoder.getAbsolutePosition();
+                CANcoderConfiguration shoulderEncoderConfig = new CANcoderConfiguration();
+                CANcoderConfiguration elbowEncoderConfig = new CANcoderConfiguration();
+                CANcoderConfiguration wristEncoderConfig = new CANcoderConfiguration();
+
+                shoulderEncoderConfig.MagnetSensor.MagnetOffset = 
+                    ArmConstants.SHOULDER_ENCODER_OFFSET.getRadians();
+                elbowEncoderConfig.MagnetSensor.MagnetOffset =
+                    ArmConstants.ELBOW_ENCODER_OFFSET.getRadians();
+                wristEncoderConfig.MagnetSensor.MagnetOffset =
+                    ArmConstants.WRIST_ENCODER_OFFSET.getRadians();
+
+                shoulderEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+                elbowEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+                // TODO: Need to see constructed wrist to identify
+                wristEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+
+                shoulderEncoder.getConfigurator().apply(shoulderEncoderConfig);
+                elbowEncoder.getConfigurator().apply(elbowEncoderConfig);
+                wristEncoder.getConfigurator().apply(wristEncoderConfig);
+
+                shoulderConfiguration = new TalonFXConfiguration();
+                elbowConfiguration = new TalonFXConfiguration();
+                wristConfiguration = new TalonFXConfiguration();
+
+                shoulderConfiguration.Feedback.FeedbackRemoteSensorID = ArmConstants.SHOULDER_CANCODER_ID;
+                elbowConfiguration.Feedback.FeedbackRemoteSensorID = ArmConstants.ELBOW_CANCODER_ID;
+                wristConfiguration.Feedback.FeedbackRemoteSensorID = ArmConstants.WRIST_CANCODER_ID;
+
+                shoulderConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+                elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+                wristConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+
+                shoulderConfiguration.Feedback.RotorToSensorRatio = 1;
+                elbowConfiguration.Feedback.RotorToSensorRatio = 1;
+                wristConfiguration.Feedback.RotorToSensorRatio = 1;
+
+                break;
+
+            case RELATIVE:
+
+                shoulderConfiguration = new TalonFXConfiguration();
+                elbowConfiguration = new TalonFXConfiguration();
+                wristConfiguration = new TalonFXConfiguration();
+
+                shoulderConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+                elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+                wristConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+
+                shoulderConfiguration.Feedback.RotorToSensorRatio = ArmConstants.SHOULDER_REDUCTION;
+                elbowConfiguration.Feedback.RotorToSensorRatio = ArmConstants.ELBOW_REDUCTION;
+                wristConfiguration.Feedback.RotorToSensorRatio = ArmConstants.WRIST_REDUCTION;
+
+                break;
+
+            default:
+
+                shoulderConfiguration = new TalonFXConfiguration();
+                elbowConfiguration = new TalonFXConfiguration();
+                wristConfiguration = new TalonFXConfiguration();
+
+                shoulderConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+                elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+                wristConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+
+                shoulderConfiguration.Feedback.RotorToSensorRatio = ArmConstants.SHOULDER_REDUCTION;
+                elbowConfiguration.Feedback.RotorToSensorRatio = ArmConstants.ELBOW_REDUCTION;
+                wristConfiguration.Feedback.RotorToSensorRatio = ArmConstants.WRIST_REDUCTION;
+                
+                break;
+        }
+
         shoulderPosition = shoulder.getPosition();
         shoulderVelocity = shoulder.getVelocity();
         shoulderAppliedVolts = shoulder.getMotorVoltage();
         shoulderCurrent = shoulder.getSupplyCurrent();
 
-        elbowAbsolutePosition = elbowEncoder.getAbsolutePosition();
         elbowPosition = elbow.getPosition();
         elbowAppliedVolts = elbow.getMotorVoltage();
         elbowVelocity = elbow.getVelocity();
         elbowCurrent = elbow.getSupplyCurrent();
 
-        wristAbsolutePosition = wristEncoder.getAbsolutePosition();
         wristPosition = wrist.getPosition();
         wristVelocity = wrist.getVelocity();
         wristAppliedVolts = wrist.getMotorVoltage();
         wristCurrent = wrist.getSupplyCurrent();
+        
     }
 
     @Override
     public void updateInputs(ArmIOInputs inputs) {
-        BaseStatusSignal.refreshAll(shoulderAbsolutePosition, shoulderPosition, shoulderVelocity, shoulderAppliedVolts,
-                shoulderCurrent, elbowAbsolutePosition, elbowPosition, elbowVelocity, elbowAppliedVolts, elbowCurrent,
-                wristAbsolutePosition, wristPosition, wristVelocity, wristAppliedVolts, wristCurrent);
 
-        inputs.shoulderAbsolutePosition = Rotation2d.fromRotations(shoulderAbsolutePosition.getValueAsDouble())
-                .minus(shoulderEncoderOffset);
+        BaseStatusSignal.refreshAll(shoulderPosition, shoulderVelocity, shoulderAppliedVolts,
+                shoulderCurrent, elbowPosition, elbowVelocity, elbowAppliedVolts, elbowCurrent,
+                wristPosition, wristVelocity, wristAppliedVolts, wristCurrent);
+
         inputs.shoulderAppliedVolts = shoulderAppliedVolts.getValueAsDouble();
         inputs.shoulderCurrentAmps = new double[] { shoulderCurrent.getValueAsDouble() };
         inputs.shoulderPosition = Rotation2d.fromRotations(shoulderPosition.getValueAsDouble());
         inputs.shoulderVelocityRadPerSec = shoulderVelocity.getValueAsDouble();
 
-        inputs.elbowAbsolutePosition = Rotation2d.fromRotations(elbowAbsolutePosition.getValueAsDouble())
-                .minus(elbowEncoderOffset);
         inputs.elbowAppliedVolts = elbowAppliedVolts.getValueAsDouble();
         inputs.elbowCurrentAmps = new double[] { elbowCurrent.getValueAsDouble() };
         inputs.elbowPosition = Rotation2d.fromRotations(elbowPosition.getValueAsDouble());
         inputs.elbowVelocityRadPerSec = elbowVelocity.getValueAsDouble();
 
-        inputs.wristAbsolutePosition = Rotation2d.fromRotations(wristAbsolutePosition.getValueAsDouble())
-                .minus(wristEncoderOffset);
         inputs.wristAppliedVolts = wristAppliedVolts.getValueAsDouble();
         inputs.wristCurrentAmps = new double[] { wristCurrent.getValueAsDouble() };
         inputs.wristPosition = Rotation2d.fromRotations(wristPosition.getValueAsDouble());

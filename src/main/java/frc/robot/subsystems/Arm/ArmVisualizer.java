@@ -9,7 +9,6 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.subsystems.Arm.ArmSubsystem.ArmPose;
 
 public class ArmVisualizer {
 
@@ -29,14 +28,14 @@ public class ArmVisualizer {
 
         switch (key) {
             case "current":
-            base = root.append(new LoggedMechanismLigament2d("Base", 1, 90, 7, new Color8Bit(Color.kGray)));
+            base = root.append(new LoggedMechanismLigament2d("Base", ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 90, 7, new Color8Bit(Color.kGray)));
             shoulder = base.append(new LoggedMechanismLigament2d("Shoulder", ArmConstants.SHOULDER_LENGTH_METERS, 200, 6, new Color8Bit(Color.kRed)));
             elbow = shoulder.append(new LoggedMechanismLigament2d("Elbow", ArmConstants.ELBOW_LENGTH_METERS, 90, 4, new Color8Bit(Color.kBlue)));
             wrist = elbow.append(new LoggedMechanismLigament2d("Wrist", ArmConstants.WRIST_LENGTH_METERS, 90, 2 , new Color8Bit(Color.kGreen)));
                 break;
 
             case "setpoint":
-            base = root.append(new LoggedMechanismLigament2d("Base", 1, 90, 7, new Color8Bit(Color.kGray)));
+            base = root.append(new LoggedMechanismLigament2d("Base", ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 90, 7, new Color8Bit(Color.kGray)));
             shoulder = base.append(new LoggedMechanismLigament2d("Shoulder", ArmConstants.SHOULDER_LENGTH_METERS, 200, 6, new Color8Bit(Color.kYellow)));
             elbow = shoulder.append(new LoggedMechanismLigament2d("Elbow", ArmConstants.ELBOW_LENGTH_METERS, 90, 4, new Color8Bit(Color.kYellow)));
             wrist = elbow.append(new LoggedMechanismLigament2d("Wrist", ArmConstants.WRIST_LENGTH_METERS, 90, 2 , new Color8Bit(Color.kYellow)));
@@ -50,10 +49,10 @@ public class ArmVisualizer {
         }
     }
 
-    public void update(ArmPose pose){
-        shoulder.setAngle(pose.shoulderAngle());
-        elbow.setAngle(pose.elbowAngle());
-        wrist.setAngle(pose.wristAngle());   
+    public void update(double shoulderRelative, double elbowRelative, double wristRelative){
+        shoulder.setAngle(shoulderRelative);
+        elbow.setAngle(elbowRelative);
+        wrist.setAngle(wristRelative);   
         
         Logger.recordOutput("Arm/Mechanism2d" + key, arm);
     }

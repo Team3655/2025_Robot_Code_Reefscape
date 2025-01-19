@@ -33,7 +33,6 @@ import frc.robot.subsystems.Arm.ArmIOSim;
 import frc.robot.subsystems.Arm.ArmIOTalonFX;
 import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.Arm.ArmConstants.ArmStates;
-import frc.robot.subsystems.Arm.ArmSubsystem.ArmPose;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -217,7 +216,7 @@ public class RobotContainer {
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.b().onTrue(drive.zeroDrive());
-        programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.UP), arm));
+        programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
         break;
     }
 
