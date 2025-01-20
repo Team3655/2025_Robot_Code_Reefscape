@@ -6,6 +6,7 @@ package frc.robot.subsystems.Arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Arm.ArmConstants.ArmStates;
 
@@ -30,7 +31,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   private static Rotation2d elbowPositionToHorizontal = Rotation2d.fromRadians(0.0);
   private static Rotation2d shoulderPositionToHorizontal = Rotation2d.fromRadians(0.0);
-  private static Rotation2d wristPositionToHorizontal = Rotation2d.fromRadians(0.0);
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
@@ -56,8 +56,9 @@ public class ArmSubsystem extends SubsystemBase {
     double shoulderFFComponent = ArmConstants.SHOULDER_MASS_KG * Math.sin(shoulderPositionToHorizontal.getRadians())
                                   + ArmConstants.ELBOW_MASS_KG * Math.cos(elbowPositionToHorizontal.getRadians())
                                   + ArmConstants.WRIST_MASS_KG * Math.cos(inputs.wristPosition.getRadians());
+
     double elbowFFComponent = ArmConstants.ELBOW_MASS_KG * Math.cos(inputs.elbowPosition.getRadians());
-    double wristFFComponent = 0.0;
+    double wristFFComponent = 1;
 
     calculateTargetAngles();
 
@@ -65,8 +66,13 @@ public class ArmSubsystem extends SubsystemBase {
     io.setShoulderPositionWithFeedForward(shoulderSetPoint, shoulderFFComponent);
     io.setElbowPositionWithFeedForward(elbowSetPoint, elbowFFComponent);
 
-    setpointVisualizer.update(shoulderPositionToHorizontal.getRadians(), elbowPositionToHorizontal.getRadians(), wristPositionToHorizontal.getRadians());
-    currentVisualizer.update(inputs.shoulderPosition.getRadians(), inputs.elbowPosition.getRadians(), inputs.wristPosition.getRadians());
+    // Actual shoulder zero is pointed straight down.  Subtract 180 to match visualizer to reality
+    setpointVisualizer.update(shoulderSetPoint.getDegrees()-180, elbowSetPoint.getDegrees(), wristSetPoint.getDegrees());
+    currentVisualizer.update(inputs.shoulderPosition.getDegrees(), inputs.elbowPosition.getDegrees(), inputs.wristPosition.getDegrees());
+
+    SmartDashboard.putNumber("Shoulder Sepoint", shoulderSetPoint.getDegrees());
+    SmartDashboard.putNumber("Elbow Setpoint", elbowSetPoint.getDegrees());
+    SmartDashboard.putNumber("Wrist Degrees", inputs.wristPosition.getDegrees());
   }
 
   public ArmPose getState() {

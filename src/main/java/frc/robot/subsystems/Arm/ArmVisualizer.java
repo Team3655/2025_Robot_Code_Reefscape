@@ -29,9 +29,9 @@ public class ArmVisualizer {
         switch (key) {
             case "current":
             base = root.append(new LoggedMechanismLigament2d("Base", ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 90, 7, new Color8Bit(Color.kGray)));
-            shoulder = base.append(new LoggedMechanismLigament2d("Shoulder", ArmConstants.SHOULDER_LENGTH_METERS, 200, 6, new Color8Bit(Color.kRed)));
-            elbow = shoulder.append(new LoggedMechanismLigament2d("Elbow", ArmConstants.ELBOW_LENGTH_METERS, 90, 4, new Color8Bit(Color.kBlue)));
-            wrist = elbow.append(new LoggedMechanismLigament2d("Wrist", ArmConstants.WRIST_LENGTH_METERS, 90, 2 , new Color8Bit(Color.kGreen)));
+            shoulder = base.append(new LoggedMechanismLigament2d("Shoulder", ArmConstants.SHOULDER_LENGTH_METERS, 0, 6, new Color8Bit(Color.kRed)));
+            elbow = shoulder.append(new LoggedMechanismLigament2d("Elbow", ArmConstants.ELBOW_LENGTH_METERS, 0, 4, new Color8Bit(Color.kBlue)));
+            wrist = elbow.append(new LoggedMechanismLigament2d("Wrist", ArmConstants.WRIST_LENGTH_METERS, 0, 2 , new Color8Bit(Color.kGreen)));
                 break;
 
             case "setpoint":
@@ -47,6 +47,7 @@ public class ArmVisualizer {
             wrist = null;
                 break;
         }
+
     }
 
     public void update(double shoulderRelative, double elbowRelative, double wristRelative){

@@ -14,7 +14,6 @@
 package frc.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -215,8 +214,10 @@ public class RobotContainer {
                 () -> programmingController.getRightX()));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        programmingController.b().onTrue(drive.zeroDrive());
+        programmingController.back().onTrue(drive.zeroDrive());
+
         programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
+        programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
         break;
     }
 

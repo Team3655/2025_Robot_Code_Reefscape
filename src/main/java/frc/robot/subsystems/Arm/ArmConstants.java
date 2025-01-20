@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
 public class ArmConstants {
     public static final String CANBUS_NAME = "rio";
 
-    public static final ArmEncoders activeEncoders = ArmEncoders.RELATIVE;
+    public static final ArmEncoders activeEncoders = ArmEncoders.ABSOLUTE;
 
     public static enum ArmEncoders {
       /** Running relative encoders within the motors */
@@ -27,6 +27,8 @@ public class ArmConstants {
     public static final Rotation2d SHOULDER_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d SHOULDER_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
     public static final double SHOULDER_REDUCTION = 1 / 1;
+    public static final double KP_SHOULDER = 0.1;
+    public static final double KD_SHOULDER = 0.0;
 
     public static final int ELBOW_CANCODER_ID = 0;
     public static final int ELBOW_MOTOR_ID = 0;
@@ -36,6 +38,8 @@ public class ArmConstants {
     public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
     public static final double ELBOW_REDUCTION = 1 / 1;
+    public static final double KP_ELBOW = 0.1;
+    public static final double KD_ELBOW = 0.0;
 
     public static final int WRIST_CANCODER_ID = 0;
     public static final int WRIST_MOTOR_ID = 0;
@@ -46,6 +50,8 @@ public class ArmConstants {
     public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
     public static final double WRIST_REDUCTION = 1 / 1;
+    public static final double KP_WRIST = 0.1;
+    public static final double KD_WRIST = 0.0;
 
     public static final double H_TOWER_GROUND_HEIGHT_METERS = Units.inchesToMeters(32.0);
     public static final double D_ARM_HORIZTONAL_OFFSET_METERS = Units.inchesToMeters(6.0);
@@ -58,7 +64,7 @@ public class ArmConstants {
         public static final ArmPose START = new ArmPose(
             Units.inchesToMeters(11),
             Units.inchesToMeters(35),
-            Rotation2d.fromDegrees(90)
+            Rotation2d.fromDegrees(0)
         );
 
         public static final ArmPose FRONT_FEEDER = new ArmPose(
