@@ -64,8 +64,7 @@ public class ArmConstants {
         public static final ArmPose START = new ArmPose(
             Units.inchesToMeters(11),
             Units.inchesToMeters(35),
-            Rotation2d.fromDegrees(0)
-        );
+            Rotation2d.fromDegrees(0));
 
         public static final ArmPose FRONT_FEEDER = new ArmPose(
             Units.inchesToMeters(31), 
