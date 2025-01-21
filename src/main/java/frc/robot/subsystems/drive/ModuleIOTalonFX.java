@@ -26,6 +26,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -34,6 +36,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 import java.util.Queue;
+import java.util.logging.Logger;
 
 /**
  * Module IO implementation for Talon FX drive motor controller, Talon FX turn
@@ -137,23 +140,24 @@ public class ModuleIOTalonFX implements ModuleIO {
     // Configure turn motor to use CANCoder for position feedback
     turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
-    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
     turnConfig.Feedback.RotorToSensorRatio = DriveConstants.TURN_GEAR_RATIO;
     turnConfig.Feedback.SensorToMechanismRatio = 1.0;
-    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     turnConfig.Slot0.kP = DriveConstants.KP_TURN;
 
     turnConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.TURN_CURRENT_LIMIT;
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    turnTalon.getConfigurator().apply(turnConfig);
+    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
+    turnTalon.getConfigurator().apply(turnConfig, .25);
     //setTurnBrakeMode(true);
 
     // Configure CANcoder
-    CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
+    var turnEncoderConfig = new CANcoderConfiguration();
 
-    turnEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint  = 0.5;
+    //turnEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint  = 0.5;
     turnEncoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRotations();
+    turnEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
     cancoder.getConfigurator().apply(turnEncoderConfig);
 
@@ -222,6 +226,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
+    //org.littletonrobotics.junction.Logger.recordOutput("Wrap Enabled", turnTalon.;
   }
 
   @Override
@@ -237,8 +242,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   @Override 
   public void setTurnPosition(Rotation2d setpoint) {
     turnTalon.setControl(
-      new PositionVoltage(0.0)
-      .withPosition(setpoint.getRotations())
+      new PositionVoltage(setpoint.getRotations())
       .withFeedForward(0)
     );
   }
@@ -272,4 +276,5 @@ public class ModuleIOTalonFX implements ModuleIO {
       Units.rotationsToRadians(
         turnTalon.getClosedLoopError().getValueAsDouble()));
   }
+
 }

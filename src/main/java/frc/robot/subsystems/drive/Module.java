@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
@@ -90,7 +91,7 @@ public class Module {
       switch (Constants.currentMode) {
         // REAL uses TalonFX PID
         case REAL:
-          io.setTurnPosition(angleSetpoint);
+          //io.setTurnPosition(angleSetpoint);
         break;
         // SIM uses rio PID
         case SIM:
@@ -113,6 +114,7 @@ public class Module {
         // towards the setpoint, its velocity should increase. This is achieved by
         // taking the component of the velocity in the direction of the setpoint.
         //double adjustSpeedSetpoint = speedSetpoint * Math.cos(turnFeedback.getPositionError());
+        //TODO: change this to an input
         double adjustSpeedSetpoint = speedSetpoint * Math.cos(io.getPositionError().getRadians());
         // Run drive controller
         double velocityRadPerSec = adjustSpeedSetpoint / WHEEL_RADIUS;
@@ -121,7 +123,7 @@ public class Module {
           // REAL uses TalonFX PID
           case REAL:
             double velocityRotsPerSec = Units.radiansPerSecondToRotationsPerMinute(velocityRadPerSec) / 60;
-            io.setDriveVelocity(velocityRotsPerSec);;
+            //io.setDriveVelocity(velocityRotsPerSec);;
           break;
           // SIM uses rio PID
           case SIM:
@@ -155,6 +157,7 @@ public class Module {
         // Optimize state based on current angle
         // Controllers run in "periodic" when the setpoint is not null
         targetState.optimize(getAngle());
+        targetState.cosineScale(getAngle());
 
         // Update setpoints, controllers run in "periodic"
         angleSetpoint = targetState.angle;
@@ -163,6 +166,16 @@ public class Module {
 
     targetState.angle = angleSetpoint;
     targetState.speedMetersPerSecond = speedSetpoint;
+
+    SmartDashboard.putNumber("Module " + this.index + " target position", targetState.angle.getDegrees());
+    
+    double adjustSpeedSetpoint = targetState.speedMetersPerSecond * Math.cos(io.getPositionError().getRadians());
+
+    double velocityRadPerSec = adjustSpeedSetpoint / WHEEL_RADIUS;
+    double velocityRotsPerSec = Units.radiansPerSecondToRotationsPerMinute(velocityRadPerSec) / 60;
+
+    io.setTurnPosition(targetState.angle);
+    io.setDriveVelocity(velocityRotsPerSec);;
 
     return targetState;
   }
