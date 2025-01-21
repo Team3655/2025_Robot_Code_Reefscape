@@ -1,8 +1,8 @@
-package frc.robot.subsystems.Arm;
+package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.subsystems.Arm.ArmSubsystem.ArmPose;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 
 public class ArmConstants {
     public static final String CANBUS_NAME = "rio";
