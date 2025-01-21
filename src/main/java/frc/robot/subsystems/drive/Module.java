@@ -234,15 +234,4 @@ public class Module {
   public double getCharacterizationVelocity() {
     return inputs.driveVelocityRadPerSec;
   }
-
-  public static SwerveModuleState optimizeState(
-    SwerveModuleState desiredState, Rotation2d currentAngle) {
-      var delta = desiredState.angle.minus(currentAngle);
-      if (Math.abs(delta.getDegrees()) > 90.0) {
-        return new SwerveModuleState(
-          -desiredState.speedMetersPerSecond, desiredState.angle.rotateBy(Rotation2d.kPi));
-      } else {
-          return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
-  }
-}
 }
