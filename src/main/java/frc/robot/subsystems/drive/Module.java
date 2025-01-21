@@ -156,7 +156,7 @@ public class Module {
         // Controllers run in "periodic" when the setpoint is not null
         //targetState.optimize(getAngle());
 
-        SwerveModuleState optimizedState = optimizeState(targetState, inputs.turnAbsolutePosition);
+        SwerveModuleState optimizedState = optimizeState(targetState, getAngle());
         // Update setpoints, controllers run in "periodic"
         angleSetpoint = optimizedState.angle;
         //speedSetpoint = optimizedState.speedMetersPerSecond;
