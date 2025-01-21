@@ -62,6 +62,9 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final TalonFX turnTalon;
   private final CANcoder cancoder;
 
+  private PositionVoltage positionVoltage = 
+      new PositionVoltage(0.0);
+
   private final Queue<Double> timestampQueue;
 
   private final StatusSignal<Angle> drivePosition;
@@ -241,10 +244,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   @Override 
   public void setTurnPosition(Rotation2d setpoint) {
-    turnTalon.setControl(
-      new PositionVoltage(setpoint.getRotations())
-      .withFeedForward(0)
-    );
+    turnTalon.setControl(positionVoltage.withPosition(setpoint.getRotations()));
   }
 
   @Override
