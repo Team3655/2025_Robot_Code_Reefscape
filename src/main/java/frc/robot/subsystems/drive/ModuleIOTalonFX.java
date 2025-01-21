@@ -265,4 +265,11 @@ public class ModuleIOTalonFX implements ModuleIO {
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     turnTalon.getConfigurator().apply(config);
   }
+
+  @Override
+  public Rotation2d getPositionError() {
+    return new Rotation2d(
+      Units.rotationsToRadians(
+        turnTalon.getClosedLoopError().getValueAsDouble()));
+  }
 }

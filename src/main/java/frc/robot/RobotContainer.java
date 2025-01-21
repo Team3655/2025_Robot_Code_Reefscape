@@ -225,7 +225,7 @@ public class RobotContainer {
                 drive,
                 () -> -programmingController.getLeftY(),
                 () -> -programmingController.getLeftX(),
-                () -> -programmingController.getRawAxis(2)));
+                () -> -programmingController.getRightX()));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());

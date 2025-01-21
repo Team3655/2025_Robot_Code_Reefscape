@@ -13,14 +13,12 @@
 
 package frc.robot.subsystems.drive;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
@@ -114,7 +112,8 @@ public class Module {
         // When the error is 90°, the velocity setpoint should be 0. As the wheel turns
         // towards the setpoint, its velocity should increase. This is achieved by
         // taking the component of the velocity in the direction of the setpoint.
-        double adjustSpeedSetpoint = speedSetpoint * Math.cos(turnFeedback.getPositionError());
+        //double adjustSpeedSetpoint = speedSetpoint * Math.cos(turnFeedback.getPositionError());
+        double adjustSpeedSetpoint = speedSetpoint * Math.cos(io.getPositionError().getRadians());
         // Run drive controller
         double velocityRadPerSec = adjustSpeedSetpoint / WHEEL_RADIUS;
 
@@ -153,19 +152,20 @@ public class Module {
 
   /** Runs the module with the specified setpoint state. Returns the optimized state. */
   public SwerveModuleState runSetpoint(SwerveModuleState targetState) {
-
         // Optimize state based on current angle
         // Controllers run in "periodic" when the setpoint is not null
-        targetState.optimize(getAngle());
+        //targetState.optimize(getAngle());
+
+        SwerveModuleState optimizedState = optimizeState(targetState, inputs.turnAbsolutePosition);
         // Update setpoints, controllers run in "periodic"
-        angleSetpoint = targetState.angle;
+        angleSetpoint = optimizedState.angle;
         //speedSetpoint = optimizedState.speedMetersPerSecond;
-        speedSetpoint = targetState.speedMetersPerSecond;
+        speedSetpoint = optimizedState.speedMetersPerSecond;
 
     targetState.angle = angleSetpoint;
     targetState.speedMetersPerSecond = speedSetpoint;
 
-    return targetState;
+    return optimizedState;
   }
 
   /** Runs the module with the specified voltage while controlling to zero degrees. */
@@ -237,4 +237,15 @@ public class Module {
   public double getCharacterizationVelocity() {
     return inputs.driveVelocityRadPerSec;
   }
+
+  public static SwerveModuleState optimizeState(
+    SwerveModuleState desiredState, Rotation2d currentAngle) {
+      var delta = desiredState.angle.minus(currentAngle);
+      if (Math.abs(delta.getDegrees()) > 90.0) {
+        return new SwerveModuleState(
+          -desiredState.speedMetersPerSecond, desiredState.angle.rotateBy(Rotation2d.kPi));
+      } else {
+          return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
+  }
+}
 }
