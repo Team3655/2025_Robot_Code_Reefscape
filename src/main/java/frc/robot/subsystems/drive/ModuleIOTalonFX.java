@@ -36,7 +36,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 import java.util.Queue;
-import java.util.logging.Logger;
 
 /**
  * Module IO implementation for Talon FX drive motor controller, Talon FX turn
@@ -145,7 +144,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
     turnConfig.Feedback.RotorToSensorRatio = DriveConstants.TURN_GEAR_RATIO;
     turnConfig.Feedback.SensorToMechanismRatio = 1.0;
-    turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     turnConfig.Slot0.kP = DriveConstants.KP_TURN;
 
@@ -160,7 +159,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     //turnEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint  = 0.5;
     turnEncoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRotations();
-    turnEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    turnEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
 
     cancoder.getConfigurator().apply(turnEncoderConfig);
 
