@@ -109,9 +109,9 @@ public class VisionSubsystem extends SubsystemBase {
    */
   private static boolean isInField(Pose2d pose) {
     if (pose.getX() >= 0
-        && pose.getX() <= Units.feetToMeters(54 + (1.0 / 12.0))
+        && pose.getX() <= Units.feetToMeters(54 + (3.0 / 12.0))
         && pose.getY() >= 0
-        && pose.getY() <= Units.feetToMeters(26 + (7.0 / 12.0))) {
+        && pose.getY() <= Units.feetToMeters(26 + (3.0 / 12.0))) {
       return true;
     }
     return false;

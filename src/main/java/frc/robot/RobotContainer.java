@@ -218,6 +218,21 @@ public class RobotContainer {
         // programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
         // programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
         break;
+
+        case MACBOOK:
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> -programmingController.getLeftY(),
+                () -> -programmingController.getLeftX(),
+                () -> -programmingController.getRawAxis(2)));
+
+        programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+        programmingController.back().onTrue(drive.zeroDrive());
+
+        programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
+        programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
+        break;
     }
 
   }
