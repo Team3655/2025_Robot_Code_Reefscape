@@ -64,7 +64,7 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private final VisionSubsystem vision;
 
-  private final ArmSubsystem arm;
+  //private final ArmSubsystem arm;
 
   // Controller
   // Programmign contoller
@@ -102,7 +102,7 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIOLimelight("llone"));
 
-        arm = new ArmSubsystem(new ArmIOTalonFX());
+        //arm = new ArmSubsystem(new ArmIOTalonFX());
         break;
 
       case SIM:
@@ -127,7 +127,7 @@ public class RobotContainer {
                 Rotation2d.fromDegrees(62.5),
                 Rotation2d.fromDegrees(48.9)));
 
-        arm = new ArmSubsystem(new ArmIOSim());
+        //arm = new ArmSubsystem(new ArmIOSim());
 
         break;
 
@@ -147,8 +147,7 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIO() {
             });
-        arm = new ArmSubsystem(new ArmIO() {
-        });
+        //arm = new ArmSubsystem(new ArmIO() {});
         break;
     }
 
@@ -216,8 +215,8 @@ public class RobotContainer {
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());
 
-        programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
-        programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
+        // programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
+        // programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
         break;
     }
 

@@ -16,13 +16,19 @@ package frc.robot.subsystems.drive;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -79,6 +85,8 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final Rotation2d absoluteEncoderOffset;
   private final String canivoreName = DriveConstants.CANIVORE_NAME;
 
+  private final VoltageOut voltageControl = new VoltageOut(0.0);
+  private final PositionVoltage steerPositionControl = new PositionVoltage(0.0);
 
   public ModuleIOTalonFX(int index) {
 
@@ -116,18 +124,43 @@ public class ModuleIOTalonFX implements ModuleIO {
     }
 
     var driveConfig = new TalonFXConfiguration();
-    driveConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
+
+    // Configure drive motor to use integrated encoder for velocity feedback
+    driveConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    driveConfig.Feedback.RotorToSensorRatio = 1.0;
+    driveConfig.Slot0.kP = DriveConstants.KP_DRIVE;
+    driveConfig.Slot0.kV = DriveConstants.KV_DRIVE;
+
+    driveConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.DRIVE_CURRENT_LIMIT;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveTalon.getConfigurator().apply(driveConfig);
-    setDriveBrakeMode(true);
+    //setDriveBrakeMode(true);
 
     var turnConfig = new TalonFXConfiguration();
-    turnConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
+
+    // Configure turn motor to use CANCoder for position feedback
+    turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+    turnConfig.Feedback.RotorToSensorRatio = DriveConstants.TURN_GEAR_RATIO;
+    turnConfig.Feedback.SensorToMechanismRatio = 1.0;
+    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    turnConfig.Slot0.kP = DriveConstants.KP_TURN;
+
+    turnConfig.CurrentLimits.SupplyCurrentLimit = DriveConstants.TURN_CURRENT_LIMIT;
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     turnTalon.getConfigurator().apply(turnConfig);
-    setTurnBrakeMode(true);
+    //setTurnBrakeMode(true);
 
-    cancoder.getConfigurator().apply(new CANcoderConfiguration());
+    // Configure CANcoder
+    CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
+
+    turnEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint  = 0.5;
+    turnEncoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRotations();
+
+    cancoder.getConfigurator().apply(turnEncoderConfig);
 
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
 
@@ -204,6 +237,20 @@ public class ModuleIOTalonFX implements ModuleIO {
   @Override
   public void setTurnVoltage(double volts) {
     turnTalon.setControl(new VoltageOut(volts));
+  }
+
+  @Override 
+  public void setTurnPosition(Rotation2d setpoint) {
+    turnTalon.setControl(
+      new PositionVoltage(0.0)
+      .withPosition(setpoint.getRotations())
+      .withFeedForward(0)
+    );
+  }
+
+  @Override
+  public void setDriveVelocity(double rotationsPerSecond) {
+    driveTalon.setControl(new VelocityVoltage(rotationsPerSecond).withSlot(0));
   }
 
   @Override

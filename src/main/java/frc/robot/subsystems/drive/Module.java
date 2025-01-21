@@ -13,12 +13,14 @@
 
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
@@ -86,8 +88,23 @@ public class Module {
 
     // Run closed loop turn control
     if (angleSetpoint != null) {
-      io.setTurnVoltage(
-          turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians()));
+
+      switch (Constants.currentMode) {
+        // REAL uses TalonFX PID
+        case REAL:
+          io.setTurnPosition(angleSetpoint);
+        break;
+        // SIM uses rio PID
+        case SIM:
+          io.setTurnVoltage(
+            turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians()));
+        break;
+        // Default to rio PID
+        default:
+          io.setTurnVoltage(
+            turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians()));
+
+      }
 
       // Run closed loop drive control
       // Only allowed if closed loop turn control is running
@@ -98,12 +115,27 @@ public class Module {
         // towards the setpoint, its velocity should increase. This is achieved by
         // taking the component of the velocity in the direction of the setpoint.
         double adjustSpeedSetpoint = speedSetpoint * Math.cos(turnFeedback.getPositionError());
-
         // Run drive controller
         double velocityRadPerSec = adjustSpeedSetpoint / WHEEL_RADIUS;
-        io.setDriveVoltage(
-            driveFeedforward.calculate(velocityRadPerSec)
-                + driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
+
+        switch (Constants.currentMode){
+          // REAL uses TalonFX PID
+          case REAL:
+            double velocityRotsPerSec = Units.radiansPerSecondToRotationsPerMinute(velocityRadPerSec) / 60;
+            io.setDriveVelocity(velocityRotsPerSec);;
+          break;
+          // SIM uses rio PID
+          case SIM:
+            io.setDriveVoltage(
+              driveFeedforward.calculate(velocityRadPerSec)
+                  + driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
+          break;
+          // Default to rio PID
+          default:
+            io.setDriveVoltage(
+              driveFeedforward.calculate(velocityRadPerSec)
+                  + driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
+        }
       }
     }
 
@@ -120,16 +152,65 @@ public class Module {
   }
 
   /** Runs the module with the specified setpoint state. Returns the optimized state. */
-  public SwerveModuleState runSetpoint(SwerveModuleState state) {
-    // Optimize state based on current angle
-    // Controllers run in "periodic" when the setpoint is not null
-    state.optimize(getAngle());
-    // Update setpoints, controllers run in "periodic"
-    angleSetpoint = state.angle;
-    //speedSetpoint = optimizedState.speedMetersPerSecond;
-    speedSetpoint = state.speedMetersPerSecond;
+  public SwerveModuleState runSetpoint(SwerveModuleState targetState) {
 
-    return state;
+    switch (Constants.currentMode){
+      case REAL:
+    
+        double currentAngle = getAngle().getRadians(); // Current angle of the swerve module
+
+        // Target angle of the swerve module, limited to a domain between 0 and 2π.
+        double targetAngle = MathUtil.inputModulus(targetState.angle.getRadians(), 0, Math.PI * 2);
+
+        // Limiting the domain of the current angle to a domain of 0 to 2π.
+        double currentBoundAngle = MathUtil.inputModulus(currentAngle, 0, Math.PI * 2);
+
+        // Finding the difference in between the current and target angle (in radians).
+        double angleError = MathUtil.inputModulus(targetAngle - currentBoundAngle, -Math.PI, Math.PI);
+
+        // Adding that distance to our current angle (directly from the steer encoder).
+        // Becomes our target angle
+        double resultAngle = currentAngle + angleError;
+
+        if(Math.abs(angleError) > (Math.PI/2)){
+          speedSetpoint = targetState.speedMetersPerSecond * -1;
+          angleSetpoint = new Rotation2d(resultAngle).rotateBy(Rotation2d.kPi);
+        } else {
+          speedSetpoint = targetState.speedMetersPerSecond;
+          angleSetpoint = new Rotation2d(resultAngle);
+        }
+        
+    
+      break;
+
+      case SIM:
+        // Optimize state based on current angle
+        // Controllers run in "periodic" when the setpoint is not null
+        targetState.optimize(getAngle());
+        // Update setpoints, controllers run in "periodic"
+        angleSetpoint = targetState.angle;
+        //speedSetpoint = optimizedState.speedMetersPerSecond;
+        speedSetpoint = targetState.speedMetersPerSecond;
+    
+      break;
+
+      default:
+              // Optimize state based on current angle
+        // Controllers run in "periodic" when the setpoint is not null
+        targetState.optimize(getAngle());
+        // Update setpoints, controllers run in "periodic"
+        angleSetpoint = targetState.angle;
+        //speedSetpoint = optimizedState.speedMetersPerSecond;
+        speedSetpoint = targetState.speedMetersPerSecond;
+
+      break;
+    }
+
+    targetState.angle = angleSetpoint;
+    targetState.speedMetersPerSecond = speedSetpoint;
+    SmartDashboard.putNumber("target angle", targetState.angle.getRadians());
+
+    return targetState;
   }
 
   /** Runs the module with the specified voltage while controlling to zero degrees. */
