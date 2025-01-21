@@ -90,35 +90,34 @@ public class ModuleIOTalonFX implements ModuleIO {
   public ModuleIOTalonFX(int index) {
 
     switch (index) {
-      // Front left
-      case 0:
-        driveTalon = new TalonFX(9, canivoreName);
-        turnTalon = new TalonFX(10, canivoreName);
-        cancoder = new CANcoder(11, canivoreName);
-        absoluteEncoderOffset = DriveConstants.FRONT_LEFT_ENCODER_OFFSET;
-      break;
-      // Front right
-      case 1:
-        driveTalon = new TalonFX(6, canivoreName);
-        turnTalon = new TalonFX(7, canivoreName);
-        cancoder = new CANcoder(8, canivoreName);
-        absoluteEncoderOffset = DriveConstants.FRONT_RIGHT_ENCODER_OFFSET;
-      break;
       // Back right
-      case 2:
+      case 0:
         driveTalon = new TalonFX(0, canivoreName);
         turnTalon = new TalonFX(1, canivoreName);
         cancoder = new CANcoder(2, canivoreName);
         absoluteEncoderOffset = DriveConstants.BACK_RIGHT_ENCODER_OFFSET;
-      break;
+        break;
       // Back left
-      case 3: 
+      case 1:
         driveTalon = new TalonFX(3, canivoreName);
         turnTalon = new TalonFX(4, canivoreName);
         cancoder = new CANcoder(5, canivoreName);
         absoluteEncoderOffset = DriveConstants.BACK_LEFT_ENCODER_OFFSET;
-      break;
-      
+        break;
+      // Front right
+      case 2:
+        driveTalon = new TalonFX(6, canivoreName);
+        turnTalon = new TalonFX(7, canivoreName);
+        cancoder = new CANcoder(8, canivoreName);
+        absoluteEncoderOffset = DriveConstants.FRONT_RIGHT_ENCODER_OFFSET;
+        break;
+      // Front left
+      case 3:
+        driveTalon = new TalonFX(9, canivoreName);
+        turnTalon = new TalonFX(10, canivoreName);
+        cancoder = new CANcoder(11, canivoreName);
+        absoluteEncoderOffset = DriveConstants.FRONT_LEFT_ENCODER_OFFSET;
+        break;
       default:
         throw new RuntimeException("Invalid module index");
     }
@@ -145,7 +144,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
     turnConfig.Feedback.RotorToSensorRatio = DriveConstants.TURN_GEAR_RATIO;
     turnConfig.Feedback.SensorToMechanismRatio = 1.0;
-    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     turnConfig.Slot0.kP = DriveConstants.KP_TURN;
 
@@ -160,7 +159,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     //turnEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint  = 0.5;
     turnEncoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRotations();
-    turnEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    turnEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
     cancoder.getConfigurator().apply(turnEncoderConfig);
 
