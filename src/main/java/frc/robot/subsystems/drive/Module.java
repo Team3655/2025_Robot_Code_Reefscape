@@ -120,10 +120,7 @@ public class Module {
         double velocityRadPerSec = adjustSpeedSetpoint / WHEEL_RADIUS;
 
         switch (Constants.currentMode){
-          // REAL uses TalonFX PID
           case REAL:
-            double velocityRotsPerSec = Units.radiansPerSecondToRotationsPerMinute(velocityRadPerSec) / 60;
-            //io.setDriveVelocity(velocityRotsPerSec);;
           break;
           // SIM uses rio PID
           case SIM:
@@ -185,12 +182,6 @@ public class Module {
     speedSetpoint = null;
   }
 
-  /** Sets whether brake mode is enabled. */
-  public void setBrakeMode(boolean enabled) {
-    io.setDriveBrakeMode(enabled);
-    io.setTurnBrakeMode(enabled);
-  }
-
   /** Returns the current turn angle of the module. */
   public Rotation2d getAngle() {
     if (turnRelativeOffset == null) {
@@ -234,15 +225,4 @@ public class Module {
   public double getCharacterizationVelocity() {
     return inputs.driveVelocityRadPerSec;
   }
-
-  public static SwerveModuleState optimizeState(
-    SwerveModuleState desiredState, Rotation2d currentAngle) {
-      var delta = desiredState.angle.minus(currentAngle);
-      if (Math.abs(delta.getDegrees()) > 90.0) {
-        return new SwerveModuleState(
-          -desiredState.speedMetersPerSecond, desiredState.angle.rotateBy(Rotation2d.kPi));
-      } else {
-          return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
-  }
-}
 }
