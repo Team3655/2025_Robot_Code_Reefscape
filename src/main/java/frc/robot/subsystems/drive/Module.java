@@ -153,23 +153,16 @@ public class Module {
   }
 
   /** Runs the module with the specified setpoint state. Returns the optimized state. */
-  public SwerveModuleState runSetpoint(SwerveModuleState targetState) {
+  public void runSetpoint(SwerveModuleState targetState) {
     // Optimize state based on current angle
     // Controllers run in "periodic" when the setpoint is not null
     targetState.optimize(getAngle());
     targetState.cosineScale(getAngle());
 
     SmartDashboard.putNumber("Module " + this.index + " target position", targetState.angle.getDegrees());
-    
-    double adjustSpeedSetpoint = targetState.speedMetersPerSecond * Math.cos(io.getPositionError().getRadians());
-
-    double velocityRadPerSec = adjustSpeedSetpoint / WHEEL_RADIUS;
-    double velocityRotsPerSec = Units.radiansPerSecondToRotationsPerMinute(velocityRadPerSec) / 60;
 
     io.setTurnPosition(targetState.angle);
-    io.setDriveVelocity(velocityRotsPerSec);;
-
-    return targetState;
+    io.setDriveVelocity(targetState.speedMetersPerSecond / WHEEL_RADIUS);
   }
 
   /** Runs the module with the specified voltage while controlling to zero degrees. */
