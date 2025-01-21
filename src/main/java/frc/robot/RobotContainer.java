@@ -215,15 +215,10 @@ public class RobotContainer {
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());
 
-<<<<<<< Updated upstream
         // programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
         // programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
-=======
-        programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
-        programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
-        programmingController.rightBumper().onTrue(Commands.run(() -> arm.jogWrist(1), arm));
-        programmingController.leftBumper().onTrue(Commands.run(() -> arm.jogWrist(-1), arm));
->>>>>>> Stashed changes
+        // programmingController.rightBumper().onTrue(Commands.run(() -> arm.jogWrist(1), arm));
+        // programmingController.leftBumper().onTrue(Commands.run(() -> arm.jogWrist(-1), arm));
         break;
 
       case MACBOOK:
@@ -237,17 +232,12 @@ public class RobotContainer {
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());
 
-<<<<<<< Updated upstream
         // programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
         // programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
-=======
-        programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
-        programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
 
-        programmingController.button(7).onTrue(Commands.run(() -> arm.jogWrist(-1), arm));
-        programmingController.button(8).onTrue(Commands.run(() -> arm.jogWrist(1), arm));
+        // programmingController.button(7).onTrue(Commands.run(() -> arm.jogWrist(-1), arm));
+        // programmingController.button(8).onTrue(Commands.run(() -> arm.jogWrist(1), arm));
 
->>>>>>> Stashed changes
         break;
     }
 
