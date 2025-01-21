@@ -29,6 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeIO.setVacuumVoltage(vacuumVoltage);
 
     SmartDashboard.putBoolean("Has Coral", hasCoral());
+    SmartDashboard.putBoolean("Current Spike", checkCurrentSpike(10));
   }
 
   public void setIntakeVoltage(double voltage) {
@@ -41,6 +42,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public boolean hasCoral(){
     return (inputs.backSensorState && inputs.frontSensorState);
+  }
+
+  public boolean checkCurrentSpike(double threshold){
+    return (inputs.intakeCurrentAmps[inputs.intakeCurrentAmps.length-1] > threshold);
   }
 
 
