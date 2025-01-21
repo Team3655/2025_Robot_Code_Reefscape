@@ -154,18 +154,10 @@ public class Module {
 
   /** Runs the module with the specified setpoint state. Returns the optimized state. */
   public SwerveModuleState runSetpoint(SwerveModuleState targetState) {
-        // Optimize state based on current angle
-        // Controllers run in "periodic" when the setpoint is not null
-        targetState.optimize(getAngle());
-        targetState.cosineScale(getAngle());
-
-        // Update setpoints, controllers run in "periodic"
-        angleSetpoint = targetState.angle;
-        //speedSetpoint = optimizedState.speedMetersPerSecond;
-        speedSetpoint = targetState.speedMetersPerSecond;
-
-    targetState.angle = angleSetpoint;
-    targetState.speedMetersPerSecond = speedSetpoint;
+    // Optimize state based on current angle
+    // Controllers run in "periodic" when the setpoint is not null
+    targetState.optimize(getAngle());
+    targetState.cosineScale(getAngle());
 
     SmartDashboard.putNumber("Module " + this.index + " target position", targetState.angle.getDegrees());
     
