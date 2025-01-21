@@ -32,6 +32,7 @@ public class ArmIOSim implements ArmIO {
 
         @Override
         public void updateInputs(ArmIOInputs inputs) {
+
                 shoulderSim.setInputVoltage(shoulderVolts);
                 elbowSim.setInputVoltage(elbowVolts);
                 wristSim.setInputVoltage(wristVolts);
