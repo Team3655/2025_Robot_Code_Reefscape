@@ -16,7 +16,6 @@ package frc.robot.subsystems.drive;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -27,8 +26,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -85,9 +82,6 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final Rotation2d absoluteEncoderOffset;
   private final String canivoreName = DriveConstants.CANIVORE_NAME;
 
-  private final VoltageOut voltageControl = new VoltageOut(0.0);
-  private final PositionVoltage steerPositionControl = new PositionVoltage(0.0);
-
   public ModuleIOTalonFX(int index) {
 
     switch (index) {
@@ -143,6 +137,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     // Configure turn motor to use CANCoder for position feedback
     turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
     turnConfig.Feedback.RotorToSensorRatio = DriveConstants.TURN_GEAR_RATIO;
     turnConfig.Feedback.SensorToMechanismRatio = 1.0;
     turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

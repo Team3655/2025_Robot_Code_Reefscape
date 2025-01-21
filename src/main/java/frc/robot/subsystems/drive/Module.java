@@ -154,36 +154,6 @@ public class Module {
   /** Runs the module with the specified setpoint state. Returns the optimized state. */
   public SwerveModuleState runSetpoint(SwerveModuleState targetState) {
 
-    switch (Constants.currentMode){
-      case REAL:
-    
-        double currentAngle = getAngle().getRadians(); // Current angle of the swerve module
-
-        // Target angle of the swerve module, limited to a domain between 0 and 2π.
-        double targetAngle = MathUtil.inputModulus(targetState.angle.getRadians(), 0, Math.PI * 2);
-
-        // Limiting the domain of the current angle to a domain of 0 to 2π.
-        double currentBoundAngle = MathUtil.inputModulus(currentAngle, 0, Math.PI * 2);
-
-        // Finding the difference in between the current and target angle (in radians).
-        double angleError = MathUtil.inputModulus(targetAngle - currentBoundAngle, -Math.PI, Math.PI);
-
-        // Adding that distance to our current angle (directly from the steer encoder).
-        // Becomes our target angle
-        double resultAngle = currentAngle + angleError;
-
-        if(Math.abs(angleError) > (Math.PI/2)){
-          speedSetpoint = targetState.speedMetersPerSecond * -1;
-          angleSetpoint = new Rotation2d(resultAngle).rotateBy(Rotation2d.kPi);
-        } else {
-          speedSetpoint = targetState.speedMetersPerSecond;
-          angleSetpoint = new Rotation2d(resultAngle);
-        }
-        
-    
-      break;
-
-      case SIM:
         // Optimize state based on current angle
         // Controllers run in "periodic" when the setpoint is not null
         targetState.optimize(getAngle());
@@ -191,24 +161,9 @@ public class Module {
         angleSetpoint = targetState.angle;
         //speedSetpoint = optimizedState.speedMetersPerSecond;
         speedSetpoint = targetState.speedMetersPerSecond;
-    
-      break;
-
-      default:
-              // Optimize state based on current angle
-        // Controllers run in "periodic" when the setpoint is not null
-        targetState.optimize(getAngle());
-        // Update setpoints, controllers run in "periodic"
-        angleSetpoint = targetState.angle;
-        //speedSetpoint = optimizedState.speedMetersPerSecond;
-        speedSetpoint = targetState.speedMetersPerSecond;
-
-      break;
-    }
 
     targetState.angle = angleSetpoint;
     targetState.speedMetersPerSecond = speedSetpoint;
-    SmartDashboard.putNumber("target angle", targetState.angle.getRadians());
 
     return targetState;
   }

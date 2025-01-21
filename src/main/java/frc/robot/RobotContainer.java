@@ -230,8 +230,8 @@ public class RobotContainer {
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());
 
-        programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
-        programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
+        // programmingController.a().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
+        // programmingController.b().onTrue(Commands.runOnce(() -> arm.updateSetpoint(ArmStates.START), arm));
         break;
     }
 
