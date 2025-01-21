@@ -9,7 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.arm.ArmIOInputsAutoLogged;
+import frc.robot.subsystems.Arm.ArmIOInputsAutoLogged;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 
 public class ArmSubsystem extends SubsystemBase {
