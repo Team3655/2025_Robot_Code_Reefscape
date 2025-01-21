@@ -251,9 +251,7 @@ public class RobotContainer {
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());
 
-        // if(intake.hasCoral()){
         // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake, 12)).onFalse(IntakeCommands.stopIntake(intake));
-        // }
         // programmingController.leftBumper().onTrue(IntakeCommands.runIntake(intake, -12)).onFalse(IntakeCommands.stopIntake(intake));
         // programmingController.povUp().onTrue(IntakeCommands.runVacuum(intake, 12)).onFalse(IntakeCommands.stopVacuum(intake));
         // programmingController.y().onTrue(ClimbCommands.runClimber(climber,
