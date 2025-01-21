@@ -160,6 +160,7 @@ public class Module {
     targetState.cosineScale(getAngle());
 
     SmartDashboard.putNumber("Module " + this.index + " target position", targetState.angle.getDegrees());
+    //SmartDashboard.putNumber("Module " + this.index + " currentRad", getAngle().getRadians());
 
     io.setTurnPosition(targetState.angle);
     io.setDriveVelocity(targetState.speedMetersPerSecond / WHEEL_RADIUS);
