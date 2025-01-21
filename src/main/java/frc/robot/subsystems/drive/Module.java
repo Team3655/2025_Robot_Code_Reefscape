@@ -122,8 +122,7 @@ public class Module {
         switch (Constants.currentMode){
           // REAL uses TalonFX PID
           case REAL:
-            double velocityRotsPerSec = Units.radiansPerSecondToRotationsPerMinute(velocityRadPerSec) / 60;
-            //io.setDriveVelocity(velocityRotsPerSec);;
+
           break;
           // SIM uses rio PID
           case SIM:
