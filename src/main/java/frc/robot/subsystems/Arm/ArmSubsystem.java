@@ -92,7 +92,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public static void calculateTargetAngles() {
-
+    
     // OnShape: https://cad.onshape.com/documents/0eb11a58606ee3c3dda8aa0d/w/d1c684d1c568543878764fb7/e/4c2980432bfd825f337a321f?renderMode=0&uiState=678c52c70a7cb65a2aa773cc
     double L4 = 0.0;
     double L5 = 0.0;
@@ -202,6 +202,10 @@ public class ArmSubsystem extends SubsystemBase {
     public InvalidArmState(String m) {
         super(m);
     }
+}
+
+public void jogWrist(double degrees) {
+    setpoint = new ArmPose(setpoint.xTarget, setpoint.yTarget, Rotation2d.fromDegrees(degrees));
 }
 
 }
