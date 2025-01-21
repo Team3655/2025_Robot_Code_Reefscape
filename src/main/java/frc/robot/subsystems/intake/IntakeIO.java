@@ -11,21 +11,20 @@ public interface IntakeIO {
 
     @AutoLog
     public class IntakeIOInputs {
-        public boolean airSwitch1Status = false;
-        public boolean airSwitch2Status = false;
-        public boolean airSwitch3Status = false;
-        public boolean airSwitch4Status = false;
 
-        public double vacuumVoltage = 0.0;
+        public double intakeVelocityRadPerSec = 0.0;
+        public double intakeAppliedVolts = 0.0;
+        public double[] intakeCurrentAmps = new double[] {};
+
+        public double vacuumAppliedVolts = 0.0;
+
+        public boolean frontSensorState = false;
+        public boolean backSensorState = false;
+
+
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {}
-    public default void setSolenoid(int solenoidID, boolean state) {}
+    public default void setVoltage(double volts) {}
     public default void setVacuumVoltage(double voltage) {}
-    public default boolean getSolenoidState() {
-        return false;
-    }
-    public default boolean getAirSwitchState(int switchID) {
-        return false;
-    }
 }

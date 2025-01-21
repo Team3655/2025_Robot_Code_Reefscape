@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ClimbCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.Arm.ArmIO;
 import frc.robot.subsystems.Arm.ArmIOSim;
 import frc.robot.subsystems.Arm.ArmIOTalonFX;
@@ -42,6 +43,9 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOSim;
@@ -69,6 +73,7 @@ public class RobotContainer {
 
   // private final ClimberSubsystem climber;
   // private final ArmSubsystem arm;
+  // private final IntakeSubsystem intake;
 
   // Controller
   // Programmign contoller
@@ -107,8 +112,8 @@ public class RobotContainer {
             new VisionIOLimelight("llone"));
 
         // arm = new ArmSubsystem(new ArmIOTalonFX());
-
         // climber = new ClimberSubsystem(new ClimberIOTalonFX());
+        // intake = new IntakeSubsystem(new IntakeIOTalonFX());
         break;
 
       case SIM:
@@ -136,6 +141,7 @@ public class RobotContainer {
         // arm = new ArmSubsystem(new ArmIOSim());
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
+        // intake = new IntakeSubsystem(new IntakeIO() {});
 
         break;
 
@@ -158,6 +164,8 @@ public class RobotContainer {
         // arm = new ArmSubsystem(new ArmIO() {});
 
         // climber = new ClimberSubsystem(new ClimberIO() {
+        // });
+        // intake = new IntakeSubsystem(new IntakeIO() {
         // });
         break;
     }
@@ -230,10 +238,6 @@ public class RobotContainer {
         // arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
         // programmingController.b().onTrue(Commands.runOnce(() ->
         // arm.updateSetpoint(ArmStates.START), arm));
-        // programmingController.rightBumper().onTrue(Commands.run(() ->
-        // arm.jogWrist(1), arm));
-        // programmingController.leftBumper().onTrue(Commands.run(() ->
-        // arm.jogWrist(-1), arm));
         break;
 
       case MACBOOK:
@@ -247,21 +251,21 @@ public class RobotContainer {
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());
 
-        // TODO: fix controls
-        // programmingController.a().onTrue(ClimbCommands.runClimber(climber,
+        // if(intake.hasCoral()){
+        // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake, 12)).onFalse(IntakeCommands.stopIntake(intake));
+        // }
+        // programmingController.leftBumper().onTrue(IntakeCommands.runIntake(intake, -12)).onFalse(IntakeCommands.stopIntake(intake));
+        // programmingController.povUp().onTrue(IntakeCommands.runVacuum(intake, 12)).onFalse(IntakeCommands.stopVacuum(intake));
+        // programmingController.y().onTrue(ClimbCommands.runClimber(climber,
         // 5)).onFalse(ClimbCommands.stopClimber(climber));
-        // programmingController.b().onTrue(ClimbCommands.setArmClimbPosition(climber));
-        // programmingController.y().onTrue(ClimbCommands.setArmInitPosition(climber));
+        // programmingController.povUp().onTrue(ClimbCommands.setArmClimbPosition(climber));
+        // programmingController.povDown().onTrue(ClimbCommands.setArmInitPosition(climber));
 
         // programmingController.a().onTrue(Commands.runOnce(() ->
         // arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
         // programmingController.b().onTrue(Commands.runOnce(() ->
         // arm.updateSetpoint(ArmStates.START), arm));
 
-        // programmingController.button(7).onTrue(Commands.run(() -> arm.jogWrist(-1),
-        // arm));
-        // programmingController.button(8).onTrue(Commands.run(() -> arm.jogWrist(1),
-        // arm));
         break;
     }
 

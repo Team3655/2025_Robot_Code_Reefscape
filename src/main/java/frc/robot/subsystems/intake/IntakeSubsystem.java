@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -11,6 +12,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
   private final IntakeIO intakeIO;
+
+  private double intakeVoltage;
+  private double vacuumVoltage;
   
   public IntakeSubsystem(IntakeIO intakeIO) {
     this.intakeIO = intakeIO;
@@ -20,5 +24,24 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     intakeIO.updateInputs(inputs);
+
+    intakeIO.setVoltage(intakeVoltage);
+    intakeIO.setVacuumVoltage(vacuumVoltage);
+
+    SmartDashboard.putBoolean("Has Coral", hasCoral());
   }
+
+  public void setIntakeVoltage(double voltage) {
+    intakeVoltage = voltage;
+  }
+
+  public void setVacuumVoltage(double voltage) {
+    vacuumVoltage = voltage;
+  }
+
+  public boolean hasCoral(){
+    return (inputs.backSensorState && inputs.frontSensorState);
+  }
+
+
 }
