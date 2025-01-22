@@ -14,10 +14,10 @@ public class DriveConstants {
   public static final double MAX_ANGULAR_SPEED = (MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS);
   public static final String CANIVORE_NAME = "ctre";
 
-  public static final Rotation2d BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.251);//(0.427);
-  public static final Rotation2d BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.442); //(0.000977);
-  public static final Rotation2d FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.026);//(0.115479);
-  public static final Rotation2d FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.088); //(-0.095947);
+  public static final Rotation2d BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.251);// (0.427);
+  public static final Rotation2d BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.442); // (0.000977);
+  public static final Rotation2d FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.026);// (0.115479);
+  public static final Rotation2d FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.088); // (-0.095947);
 
   public static final double DRIVE_GEAR_RATIO = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);
   public static final double TURN_GEAR_RATIO = 150.0 / 7.0;

@@ -20,7 +20,7 @@ public interface VisionIO {
     public Pose3d[] targetPoses = new Pose3d[] {};
     public Pose2d[] robotPose = new Pose2d[] {};
 
-    public double[] toTagDistances = new double[]{};
+    public double[] toTagDistances = new double[] {};
     public double targetErrorRads = 0.0;
 
     public int currentPipeline = 0;
@@ -32,12 +32,14 @@ public interface VisionIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(VisionIOInputs inputs, Pose2d robotPose) {}
+  public default void updateInputs(VisionIOInputs inputs, Pose2d robotPose) {
+  }
 
   /** Returns the name of the camera */
   public default String getName() {
     return "";
   }
 
-  public default void setMode(VisionMode mode) {}
+  public default void setMode(VisionMode mode) {
+  }
 }

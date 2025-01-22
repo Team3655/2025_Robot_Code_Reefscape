@@ -160,7 +160,7 @@ public class DriveSubsystem extends SubsystemBase {
     odometryLock.unlock();
 
     SmartDashboard.putNumber("Gyro Heading", gyroIO.getGyroHeading());
-    
+
     Logger.processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();

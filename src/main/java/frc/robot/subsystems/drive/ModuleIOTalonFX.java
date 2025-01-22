@@ -61,8 +61,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final TalonFX turnTalon;
   private final CANcoder cancoder;
 
-  private PositionVoltage positionVoltage = 
-      new PositionVoltage(0.0);
+  private PositionVoltage positionVoltage = new PositionVoltage(0.0);
 
   private final Queue<Double> timestampQueue;
 
@@ -135,7 +134,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveTalon.getConfigurator().apply(driveConfig);
-    //setDriveBrakeMode(true);
+    // setDriveBrakeMode(true);
 
     var turnConfig = new TalonFXConfiguration();
 
@@ -157,7 +156,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     // Configure CANcoder
     var turnEncoderConfig = new CANcoderConfiguration();
 
-    //turnEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint  = 0.5;
+    // turnEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
     turnEncoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRotations();
     turnEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
@@ -228,7 +227,8 @@ public class ModuleIOTalonFX implements ModuleIO {
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
-    //org.littletonrobotics.junction.Logger.recordOutput("Wrap Enabled", turnTalon.;
+    // org.littletonrobotics.junction.Logger.recordOutput("Wrap Enabled",
+    // turnTalon.;
   }
 
   @Override
@@ -241,7 +241,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnTalon.setControl(new VoltageOut(volts));
   }
 
-  @Override 
+  @Override
   public void setTurnPosition(Rotation2d setpoint) {
     turnTalon.setControl(positionVoltage.withPosition(setpoint.getRotations()));
   }
@@ -272,8 +272,8 @@ public class ModuleIOTalonFX implements ModuleIO {
   @Override
   public Rotation2d getPositionError() {
     return new Rotation2d(
-      Units.rotationsToRadians(
-        turnTalon.getClosedLoopError().getValueAsDouble()));
+        Units.rotationsToRadians(
+            turnTalon.getClosedLoopError().getValueAsDouble()));
   }
 
 }

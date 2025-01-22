@@ -106,10 +106,10 @@ public class RobotState {
         pose);
   }
 
-  public void zeroEstimation(){
+  public void zeroEstimation() {
     poseEstimator.resetPosition(Rotation2d.fromDegrees(0), lastModulePositions, getEstimatedPose());
     odometry.resetPosition(Rotation2d.fromDegrees(0), lastModulePositions, getEstimatedPose());
-  } 
+  }
 
   @AutoLogOutput(key = "RobotState/EstimatedPose")
   public Pose2d getEstimatedPose() {

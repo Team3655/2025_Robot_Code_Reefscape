@@ -69,7 +69,8 @@ public class Module {
   }
 
   /**
-   * Update inputs without running the rest of the periodic logic. This is useful since these
+   * Update inputs without running the rest of the periodic logic. This is useful
+   * since these
    * updates need to be properly thread-locked.
    */
   public void updateInputs() {
@@ -91,17 +92,17 @@ public class Module {
       switch (Constants.currentMode) {
         // REAL uses TalonFX PID
         case REAL:
-          //io.setTurnPosition(angleSetpoint);
-        break;
+          // io.setTurnPosition(angleSetpoint);
+          break;
         // SIM uses rio PID
         case SIM:
           io.setTurnVoltage(
-            turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians()));
-        break;
+              turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians()));
+          break;
         // Default to rio PID
         default:
           io.setTurnVoltage(
-            turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians()));
+              turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians()));
 
       }
 
@@ -113,28 +114,29 @@ public class Module {
         // When the error is 90°, the velocity setpoint should be 0. As the wheel turns
         // towards the setpoint, its velocity should increase. This is achieved by
         // taking the component of the velocity in the direction of the setpoint.
-        //double adjustSpeedSetpoint = speedSetpoint * Math.cos(turnFeedback.getPositionError());
-        //TODO: change this to an input
+        // double adjustSpeedSetpoint = speedSetpoint *
+        // Math.cos(turnFeedback.getPositionError());
+        // TODO: change this to an input
         double adjustSpeedSetpoint = speedSetpoint * Math.cos(io.getPositionError().getRadians());
         // Run drive controller
         double velocityRadPerSec = adjustSpeedSetpoint / WHEEL_RADIUS;
 
-        switch (Constants.currentMode){
+        switch (Constants.currentMode) {
           // REAL uses TalonFX PID
           case REAL:
 
-          break;
+            break;
           // SIM uses rio PID
           case SIM:
             io.setDriveVoltage(
-              driveFeedforward.calculate(velocityRadPerSec)
-                  + driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
-          break;
+                driveFeedforward.calculate(velocityRadPerSec)
+                    + driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
+            break;
           // Default to rio PID
           default:
             io.setDriveVoltage(
-              driveFeedforward.calculate(velocityRadPerSec)
-                  + driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
+                driveFeedforward.calculate(velocityRadPerSec)
+                    + driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
         }
       }
     }
@@ -144,14 +146,16 @@ public class Module {
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount; i++) {
       double positionMeters = inputs.odometryDrivePositionsRad[i] * WHEEL_RADIUS;
-      Rotation2d angle =
-          inputs.odometryTurnPositions[i].plus(
-              turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d());
+      Rotation2d angle = inputs.odometryTurnPositions[i].plus(
+          turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d());
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
   }
 
-  /** Runs the module with the specified setpoint state. Returns the optimized state. */
+  /**
+   * Runs the module with the specified setpoint state. Returns the optimized
+   * state.
+   */
   public void runSetpoint(SwerveModuleState targetState) {
     // Optimize state based on current angle
     // Controllers run in "periodic" when the setpoint is not null
@@ -164,7 +168,9 @@ public class Module {
     io.setDriveVelocity(targetState.speedMetersPerSecond / WHEEL_RADIUS);
   }
 
-  /** Runs the module with the specified voltage while controlling to zero degrees. */
+  /**
+   * Runs the module with the specified voltage while controlling to zero degrees.
+   */
   public void runCharacterization(double volts) {
     // Closed loop turn control
     angleSetpoint = new Rotation2d();

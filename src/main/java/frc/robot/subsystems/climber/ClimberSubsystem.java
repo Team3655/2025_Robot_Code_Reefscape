@@ -15,7 +15,6 @@ public class ClimberSubsystem extends SubsystemBase {
   private static Rotation2d armPosition = new Rotation2d();
   public static double ArmFeedforward = 0.0;
 
-
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
@@ -29,11 +28,11 @@ public class ClimberSubsystem extends SubsystemBase {
     io.setArmPosition(armPosition, ArmFeedforward);
   }
 
-  public void updateClimberVoltate(double volts){
+  public void updateClimberVoltate(double volts) {
     climberVolts = volts;
   }
 
-  public void updateArmPosition(Rotation2d position){
+  public void updateArmPosition(Rotation2d position) {
     armPosition = position;
   }
 }

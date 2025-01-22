@@ -4,12 +4,10 @@
 
 package frc.robot.subsystems.arm;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.arm.ArmIOInputsAutoLogged;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -39,7 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
     this.io = io;
     updateSetpoint(ArmStates.START);
     DriverStation.reportWarning(
-      "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS.  IS THIS CORRECT?", false);
+        "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS.  IS THIS CORRECT?", false);
   }
 
   @Override
@@ -56,8 +54,8 @@ public class ArmSubsystem extends SubsystemBase {
     // All angles for FF MUST USE RELATIVE ANGLES
     // TODO: Check math on these
     double shoulderFFComponent = ArmConstants.SHOULDER_MASS_KG * Math.sin(shoulderPositionToHorizontal.getRadians())
-                                  + ArmConstants.ELBOW_MASS_KG * Math.cos(elbowPositionToHorizontal.getRadians())
-                                  + ArmConstants.WRIST_MASS_KG * Math.cos(inputs.wristPosition.getRadians());
+        + ArmConstants.ELBOW_MASS_KG * Math.cos(elbowPositionToHorizontal.getRadians())
+        + ArmConstants.WRIST_MASS_KG * Math.cos(inputs.wristPosition.getRadians());
 
     double elbowFFComponent = ArmConstants.ELBOW_MASS_KG * Math.cos(inputs.elbowPosition.getRadians());
     double wristFFComponent = 1;
@@ -68,11 +66,14 @@ public class ArmSubsystem extends SubsystemBase {
     io.setShoulderPositionWithFeedForward(shoulderSetPoint, shoulderFFComponent);
     io.setElbowPositionWithFeedForward(elbowSetPoint, elbowFFComponent);
 
-    // Actual shoulder zero is pointed straight down.  Subtract 180 to match visualizer to reality
-    setpointVisualizer.update(shoulderSetPoint.getDegrees()-180, elbowSetPoint.getDegrees(), wristSetPoint.getDegrees());
-    currentVisualizer.update(inputs.shoulderPosition.getDegrees(), inputs.elbowPosition.getDegrees(), inputs.wristPosition.getDegrees());
+    // Actual shoulder zero is pointed straight down. Subtract 180 to match
+    // visualizer to reality
+    setpointVisualizer.update(shoulderSetPoint.getDegrees() - 180, elbowSetPoint.getDegrees(),
+        wristSetPoint.getDegrees());
+    currentVisualizer.update(inputs.shoulderPosition.getDegrees(), inputs.elbowPosition.getDegrees(),
+        inputs.wristPosition.getDegrees());
 
-    SmartDashboard.putNumber("Shoulder Sepoint", shoulderSetPoint.getDegrees());
+    SmartDashboard.putNumber("Shoulder Setpoint", shoulderSetPoint.getDegrees());
     SmartDashboard.putNumber("Elbow Setpoint", elbowSetPoint.getDegrees());
     SmartDashboard.putNumber("Wrist Degrees", inputs.wristPosition.getDegrees());
   }
@@ -88,13 +89,14 @@ public class ArmSubsystem extends SubsystemBase {
     return setpoint;
   }
 
-  public void updateSetpoint(ArmPose pose){
+  public void updateSetpoint(ArmPose pose) {
     setpoint = pose;
   }
 
   public static void calculateTargetAngles() {
-    
-    // OnShape: https://cad.onshape.com/documents/0eb11a58606ee3c3dda8aa0d/w/d1c684d1c568543878764fb7/e/4c2980432bfd825f337a321f?renderMode=0&uiState=678c52c70a7cb65a2aa773cc
+
+    // OnShape:
+    // https://cad.onshape.com/documents/0eb11a58606ee3c3dda8aa0d/w/d1c684d1c568543878764fb7/e/4c2980432bfd825f337a321f?renderMode=0&uiState=678c52c70a7cb65a2aa773cc
     double L4 = 0.0;
     double L5 = 0.0;
     double L6 = 0.0;
@@ -106,67 +108,67 @@ public class ArmSubsystem extends SubsystemBase {
     Rotation2d thetaL4 = Rotation2d.fromRadians(0.0);
 
     L4 = Math.sqrt(
-        (Math.pow(setpoint.xTarget - ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS, 2) + Math.pow(setpoint.yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 2))
-    );
+        (Math.pow(setpoint.xTarget - ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS, 2)
+            + Math.pow(setpoint.yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 2)));
 
     L6 = Math.sqrt(
-        Math.pow(setpoint.xTarget - ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS, 2) + Math.pow(setpoint.yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS + ArmConstants.TOWER_CHASSIS_HEIGHT_METERS, 2)
-    );
+        Math.pow(setpoint.xTarget - ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS, 2) + Math.pow(
+            setpoint.yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS + ArmConstants.TOWER_CHASSIS_HEIGHT_METERS,
+            2));
 
     theta3 = new Rotation2d(
-      Math.acos(
-        (Math.pow(L4, 2) + Math.pow(ArmConstants.SHOULDER_LENGTH_METERS, 2) - Math.pow(ArmConstants.ELBOW_LENGTH_METERS, 2)) /
-        (2 * L4 * ArmConstants.SHOULDER_LENGTH_METERS)  
-      )
-    );
+        Math.acos(
+            (Math.pow(L4, 2) + Math.pow(ArmConstants.SHOULDER_LENGTH_METERS, 2)
+                - Math.pow(ArmConstants.ELBOW_LENGTH_METERS, 2)) /
+                (2 * L4 * ArmConstants.SHOULDER_LENGTH_METERS)));
 
-            // Robot moves arm behind itself
-    if(setpoint.xTarget > ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS || setpoint.xTarget == ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS){
-        theta1 = new Rotation2d(
+    // Robot moves arm behind itself
+    if (setpoint.xTarget > ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS
+        || setpoint.xTarget == ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS) {
+      theta1 = new Rotation2d(
           Math.acos(
-            (Math.pow(L4, 2) + Math.pow(ArmConstants.TOWER_CHASSIS_HEIGHT_METERS, 2) - Math.pow(L6, 2))/
-            (2 * L4 * ArmConstants.TOWER_CHASSIS_HEIGHT_METERS)  
-          ) - theta3.getRadians()
-        );
+              (Math.pow(L4, 2) + Math.pow(ArmConstants.TOWER_CHASSIS_HEIGHT_METERS, 2) - Math.pow(L6, 2)) /
+                  (2 * L4 * ArmConstants.TOWER_CHASSIS_HEIGHT_METERS))
+              - theta3.getRadians());
     } else {
-        theta1 = new Rotation2d(
-          2* Math.PI - theta3.getRadians() - Math.acos(
-            (Math.pow(L4, 2) + Math.pow(ArmConstants.TOWER_CHASSIS_HEIGHT_METERS, 2) - Math.pow(L6, 2))/
-            (2 * L4 * ArmConstants.TOWER_CHASSIS_HEIGHT_METERS))
-        );  
+      theta1 = new Rotation2d(
+          2 * Math.PI - theta3.getRadians() - Math.acos(
+              (Math.pow(L4, 2) + Math.pow(ArmConstants.TOWER_CHASSIS_HEIGHT_METERS, 2) - Math.pow(L6, 2)) /
+                  (2 * L4 * ArmConstants.TOWER_CHASSIS_HEIGHT_METERS)));
     }
 
     L5 = Math.sqrt(
-        Math.pow(ArmConstants.TOWER_CHASSIS_HEIGHT_METERS, 2) + Math.pow(ArmConstants.SHOULDER_LENGTH_METERS, 2) - (2* ArmConstants.TOWER_CHASSIS_HEIGHT_METERS * ArmConstants.SHOULDER_LENGTH_METERS) * Math.cos(theta1.getRadians())
-    );
+        Math.pow(ArmConstants.TOWER_CHASSIS_HEIGHT_METERS, 2) + Math.pow(ArmConstants.SHOULDER_LENGTH_METERS, 2)
+            - (2 * ArmConstants.TOWER_CHASSIS_HEIGHT_METERS * ArmConstants.SHOULDER_LENGTH_METERS)
+                * Math.cos(theta1.getRadians()));
 
     thetaL4 = new Rotation2d(Math.acos(
-        (Math.pow(ArmConstants.SHOULDER_LENGTH_METERS, 2) + Math.pow(ArmConstants.ELBOW_LENGTH_METERS, 2) - Math.pow(L4, 2))/
-        (2 * ArmConstants.SHOULDER_LENGTH_METERS * ArmConstants.ELBOW_LENGTH_METERS)
-      )
-    );
+        (Math.pow(ArmConstants.SHOULDER_LENGTH_METERS, 2) + Math.pow(ArmConstants.ELBOW_LENGTH_METERS, 2)
+            - Math.pow(L4, 2)) /
+            (2 * ArmConstants.SHOULDER_LENGTH_METERS * ArmConstants.ELBOW_LENGTH_METERS)));
 
     // Relative
-    relativeTheta2 = new Rotation2d((Math.PI/2) + theta1.getRadians()  - thetaL4.getRadians());
+    relativeTheta2 = new Rotation2d((Math.PI / 2) + theta1.getRadians() - thetaL4.getRadians());
 
     // Absolute
     absoluteTheta2 = new Rotation2d(Math.PI - thetaL4.getRadians());
 
     try {
-        validateState(theta1.getRadians(), L4, L5, L6, theta1.getRadians(), relativeTheta2.getRadians(), theta3.getRadians(), thetaL4.getRadians());
+      validateState(theta1.getRadians(), L4, L5, L6, theta1.getRadians(), relativeTheta2.getRadians(),
+          theta3.getRadians(), thetaL4.getRadians());
     } catch (InvalidArmState e) {
-        System.out.println(e.getMessage());
-        throw e;
+      System.out.println(e.getMessage());
+      throw e;
     }
 
-    switch(ArmConstants.activeEncoders){
+    switch (ArmConstants.activeEncoders) {
       case RELATIVE:
         elbowAngle = relativeTheta2;
-      break;
+        break;
 
       case ABSOLUTE:
         elbowAngle = absoluteTheta2;
-      break;
+        break;
     }
 
     elbowPositionToHorizontal = relativeTheta2;
@@ -175,11 +177,12 @@ public class ArmSubsystem extends SubsystemBase {
 
     shoulderAngle = theta1;
 
-}
+  }
 
-  public static void validateState(double theta, double L4, double L5, double L6, double theta1, double relativeTheta2, double theta3, double thetaL4) throws InvalidArmState {
+  public static void validateState(double theta, double L4, double L5, double L6, double theta1, double relativeTheta2,
+      double theta3, double thetaL4) throws InvalidArmState {
     if (theta > Math.PI || theta < 0) {
-        throw new InvalidArmState("ARM SEGMENT 2 CANNOT EXTEND PAST 180 DEG");
+      throw new InvalidArmState("ARM SEGMENT 2 CANNOT EXTEND PAST 180 DEG");
     }
     double[] values = new double[7];
 
@@ -191,22 +194,22 @@ public class ArmSubsystem extends SubsystemBase {
     values[5] = theta3;
     values[6] = thetaL4;
 
-    for(int i =0; i <7; i++) {
-        if(!Double.isFinite(values[i])){
-            throw new InvalidArmState("ARM OUT OF BOUNDS - INVALID X AND Y");
-        }
+    for (int i = 0; i < 7; i++) {
+      if (!Double.isFinite(values[i])) {
+        throw new InvalidArmState("ARM OUT OF BOUNDS - INVALID X AND Y");
+      }
     }
   }
 
   public static class InvalidArmState extends RuntimeException {
 
     public InvalidArmState(String m) {
-        super(m);
+      super(m);
     }
-}
+  }
 
-public void jogWrist(double degrees) {
+  public void jogWrist(double degrees) {
     setpoint = new ArmPose(setpoint.xTarget, setpoint.yTarget, Rotation2d.fromDegrees(degrees));
-}
+  }
 
 }

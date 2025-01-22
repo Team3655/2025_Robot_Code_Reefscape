@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ModuleIO {
-  
+
   @AutoLog
   public static class ModuleIOInputs {
     public double drivePositionRad = 0.0;
@@ -37,24 +37,31 @@ public interface ModuleIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(ModuleIOInputs inputs) {}
+  public default void updateInputs(ModuleIOInputs inputs) {
+  }
 
   /** Run the drive motor at the specified voltage. */
-  public default void setDriveVoltage(double volts) {}
+  public default void setDriveVoltage(double volts) {
+  }
 
   /** Run the turn motor at the specified voltage. */
-  public default void setTurnVoltage(double volts) {}
+  public default void setTurnVoltage(double volts) {
+  }
 
   /** Enable or disable brake mode on the drive motor. */
-  public default void setDriveBrakeMode(boolean enable) {}
+  public default void setDriveBrakeMode(boolean enable) {
+  }
 
   /** Enable or disable brake mode on the turn motor. */
-  public default void setTurnBrakeMode(boolean enable) {}
+  public default void setTurnBrakeMode(boolean enable) {
+  }
 
   /** Set position setpoint for turn motors */
-  public default void setTurnPosition(Rotation2d setpoint) {}
+  public default void setTurnPosition(Rotation2d setpoint) {
+  }
 
-  public default void setDriveVelocity(double rotationsPerSecond) {}
+  public default void setDriveVelocity(double rotationsPerSecond) {
+  }
 
   public default Rotation2d getPositionError() {
     return new Rotation2d();

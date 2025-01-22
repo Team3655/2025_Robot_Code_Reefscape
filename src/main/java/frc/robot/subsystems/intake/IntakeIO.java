@@ -9,22 +9,26 @@ import org.littletonrobotics.junction.AutoLog;
 /** Add your docs here. */
 public interface IntakeIO {
 
-    @AutoLog
-    public class IntakeIOInputs {
+  @AutoLog
+  public class IntakeIOInputs {
 
-        public double intakeVelocityRadPerSec = 0.0;
-        public double intakeAppliedVolts = 0.0;
-        public double[] intakeCurrentAmps = new double[] {};
+    public double intakeVelocityRadPerSec = 0.0;
+    public double intakeAppliedVolts = 0.0;
+    public double[] intakeCurrentAmps = new double[] {};
 
-        public double vacuumAppliedVolts = 0.0;
+    public double vacuumAppliedVolts = 0.0;
 
-        public boolean frontSensorState = false;
-        public boolean backSensorState = false;
+    public boolean frontSensorState = false;
+    public boolean backSensorState = false;
 
+  }
 
-    }
+  public default void updateInputs(IntakeIOInputs inputs) {
+  }
 
-    public default void updateInputs(IntakeIOInputs inputs) {}
-    public default void setVoltage(double volts) {}
-    public default void setVacuumVoltage(double voltage) {}
+  public default void setVoltage(double volts) {
+  }
+
+  public default void setVacuumVoltage(double voltage) {
+  }
 }

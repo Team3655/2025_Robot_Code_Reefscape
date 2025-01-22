@@ -13,9 +13,6 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -26,26 +23,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.ClimbCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.IntakeCommands;
-import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.ArmIOSim;
-import frc.robot.subsystems.arm.ArmIOTalonFX;
-import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.arm.ArmConstants.ArmStates;
-import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOTalonFX;
-import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.intake.IntakeIO;
-import frc.robot.subsystems.intake.IntakeIOTalonFX;
-import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOSim;
@@ -251,9 +235,12 @@ public class RobotContainer {
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());
 
-        // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake, 12)).onFalse(IntakeCommands.stopIntake(intake));
-        // programmingController.leftBumper().onTrue(IntakeCommands.runIntake(intake, -12)).onFalse(IntakeCommands.stopIntake(intake));
-        // programmingController.povUp().onTrue(IntakeCommands.runVacuum(intake, 12)).onFalse(IntakeCommands.stopVacuum(intake));
+        // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake,
+        // 12)).onFalse(IntakeCommands.stopIntake(intake));
+        // programmingController.leftBumper().onTrue(IntakeCommands.runIntake(intake,
+        // -12)).onFalse(IntakeCommands.stopIntake(intake));
+        // programmingController.povUp().onTrue(IntakeCommands.runVacuum(intake,
+        // 12)).onFalse(IntakeCommands.stopVacuum(intake));
         // programmingController.y().onTrue(ClimbCommands.runClimber(climber,
         // 5)).onFalse(ClimbCommands.stopClimber(climber));
         // programmingController.povUp().onTrue(ClimbCommands.setArmClimbPosition(climber));

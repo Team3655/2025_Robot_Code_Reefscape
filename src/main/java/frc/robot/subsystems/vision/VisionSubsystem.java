@@ -19,7 +19,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private final VisionIO[] limelights;
   private final VisionIOInputsAutoLogged[] llInputs;
-  
+
   private ArrayList<Pose2d> acceptedPoses = new ArrayList<>();
   private ArrayList<Pose2d> rejectedPoses = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class VisionSubsystem extends SubsystemBase {
             || llInputs[i].robotPose[j] == null
             || llInputs[i].targetPoses.length < 1) {
           continue;
-        } 
+        }
 
         // calculate the average distance to the target
         double avgDist = 0.0;
@@ -62,10 +62,9 @@ public class VisionSubsystem extends SubsystemBase {
 
         // if the camera to target distance is too great reject the measurement,
         // depending on the number of tags in view use a different maximum
-        if (avgDist
-                >= (llInputs[i].targetPoses.length > 1
-                    ? VisionConstants.MULTI_TAG_MAXIMUM
-                    : VisionConstants.SINGLE_TAG_MAXIMUM)
+        if (avgDist >= (llInputs[i].targetPoses.length > 1
+            ? VisionConstants.MULTI_TAG_MAXIMUM
+            : VisionConstants.SINGLE_TAG_MAXIMUM)
             // reject measure if outside of field
             || !isInField(llInputs[i].robotPose[j])) {
           // add pose to rejected poses for logging
@@ -74,26 +73,24 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
         // calculate the standard deviations for the robots x and y position
-        double xyStdDev =
-            Math.pow(avgDist, 1.6
-                * VisionConstants.TRANSLATION_COEFFICIENT
-                / (double) llInputs[i].targetPoses.length);
+        double xyStdDev = Math.pow(avgDist, 1.6
+            * VisionConstants.TRANSLATION_COEFFICIENT
+            / (double) llInputs[i].targetPoses.length);
 
         // calculate the standard deviations for the robots rotation
-        double thetaStdDev =
-            Math.pow(avgDist, 1.6)
-                * VisionConstants.ROTATION_COEFFICIENT
-                / (double) llInputs[i].targetPoses.length;
+        double thetaStdDev = Math.pow(avgDist, 1.6)
+            * VisionConstants.ROTATION_COEFFICIENT
+            / (double) llInputs[i].targetPoses.length;
 
         // add pose to the accepted poses for logging
         acceptedPoses.add(llInputs[i].robotPose[j]);
 
         // offer a new measurement to the RobotState
         RobotState.getInstance().addVisionMeasurement(
-          new VisionMeasurement(
-            llInputs[i].timestamp,
-            llInputs[i].robotPose[j],
-            VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+            new VisionMeasurement(
+                llInputs[i].timestamp,
+                llInputs[i].robotPose[j],
+                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
       }
     }
 
@@ -104,7 +101,7 @@ public class VisionSubsystem extends SubsystemBase {
   /**
    * Checks if the provided pose is within the playing field
    * 
-   * @param pose the pose to check 
+   * @param pose the pose to check
    * @return true: if the pose is within the field
    */
   private static boolean isInField(Pose2d pose) {

@@ -15,7 +15,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private double intakeVoltage;
   private double vacuumVoltage;
-  
+
   public IntakeSubsystem(IntakeIO intakeIO) {
     this.intakeIO = intakeIO;
   }
@@ -40,13 +40,12 @@ public class IntakeSubsystem extends SubsystemBase {
     vacuumVoltage = voltage;
   }
 
-  public boolean hasCoral(){
+  public boolean hasCoral() {
     return (inputs.backSensorState && inputs.frontSensorState);
   }
 
-  public boolean checkCurrentSpike(double threshold){
-    return (inputs.intakeCurrentAmps[inputs.intakeCurrentAmps.length-1] > threshold);
+  public boolean checkCurrentSpike(double threshold) {
+    return (inputs.intakeCurrentAmps[inputs.intakeCurrentAmps.length - 1] > threshold);
   }
-
 
 }

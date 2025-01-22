@@ -23,8 +23,7 @@ import frc.robot.util.LimelightHelpers.LimelightTarget_Fiducial;
 /** Add your docs here. */
 public class VisionIOLimelight implements VisionIO {
 
-  private static final AprilTagFieldLayout TAG_LAYOUT =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+  private static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
 
   private final Map<VisionMode, Integer> pipelines = new HashMap<>();
 
@@ -53,13 +52,12 @@ public class VisionIOLimelight implements VisionIO {
       inputs.targetErrorRads = Units.degreesToRadians(LimelightHelpers.getTX(name));
 
       // region: pose estimation
-      inputs.robotPose = new Pose2d[] {visionPose};
+      inputs.robotPose = new Pose2d[] { visionPose };
       // find the targets poses on the field
       inputs.targetPoses = new Pose3d[numTargets];
       for (int i = 0; i < numTargets; i++) {
-        Optional<Pose3d> targetPose =
-            TAG_LAYOUT.getTagPose((int) llresult.targets_Fiducials[i].fiducialID);
-      inputs.targetPoses[i] = targetPose.orElse(new Pose3d());
+        Optional<Pose3d> targetPose = TAG_LAYOUT.getTagPose((int) llresult.targets_Fiducials[i].fiducialID);
+        inputs.targetPoses[i] = targetPose.orElse(new Pose3d());
       }
 
       LinkedList<Double> toTagDistances = new LinkedList<>();
@@ -71,26 +69,22 @@ public class VisionIOLimelight implements VisionIO {
 
     } else {
       inputs.hasValidTarget = false;
-      inputs.robotPose = new Pose2d[]{};
-      inputs.targetPoses = new Pose3d[]{};
-      inputs.toTagDistances = new double[]{};
+      inputs.robotPose = new Pose2d[] {};
+      inputs.targetPoses = new Pose3d[] {};
+      inputs.toTagDistances = new double[] {};
     }
 
     // log latency
-    inputs.captureLatencySec =
-        Units.millisecondsToSeconds(llresult.latency_capture);
-    inputs.pipelineLatencySec =
-        Units.millisecondsToSeconds(llresult.latency_pipeline);
-    inputs.jsonParseLatencySec =
-        Units.millisecondsToSeconds(llresult.latency_jsonParse);
+    inputs.captureLatencySec = Units.millisecondsToSeconds(llresult.latency_capture);
+    inputs.pipelineLatencySec = Units.millisecondsToSeconds(llresult.latency_pipeline);
+    inputs.jsonParseLatencySec = Units.millisecondsToSeconds(llresult.latency_jsonParse);
 
     // record latency compensated timestamp
-    inputs.timestamp =
-        MathSharedStore.getTimestamp()
-            - Units.millisecondsToSeconds(
-                llresult.latency_capture
-                    + llresult.latency_pipeline
-                    + llresult.latency_jsonParse);
+    inputs.timestamp = MathSharedStore.getTimestamp()
+        - Units.millisecondsToSeconds(
+            llresult.latency_capture
+                + llresult.latency_pipeline
+                + llresult.latency_jsonParse);
 
     lastPose = visionPose;
   }
@@ -114,10 +108,12 @@ public class VisionIOLimelight implements VisionIO {
    * Adds a new association to VisionIOLimelight's pipeline and returns itself for
    * method-chaining and easier use.
    *
-   * <p>The map cannot contain duplicate keys or indexes. if duplicates are entered a warning will
+   * <p>
+   * The map cannot contain duplicate keys or indexes. if duplicates are entered a
+   * warning will
    * be printed.
    *
-   * @param mode A VisionMode to associate with and index
+   * @param mode     A VisionMode to associate with and index
    * @param pipeline The index of the associate pipeline
    * @return
    */

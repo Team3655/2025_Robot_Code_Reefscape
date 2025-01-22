@@ -30,7 +30,8 @@ import java.util.Queue;
 public class GyroIOPigeon2 implements GyroIO {
 
   /**
-   * <a href="https://assets.pokemon.com/assets/cms2/img/pokedex/full//016.png">pidgey</a>
+   * <a href=
+   * "https://assets.pokemon.com/assets/cms2/img/pokedex/full//016.png">pidgey</a>
    */
   private final Pigeon2 pidgey = new Pigeon2(20, DriveConstants.CANIVORE_NAME);
 
@@ -78,7 +79,7 @@ public class GyroIOPigeon2 implements GyroIO {
   }
 
   @Override
-  public void resetGyro(){
+  public void resetGyro() {
     pidgey.reset();
   }
 
