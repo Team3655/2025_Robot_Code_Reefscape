@@ -108,11 +108,11 @@ public class ArmSubsystem extends SubsystemBase {
     Rotation2d thetaL4 = Rotation2d.fromRadians(0.0);
 
     L4 = Math.sqrt(
-        (Math.pow(setpoint.xTarget - ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS, 2)
+        (Math.pow(setpoint.xTarget - ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS, 2)
             + Math.pow(setpoint.yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 2)));
 
     L6 = Math.sqrt(
-        Math.pow(setpoint.xTarget - ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS, 2) + Math.pow(
+        Math.pow(setpoint.xTarget - ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS, 2) + Math.pow(
             setpoint.yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS + ArmConstants.TOWER_CHASSIS_HEIGHT_METERS,
             2));
 
@@ -123,8 +123,8 @@ public class ArmSubsystem extends SubsystemBase {
                 (2 * L4 * ArmConstants.SHOULDER_LENGTH_METERS)));
 
     // Robot moves arm behind itself
-    if (setpoint.xTarget > ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS
-        || setpoint.xTarget == ArmConstants.D_ARM_HORIZTONAL_OFFSET_METERS) {
+    if (setpoint.xTarget > ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS
+        || setpoint.xTarget == ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS) {
       theta1 = new Rotation2d(
           Math.acos(
               (Math.pow(L4, 2) + Math.pow(ArmConstants.TOWER_CHASSIS_HEIGHT_METERS, 2) - Math.pow(L6, 2)) /
@@ -202,7 +202,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public static class InvalidArmState extends RuntimeException {
-
     public InvalidArmState(String m) {
       super(m);
     }

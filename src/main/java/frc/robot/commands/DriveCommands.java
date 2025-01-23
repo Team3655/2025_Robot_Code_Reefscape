@@ -45,6 +45,7 @@ public class DriveCommands {
         return Commands.run(
                 () -> {
                     // Apply deadband
+                    // TODO: Use JoystickUtils class to handle input curves (see 2024-2023 code)
                     double linearMagnitude = MathUtil.applyDeadband(
                             Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DEADBAND);
 

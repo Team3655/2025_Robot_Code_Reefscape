@@ -39,8 +39,7 @@ import java.util.Queue;
 
 /**
  * Module IO implementation for Talon FX drive motor controller, Talon FX turn
- * motor controller, and
- * CANcoder
+ * motor controller, and CANcoder
  *
  * <p>
  * NOTE: This implementation should be used as a starting point and adapted to
@@ -143,6 +142,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
     turnConfig.Feedback.RotorToSensorRatio = DriveConstants.TURN_GEAR_RATIO;
     turnConfig.Feedback.SensorToMechanismRatio = 1.0;
+    // TODO: remove the next two lines they are handled by the method
     turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnConfig.Slot0.kP = DriveConstants.KP_TURN;
@@ -156,7 +156,6 @@ public class ModuleIOTalonFX implements ModuleIO {
     // Configure CANcoder
     var turnEncoderConfig = new CANcoderConfiguration();
 
-    // turnEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
     turnEncoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRotations();
     turnEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
@@ -227,8 +226,6 @@ public class ModuleIOTalonFX implements ModuleIO {
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
-    // org.littletonrobotics.junction.Logger.recordOutput("Wrap Enabled",
-    // turnTalon.;
   }
 
   @Override

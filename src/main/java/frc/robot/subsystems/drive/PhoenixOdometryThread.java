@@ -29,20 +29,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Provides an interface for asynchronously reading high-frequency measurements
- * to a set of queues.
+ * Provides an interface for asynchronously reading high-frequency measurements to a set of queues.
  *
- * <p>
- * This version is intended for Phoenix 6 devices on both the RIO and CANivore
- * buses. When using
- * a CANivore, the thread uses the "waitForAll" blocking method to enable more
- * consistent sampling.
- * This also allows Phoenix Pro users to benefit from lower latency between
- * devices using CANivore
+ * <p>This version is intended for Phoenix 6 devices on both the RIO and CANivore buses. When using
+ * a CANivore, the thread uses the "waitForAll" blocking method to enable more consistent sampling.
+ * This also allows Phoenix Pro users to benefit from lower latency between devices using CANivore
  * time synchronization.
  */
 public class PhoenixOdometryThread extends Thread {
-  private final Lock signalsLock = new ReentrantLock(); // Prevents conflicts when registering signals
+  private final Lock signalsLock =
+      new ReentrantLock(); // Prevents conflicts when registering signals
   private BaseStatusSignal[] signals = new BaseStatusSignal[0];
   private final List<Queue<Double>> queues = new ArrayList<>();
   private final List<Queue<Double>> timestampQueues = new ArrayList<>();
@@ -74,8 +70,8 @@ public class PhoenixOdometryThread extends Thread {
     signalsLock.lock();
     DriveSubsystem.odometryLock.lock();
     try {
+      // TODO: you must specify the name of the CANbus use DriveConstants.CANIVORE_NAME
       CANBus bus = new CANBus();
-      // isCANFD = CANBus.isNetworkFD(device.getNetwork());
       isCANFD = bus.isNetworkFD();
       BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 1];
       System.arraycopy(signals, 0, newSignals, 0, signals.length);
@@ -114,8 +110,7 @@ public class PhoenixOdometryThread extends Thread {
           // of Pro licensing. No reasoning for this behavior
           // is provided by the documentation.
           Thread.sleep((long) (1000.0 / Module.ODOMETRY_FREQUENCY));
-          if (signals.length > 0)
-            BaseStatusSignal.refreshAll(signals);
+          if (signals.length > 0) BaseStatusSignal.refreshAll(signals);
         }
       } catch (InterruptedException e) {
         e.printStackTrace();

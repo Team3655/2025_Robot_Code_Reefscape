@@ -54,7 +54,7 @@ public class ArmConstants {
   public static final double KD_WRIST = 0.0;
 
   public static final double H_TOWER_GROUND_HEIGHT_METERS = Units.inchesToMeters(32.0);
-  public static final double D_ARM_HORIZTONAL_OFFSET_METERS = Units.inchesToMeters(6.0);
+  public static final double D_ARM_HORIZONTAL_OFFSET_METERS = Units.inchesToMeters(6.0);
   public static final double TOWER_CHASSIS_HEIGHT_METERS = Units.inchesToMeters(24.0);
 
   public class ArmStates {
