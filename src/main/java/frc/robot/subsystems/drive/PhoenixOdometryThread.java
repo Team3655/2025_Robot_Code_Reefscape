@@ -70,8 +70,7 @@ public class PhoenixOdometryThread extends Thread {
     signalsLock.lock();
     DriveSubsystem.odometryLock.lock();
     try {
-      // TODO: you must specify the name of the CANbus use DriveConstants.CANIVORE_NAME
-      CANBus bus = new CANBus();
+      CANBus bus = new CANBus(DriveConstants.CANIVORE_NAME);
       isCANFD = bus.isNetworkFD();
       BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 1];
       System.arraycopy(signals, 0, newSignals, 0, signals.length);
