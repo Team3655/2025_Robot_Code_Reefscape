@@ -13,11 +13,11 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 public class ClimbCommands {
 
     public static Command runClimber(ClimberSubsystem climber, double volts){
-        return Commands.runOnce(() -> climber.updateClimberVoltate(volts), climber);
+        return Commands.runOnce(() -> climber.updateClimberVoltage(volts), climber);
     }
 
     public static Command stopClimber(ClimberSubsystem climber){
-        return Commands.runOnce(() -> climber.updateClimberVoltate(0), climber);
+        return Commands.runOnce(() -> climber.updateClimberVoltage(0), climber);
     }
 
     public static Command setArmClimbPosition(ClimberSubsystem climber){

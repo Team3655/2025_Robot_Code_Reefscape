@@ -35,7 +35,7 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   /** 
-   * Updates the inputs created in ArmIO to be data from the simlated motors.
+   * Updates the inputs created in ArmIO to be data from the simulated motors.
    */
   public void updateInputs(ArmIOInputs inputs) {
 

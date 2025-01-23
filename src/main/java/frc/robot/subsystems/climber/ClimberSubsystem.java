@@ -28,7 +28,7 @@ public class ClimberSubsystem extends SubsystemBase {
     io.setArmPosition(armPosition, ArmFeedforward);
   }
 
-  public void updateClimberVoltate(double volts) {
+  public void updateClimberVoltage(double volts) {
     climberVolts = volts;
   }
 

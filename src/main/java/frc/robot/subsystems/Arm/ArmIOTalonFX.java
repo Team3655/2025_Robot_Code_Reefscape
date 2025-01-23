@@ -59,7 +59,7 @@ public class ArmIOTalonFX implements ArmIO {
         CANcoder elbowEncoder = new CANcoder(4, ArmConstants.CANBUS_NAME);
         CANcoder wristEncoder = new CANcoder(5, ArmConstants.CANBUS_NAME);
 
-        // Create configuraton settings for encoders.
+        // Create configuration settings for encoders.
         CANcoderConfiguration shoulderEncoderConfig = new CANcoderConfiguration();
         CANcoderConfiguration elbowEncoderConfig = new CANcoderConfiguration();
         CANcoderConfiguration wristEncoderConfig = new CANcoderConfiguration();
