@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 public class ArmIOTalonFX implements ArmIO {
+
   private final TalonFX shoulder;
   private final TalonFX elbow;
   private final TalonFX wrist;
@@ -51,12 +52,14 @@ public class ArmIOTalonFX implements ArmIO {
     wristConfiguration = new TalonFXConfiguration();
 
     switch (ArmConstants.activeEncoders) {
+
       case ABSOLUTE:
 
         CANcoder shoulderEncoder = new CANcoder(3, ArmConstants.CANBUS_NAME);
         CANcoder elbowEncoder = new CANcoder(4, ArmConstants.CANBUS_NAME);
         CANcoder wristEncoder = new CANcoder(5, ArmConstants.CANBUS_NAME);
 
+        // Create configuraton settings for encoders.
         CANcoderConfiguration shoulderEncoderConfig = new CANcoderConfiguration();
         CANcoderConfiguration elbowEncoderConfig = new CANcoderConfiguration();
         CANcoderConfiguration wristEncoderConfig = new CANcoderConfiguration();
@@ -70,6 +73,7 @@ public class ArmIOTalonFX implements ArmIO {
         // TODO: Need to see constructed wrist to identify
         wristEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
 
+        // Apply configurations to specific encoders. 
         shoulderEncoder.getConfigurator().apply(shoulderEncoderConfig);
         elbowEncoder.getConfigurator().apply(elbowEncoderConfig);
         wristEncoder.getConfigurator().apply(wristEncoderConfig);
@@ -139,6 +143,7 @@ public class ArmIOTalonFX implements ArmIO {
     slot0Wrist.kP = ArmConstants.KP_WRIST;
     slot0Wrist.kD = ArmConstants.KD_WRIST;
 
+    // Apply configurations to the motors
     shoulder.getConfigurator().apply(shoulderConfiguration);
     elbow.getConfigurator().apply(elbowConfiguration);
     wrist.getConfigurator().apply(wristConfiguration);
@@ -161,6 +166,9 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   @Override
+  /** 
+   * Updates the inputs cerated in ArmIO to be real values from the motors.
+   */
   public void updateInputs(ArmIOInputs inputs) {
 
     BaseStatusSignal.refreshAll(shoulderPosition, shoulderVelocity, shoulderAppliedVolts,

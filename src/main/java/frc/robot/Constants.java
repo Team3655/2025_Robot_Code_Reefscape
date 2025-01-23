@@ -27,7 +27,7 @@ package frc.robot;
  */
 public final class Constants {
 
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -40,7 +40,7 @@ public final class Constants {
     REPLAY
   }
 
-  public static final Driver currentDriver = Driver.PROGRAMMING;
+  public static final Driver currentDriver = Driver.MACBOOK;
 
   public static enum Driver {
     MATT,

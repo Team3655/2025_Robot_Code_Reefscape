@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.arm;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,6 +43,9 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   @Override
+  /**
+   * This method will be called once per scheduler run
+   */
   public void periodic() {
 
     io.updateInputs(inputs);
@@ -70,29 +75,44 @@ public class ArmSubsystem extends SubsystemBase {
     // visualizer to reality
     setpointVisualizer.update(shoulderSetPoint.getDegrees() - 180, elbowSetPoint.getDegrees(),
         wristSetPoint.getDegrees());
+        Logger.recordOutput("Arm/Mechanism2dSetpoint", setpointVisualizer.arm);
+
     currentVisualizer.update(inputs.shoulderPosition.getDegrees(), inputs.elbowPosition.getDegrees(),
         inputs.wristPosition.getDegrees());
+        Logger.recordOutput("Arm/Mechanism2dCurrent" , currentVisualizer.arm);
 
     SmartDashboard.putNumber("Shoulder Setpoint", shoulderSetPoint.getDegrees());
     SmartDashboard.putNumber("Elbow Setpoint", elbowSetPoint.getDegrees());
     SmartDashboard.putNumber("Wrist Degrees", inputs.wristPosition.getDegrees());
   }
 
+  /**
+   * 
+   * @return The current state of the arm
+   */
   public ArmPose getState() {
     return new ArmPose(
         setpoint.xTarget,
         setpoint.yTarget,
         inputs.wristPosition);
   }
-
+  /** 
+   * @return the current setpoint
+   */
   public ArmPose getSetPoint() {
     return setpoint;
   }
 
+  /** 
+   * Updates the setpoint to a new ArmPose
+   */
   public void updateSetpoint(ArmPose pose) {
     setpoint = pose;
   }
-
+  
+  /**
+   * Uses inverse kinematics to calculate the angles for each stage in the arm.
+   */
   public static void calculateTargetAngles() {
 
     // OnShape:
@@ -179,7 +199,19 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
-  public static void validateState(double theta, double L4, double L5, double L6, double theta1, double relativeTheta2,
+  /**
+   * Validates that the requested state of the arm is possible to achieve
+   * @param theta 
+   * @param L4
+   * @param L5
+   * @param L6
+   * @param theta1
+   * @param relativeTheta2
+   * @param theta3
+   * @param thetaL4
+   * @throws InvalidArmState Error to throw when state is not valid
+   */
+  private static void validateState(double theta, double L4, double L5, double L6, double theta1, double relativeTheta2,
       double theta3, double thetaL4) throws InvalidArmState {
     if (theta > Math.PI || theta < 0) {
       throw new InvalidArmState("ARM SEGMENT 2 CANNOT EXTEND PAST 180 DEG");
@@ -201,15 +233,21 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * Error to throw when state is not valid
+   */
   public static class InvalidArmState extends RuntimeException {
-
     public InvalidArmState(String m) {
       super(m);
     }
   }
 
+  /**
+   * Rotates the wrist separately from the rest of the arm
+   * @param degrees The degrees to rotate the wrist by
+   */
   public void jogWrist(double degrees) {
-    setpoint = new ArmPose(setpoint.xTarget, setpoint.yTarget, Rotation2d.fromDegrees(degrees));
+    setpoint = new ArmPose(setpoint.xTarget, setpoint.yTarget, setpoint.wristAngle.plus(Rotation2d.fromDegrees(degrees)));
   }
 
 }

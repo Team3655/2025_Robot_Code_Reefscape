@@ -13,6 +13,7 @@ public class ArmIOSim implements ArmIO {
   private double elbowVolts = 0.0;
   private double wristVolts = 0.0;
 
+  // Physics simulation for the shoulder
   private final SingleJointedArmSim shoulderSim = new SingleJointedArmSim(gearbox,
       ArmConstants.SHOULDER_REDUCTION,
       SingleJointedArmSim.estimateMOI(ArmConstants.SHOULDER_LENGTH_METERS,
@@ -20,17 +21,22 @@ public class ArmIOSim implements ArmIO {
       ArmConstants.SHOULDER_LENGTH_METERS, ArmConstants.SHOULDER_MIN_ANGLE_RADS.getRadians(),
       ArmConstants.SHOULDER_MAX_ANGLE_RADS.getRadians(), true, 0);
 
+  // Physics simulation for the elbow
   private final SingleJointedArmSim elbowSim = new SingleJointedArmSim(gearbox, ArmConstants.ELBOW_REDUCTION,
       SingleJointedArmSim.estimateMOI(ArmConstants.ELBOW_LENGTH_METERS, ArmConstants.ELBOW_MASS_KG),
       ArmConstants.ELBOW_LENGTH_METERS, ArmConstants.ELBOW_MIN_ANGLE_RADS.getRadians(),
       ArmConstants.ELBOW_MAX_ANGLE_RADS.getRadians(), true, Rotation2d.fromDegrees(115).getRadians());
 
+  // Physics simulation for the wrist
   private final SingleJointedArmSim wristSim = new SingleJointedArmSim(gearbox, ArmConstants.WRIST_REDUCTION,
       SingleJointedArmSim.estimateMOI(ArmConstants.WRIST_LENGTH_METERS, ArmConstants.WRIST_MASS_KG),
       ArmConstants.WRIST_LENGTH_METERS, ArmConstants.WRIST_MIN_ANGLE_RADS.getRadians(),
       ArmConstants.WRIST_MAX_ANGLE_RADS.getRadians(), true, Rotation2d.fromDegrees(115).getRadians());
 
   @Override
+  /** 
+   * Updates the inputs created in ArmIO to be data from the simlated motors.
+   */
   public void updateInputs(ArmIOInputs inputs) {
 
     shoulderSim.setInputVoltage(shoulderVolts);
@@ -67,6 +73,22 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setWristVoltage(double volts) {
     wristVolts = MathUtil.clamp(volts, -12, 12);
+  }
+
+  // These use the FF component as a speed because simulation doesnt need FF.
+  @Override
+  public void setShoulderPositionWithFeedForward(Rotation2d position, double feedForward) {
+    shoulderSim.setState(position.getRadians(), feedForward);
+  }
+
+  @Override
+  public void setElbowPositionWithFeedForward(Rotation2d position, double feedForward) {
+    shoulderSim.setState(position.getRadians(), feedForward);
+  }
+
+  @Override
+  public void setWristPositionWithFeedForward(Rotation2d position, double feedForward) {
+    shoulderSim.setState(position.getRadians(), feedForward);
   }
 
 }
