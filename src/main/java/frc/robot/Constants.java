@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotBase;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -27,7 +29,10 @@ package frc.robot;
  */
 public final class Constants {
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode simMode = Mode.SIM;
+
+  // Prevent initializing a real robot as sim 
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
   public static enum Mode {
     /** Running on a real robot. */
