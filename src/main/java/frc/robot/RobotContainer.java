@@ -24,9 +24,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOSim;
+import frc.robot.subsystems.arm.ArmIOTalonFX;
+import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
@@ -56,7 +62,7 @@ public class RobotContainer {
   private final VisionSubsystem vision;
 
   // private final ClimberSubsystem climber;
-  // private final ArmSubsystem arm;
+  private final ArmSubsystem arm;
   // private final IntakeSubsystem intake;
 
   // Controller
@@ -95,7 +101,7 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIOLimelight("llone"));
 
-        // arm = new ArmSubsystem(new ArmIOTalonFX());
+        arm = new ArmSubsystem(new ArmIOTalonFX());
         // climber = new ClimberSubsystem(new ClimberIOTalonFX());
         // intake = new IntakeSubsystem(new IntakeIOTalonFX());
         break;
@@ -103,8 +109,7 @@ public class RobotContainer {
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive = new DriveSubsystem(
-            new GyroIO() {
-            },
+            new GyroIOSim(),
             new ModuleIOSim(),
             new ModuleIOSim(),
             new ModuleIOSim(),
@@ -122,7 +127,7 @@ public class RobotContainer {
                 Rotation2d.fromDegrees(62.5),
                 Rotation2d.fromDegrees(48.9)));
 
-        // arm = new ArmSubsystem(new ArmIOSim());
+        arm = new ArmSubsystem(new ArmIOSim());
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
         // intake = new IntakeSubsystem(new IntakeIO() {});
@@ -145,7 +150,8 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIO() {
             });
-        // arm = new ArmSubsystem(new ArmIO() {});
+            
+        arm = new ArmSubsystem(new ArmIO() {});
 
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
@@ -228,9 +234,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> -programmingController.getLeftY(),
-                () -> -programmingController.getLeftX(),
-                () -> -programmingController.getRightX()));
+                () -> programmingController.getRawAxis(1),
+                () -> programmingController.getRawAxis(0),
+                () -> -programmingController.getRawAxis(2)));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());
@@ -246,10 +252,10 @@ public class RobotContainer {
         // programmingController.povUp().onTrue(ClimbCommands.setArmClimbPosition(climber));
         // programmingController.povDown().onTrue(ClimbCommands.setArmInitPosition(climber));
 
-        // programmingController.a().onTrue(Commands.runOnce(() ->
-        // arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
-        // programmingController.b().onTrue(Commands.runOnce(() ->
-        // arm.updateSetpoint(ArmStates.START), arm));
+        programmingController.a().onTrue(Commands.runOnce(() ->
+        arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
+        programmingController.b().onTrue(Commands.runOnce(() ->
+        arm.updateSetpoint(ArmStates.START), arm));
 
         break;
     }

@@ -58,6 +58,7 @@ public class ArmConstants {
   public static final double TOWER_CHASSIS_HEIGHT_METERS = Units.inchesToMeters(24.0);
 
   public class ArmStates {
+    
     // xTarget
     // yTarget
     // wristPosition
