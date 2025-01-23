@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.util.JoystickUtils;
 
 import java.util.function.DoubleSupplier;
 import frc.robot.RobotState;
@@ -45,9 +46,7 @@ public class DriveCommands {
         return Commands.run(
                 () -> {
                     // Apply deadband
-                    // TODO: Use JoystickUtils class to handle input curves (see 2024-2023 code)
-                    double linearMagnitude = MathUtil.applyDeadband(
-                            Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DEADBAND);
+                    double linearMagnitude = JoystickUtils.curveInput(xSupplier.getAsDouble(), DEADBAND);
 
                     Rotation2d linearDirection = 
                         new Rotation2d(Math.atan2(ySupplier.getAsDouble(), xSupplier.getAsDouble()));
