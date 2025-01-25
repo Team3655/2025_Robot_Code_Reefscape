@@ -18,8 +18,6 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class ArmKinematics {
-
-    // https://cad.onshape.com/documents/0eb11a58606ee3c3dda8aa0d/w/d1c684d1c568543878764fb7/e/4c2980432bfd825f337a321f?renderMode=0&uiState=678c52c70a7cb65a2aa773cc
     
     private double xTarget = 0.0;
     private double yTarget = 0.0;
@@ -31,7 +29,7 @@ public class ArmKinematics {
     private double L2 = ArmConstants.SHOULDER_LENGTH_METERS;
     private double L3 = ArmConstants.ELBOW_LENGTH_METERS;
     private double L4 = 0.0;
-    private double L5 = 0.0;
+    //private double L5 = 0.0;
     private double L6 = 0.0;
 
     private Rotation2d theta1 = Rotation2d.fromRadians(0.0);
@@ -40,22 +38,34 @@ public class ArmKinematics {
     private Rotation2d theta3 = Rotation2d.fromRadians(0.0);
     private Rotation2d theta4 = Rotation2d.fromRadians(0.0);
     private Rotation2d theta6 = Rotation2d.fromRadians(0.0);
-    private Rotation2d theta7 = Rotation2d.fromRadians(0.0);
 
     private Rotation2d[] armAngles = new Rotation2d[2];
 
     /**
      * @param xSetpoint The x coordinate of the target
      * @param ySetpoint The y coordinate of the target
-     * @return The angles of the arm joints - value is dependent on the active encoders
+     * @return The angles of the arm joints - value is dependent on the active encoders.
      */
     public Rotation2d[] calculateArmAngles(double xTarget, double yTarget) {
         this.xTarget = xTarget;
         this.yTarget = yTarget;
 
-        calculateMeasurements();
+        calculate();
+
+        try {
+            validateState(L4, 
+                        L6, 
+                        theta1.getRadians(), 
+                        relativeTheta2.getRadians(),
+                        theta3.getRadians(), 
+                        theta4.getRadians());
+          } catch (InvalidArmState e) {
+                System.out.println(e.getMessage());
+                throw e;
+          }
 
         armAngles[0] = theta1;
+
         switch(ArmConstants.activeEncoders) {
             case ABSOLUTE:
                 armAngles[1] = absoluteTheta2;
@@ -69,46 +79,90 @@ public class ArmKinematics {
 
     }
 
-    private void calculateMeasurements() {
+    private void calculate() {
         // Derived from arm constants and setpoint - Pythagorean Theorem
         L4 = Math.sqrt(
-            (Math.pow(xTarget - ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS, 2)
-                + Math.pow(yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 2)));
+            (Math.pow(xTarget - d, 2)
+                + Math.pow(yTarget - h, 2)));
 
         // Derived from arm constants and setpoint - Pythagorean Theorem
         L6 = Math.sqrt(
-            Math.pow(xTarget - ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS, 2) + Math.pow(
-                yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS + ArmConstants.TOWER_CHASSIS_HEIGHT_METERS,
+            Math.pow(xTarget - d, 2) + Math.pow(
+                yTarget - h + L1,
                 2));
 
         // Derived from arm constants and L4 - Law of Cosines
         theta3 = Rotation2d.fromRadians(
             Math.acos(
-                (Math.pow(L4, 2) + Math.pow(ArmConstants.SHOULDER_LENGTH_METERS, 2)
-                    - Math.pow(ArmConstants.ELBOW_LENGTH_METERS, 2)) /
-                (2 * L4 * ArmConstants.SHOULDER_LENGTH_METERS)));
+                (Math.pow(L4, 2) + Math.pow(L2, 2)
+                    - Math.pow(L3, 2)) /
+                (2 * L4 * L2)));
 
         // Derived from arm constants and L4 - Law of Cosines
         theta4 = Rotation2d.fromRadians(Math.acos(
-            (Math.pow(ArmConstants.SHOULDER_LENGTH_METERS, 2) + Math.pow(ArmConstants.ELBOW_LENGTH_METERS, 2)
+            (Math.pow(L2, 2) + Math.pow(L3, 2)
                 - Math.pow(L4, 2)) /
-                (2 * ArmConstants.SHOULDER_LENGTH_METERS * ArmConstants.ELBOW_LENGTH_METERS)));
+                (2 * L2 * L3)));
+
+
+
+        // Derived from arm constants, L4, and L6 - Law of Cosines
+        theta6 = Rotation2d.fromRadians(
+            Math.acos(
+                (Math.pow(L1, 2) + Math.pow(L4, 2) - Math.pow(L6, 2)) /
+                (2 * L1 * L4)));
+
+        // Derived from theta6 and theta3 - Angle Addition Postulate
+        theta1 =  theta6.minus(theta3).minus(Rotation2d.kCCW_Pi_2);
 
         // Absolute angle of L3 joint is supplement to theta4 - Definition of Supplemental Angles
         absoluteTheta2 = Rotation2d.fromRadians(Math.PI).minus(theta4);
 
-        theta7 = Rotation2d.fromRadians(L1 * (Math.sin(theta6)) / L6);
+        // Derived from theta1 and theta4 - Supplementary angles, Triangle Sum Theorem, Corresponding Angles Postulate
+        relativeTheta2 = Rotation2d.kPi.plus(theta1).minus(theta4);
+
     }
 
-    private boolean isBelowHorizontal() {
-        return true;
+      /**
+   * Validates that the requested state of the arm is possible to achieve
+   * @param theta 
+   * @param L4
+   * @param L5
+   * @param L6
+   * @param theta1
+   * @param relativeTheta2
+   * @param theta3
+   * @param thetaL4
+   * @throws InvalidArmState Error to throw when state is not valid
+   */
+    private static void validateState(double L4, double L6, double theta1, double relativeTheta2,
+                                        double theta3, double thetaL4) throws InvalidArmState {
+        if (theta1 > Math.PI || theta1 < 0) {
+            throw new InvalidArmState("ARM SEGMENT 2 CANNOT EXTEND PAST 180 DEG");
+        }
+
+        double[] values = new double[6];
+
+        values[0] = L4;
+        values[1] = L6;
+        values[2] = theta1;
+        values[3] = relativeTheta2;
+        values[4] = theta3;
+        values[5] = thetaL4;
+
+        for (int i = 0; i < 6; i++) {
+            if (!Double.isFinite(values[i])) {
+                throw new InvalidArmState("ARM OUT OF BOUNDS - INVALID X AND Y");
+            }
+        }
     }
 
-    private boolean isBehindRobot() {
-        
-        boolean isBehind = xTarget < ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
-
-        return isBehind;
+  /**
+   * Error to throw when state is not valid
+   */
+    private static class InvalidArmState extends RuntimeException {
+        public InvalidArmState(String m) {
+            super(m);
+        }
     }
-    
 }
