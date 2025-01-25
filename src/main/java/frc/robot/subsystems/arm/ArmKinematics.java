@@ -39,6 +39,8 @@ public class ArmKinematics {
     private Rotation2d absoluteTheta2 = Rotation2d.fromRadians(0.0);
     private Rotation2d theta3 = Rotation2d.fromRadians(0.0);
     private Rotation2d theta4 = Rotation2d.fromRadians(0.0);
+    private Rotation2d theta6 = Rotation2d.fromRadians(0.0);
+    private Rotation2d theta7 = Rotation2d.fromRadians(0.0);
 
     private Rotation2d[] armAngles = new Rotation2d[2];
 
@@ -94,6 +96,8 @@ public class ArmKinematics {
 
         // Absolute angle of L3 joint is supplement to theta4 - Definition of Supplemental Angles
         absoluteTheta2 = Rotation2d.fromRadians(Math.PI).minus(theta4);
+
+        theta7 = Rotation2d.fromRadians(L1 * (Math.sin(theta6)) / L6);
     }
 
     private boolean isBelowHorizontal() {
