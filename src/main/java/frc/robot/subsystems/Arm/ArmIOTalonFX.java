@@ -191,19 +191,20 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.wristVelocityRadPerSec = wristVelocity.getValueAsDouble();
   }
 
+  //TODO: Need to do motion profiling here
   @Override
-  public void setShoulderPositionWithFeedForward(Rotation2d position, double feedForward) {
-    shoulder.setControl(new PositionVoltage(position.getRotations()).withFeedForward(feedForward));
+  public void setShoulderPositionWithFeedForward(Rotation2d position) {
+    shoulder.setControl(new PositionVoltage(position.getRotations()));
   }
 
   @Override
-  public void setElbowPositionWithFeedForward(Rotation2d position, double feedForward) {
-    elbow.setControl(new PositionVoltage(position.getRotations()).withFeedForward(feedForward));
+  public void setElbowPositionWithFeedForward(Rotation2d position) {
+    elbow.setControl(new PositionVoltage(position.getRotations()));
   }
 
   @Override
-  public void setWristPositionWithFeedForward(Rotation2d position, double feedForward) {
-    wrist.setControl(new PositionVoltage(position.getRotations()).withFeedForward(feedForward));
+  public void setWristPositionWithFeedForward(Rotation2d position) {
+    wrist.setControl(new PositionVoltage(position.getRotations()));
   }
 
   @Override

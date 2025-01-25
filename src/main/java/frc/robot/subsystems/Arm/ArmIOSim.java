@@ -76,19 +76,20 @@ public class ArmIOSim implements ArmIO {
   }
 
   // These use the FF component as a speed because simulation doesnt need FF.
+  // TODO: Originally had FF as velocity, fix this??
   @Override
-  public void setShoulderPositionWithFeedForward(Rotation2d position, double feedForward) {
-    shoulderSim.setState(position.getRadians(), feedForward);
+  public void setShoulderPositionWithFeedForward(Rotation2d position) {
+    shoulderSim.setState(position.getRadians(), 1);
   }
 
   @Override
-  public void setElbowPositionWithFeedForward(Rotation2d position, double feedForward) {
-    shoulderSim.setState(position.getRadians(), feedForward);
+  public void setElbowPositionWithFeedForward(Rotation2d position) {
+    shoulderSim.setState(position.getRadians(), 1);
   }
 
   @Override
-  public void setWristPositionWithFeedForward(Rotation2d position, double feedForward) {
-    shoulderSim.setState(position.getRadians(), feedForward);
+  public void setWristPositionWithFeedForward(Rotation2d position) {
+    shoulderSim.setState(position.getRadians(), 1);
   }
 
 }

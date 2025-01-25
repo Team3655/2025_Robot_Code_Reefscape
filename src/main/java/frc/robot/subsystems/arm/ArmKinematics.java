@@ -104,8 +104,6 @@ public class ArmKinematics {
                 - Math.pow(L4, 2)) /
                 (2 * L2 * L3)));
 
-
-
         // Derived from arm constants, L4, and L6 - Law of Cosines
         theta6 = Rotation2d.fromRadians(
             Math.acos(
