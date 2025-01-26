@@ -7,7 +7,7 @@ import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 public class ArmConstants {
     public static final String CANBUS_NAME = "rio";
 
-    public static final ArmEncoders activeEncoders = ArmEncoders.ABSOLUTE;
+    public static final ArmEncoders activeEncoders = ArmEncoders.RELATIVE;
 
     public static enum ArmEncoders {
         /** Running relative encoders within the motors */
@@ -26,7 +26,7 @@ public class ArmConstants {
     public static final double SHOULDER_MASS_KG = 1;
     public static final Rotation2d SHOULDER_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d SHOULDER_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
-    public static final double SHOULDER_REDUCTION = 1 / 1;
+    public static final double SHOULDER_REDUCTION = 63.78;
     public static final double KS_SHOULDER = 0.0;
     public static final double KV_SHOULDER = 0.0;
     public static final double KA_SHOULDER = 0.0;
@@ -41,7 +41,7 @@ public class ArmConstants {
     public static final double ELBOW_MASS_KG = 1;
     public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
-    public static final double ELBOW_REDUCTION = 1 / 1;
+    public static final double ELBOW_REDUCTION = 63.78;
     public static final double KS_ELBOW = 0.0;
     public static final double KV_ELBOW = 0.0;
     public static final double KA_ELBOW = 0.0;
@@ -57,7 +57,7 @@ public class ArmConstants {
     public static final double WRIST_MASS_KG = 1;
     public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
-    public static final double WRIST_REDUCTION = 1 / 1;
+    public static final double WRIST_REDUCTION = 1;
     public static final double KS_WRIST = 0.0;
     public static final double KV_WRIST = 0.0;
     public static final double KA_WRIST = 0.0;
