@@ -3,7 +3,6 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -19,9 +18,9 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class ArmIOTalonFX implements ArmIO {
 
-  private final TalonFX shoulder;
-  private final TalonFX elbow;
-  private final TalonFX wrist;
+  private final TalonFX shoulderTalon;
+  private final TalonFX elbowTalon;
+  private final TalonFX wristTalon;
 
   private final StatusSignal<Angle> shoulderPosition;
   private final StatusSignal<AngularVelocity> shoulderVelocity;
@@ -43,9 +42,9 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFXConfiguration wristConfiguration;
 
   public ArmIOTalonFX() {
-    shoulder = new TalonFX(0, ArmConstants.CANBUS_NAME); // TODO: get real id
-    elbow = new TalonFX(1, ArmConstants.CANBUS_NAME);
-    wrist = new TalonFX(2, ArmConstants.CANBUS_NAME);
+    shoulderTalon = new TalonFX(20, ArmConstants.CANBUS_NAME); // TODO: get real id
+    elbowTalon = new TalonFX(21, ArmConstants.CANBUS_NAME);
+    wristTalon = new TalonFX(22, ArmConstants.CANBUS_NAME);
 
     shoulderConfiguration = new TalonFXConfiguration();
     elbowConfiguration = new TalonFXConfiguration();
@@ -155,24 +154,24 @@ public class ArmIOTalonFX implements ArmIO {
     slot0Wrist.kD = ArmConstants.KD_WRIST;
 
     // Apply configurations to the motors
-    shoulder.getConfigurator().apply(shoulderConfiguration);
-    elbow.getConfigurator().apply(elbowConfiguration);
-    wrist.getConfigurator().apply(wristConfiguration);
+    shoulderTalon.getConfigurator().apply(shoulderConfiguration);
+    elbowTalon.getConfigurator().apply(elbowConfiguration);
+    wristTalon.getConfigurator().apply(wristConfiguration);
 
-    shoulderPosition = shoulder.getPosition();
-    shoulderVelocity = shoulder.getVelocity();
-    shoulderAppliedVolts = shoulder.getMotorVoltage();
-    shoulderCurrent = shoulder.getSupplyCurrent();
+    shoulderPosition = shoulderTalon.getPosition();
+    shoulderVelocity = shoulderTalon.getVelocity();
+    shoulderAppliedVolts = shoulderTalon.getMotorVoltage();
+    shoulderCurrent = shoulderTalon.getSupplyCurrent();
 
-    elbowPosition = elbow.getPosition();
-    elbowAppliedVolts = elbow.getMotorVoltage();
-    elbowVelocity = elbow.getVelocity();
-    elbowCurrent = elbow.getSupplyCurrent();
+    elbowPosition = elbowTalon.getPosition();
+    elbowAppliedVolts = elbowTalon.getMotorVoltage();
+    elbowVelocity = elbowTalon.getVelocity();
+    elbowCurrent = elbowTalon.getSupplyCurrent();
 
-    wristPosition = wrist.getPosition();
-    wristVelocity = wrist.getVelocity();
-    wristAppliedVolts = wrist.getMotorVoltage();
-    wristCurrent = wrist.getSupplyCurrent();
+    wristPosition = wristTalon.getPosition();
+    wristVelocity = wristTalon.getVelocity();
+    wristAppliedVolts = wristTalon.getMotorVoltage();
+    wristCurrent = wristTalon.getSupplyCurrent();
 
   }
 
@@ -205,32 +204,32 @@ public class ArmIOTalonFX implements ArmIO {
   //TODO: Need to do motion profiling here
   @Override
   public void setShoulderPositionWithFeedForward(Rotation2d position) {
-    shoulder.setControl(new PositionVoltage(position.getRotations()));
+    shoulderTalon.setControl(new PositionVoltage(position.getRotations()));
   }
 
   @Override
   public void setElbowPositionWithFeedForward(Rotation2d position) {
-    elbow.setControl(new PositionVoltage(position.getRotations()));
+    elbowTalon.setControl(new PositionVoltage(position.getRotations()));
   }
 
   @Override
   public void setWristPositionWithFeedForward(Rotation2d position) {
-    wrist.setControl(new PositionVoltage(position.getRotations()));
+    wristTalon.setControl(new PositionVoltage(position.getRotations()));
   }
 
   @Override
   public void setShoulderVoltage(double volts) {
-    shoulder.setControl(new VoltageOut(volts));
+    shoulderTalon.setControl(new VoltageOut(volts));
   }
 
   @Override
   public void setElbowVoltage(double volts) {
-    elbow.setControl(new VoltageOut(volts));
+    elbowTalon.setControl(new VoltageOut(volts));
   }
 
   @Override
   public void setWristVoltage(double volts) {
-    wrist.setControl(new VoltageOut(volts));
+    wristTalon.setControl(new VoltageOut(volts));
   }
 
 }
