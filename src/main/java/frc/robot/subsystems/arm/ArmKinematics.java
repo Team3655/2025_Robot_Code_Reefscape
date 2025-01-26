@@ -19,18 +19,35 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class ArmKinematics {
     
-    private double xTarget = 0.0;
-    private double yTarget = 0.0;
+    private double d = 0.0;
+    private double h = 0.0;
 
-    private double d = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
-    private double h = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
+    private double L1 = 0.0 ;
+    private double L2 = 0.0;
+    private double L3 = 0.0;
+    /**
+     * Creates a new `ArmKinematics` object
+     * @param d How far the arm is from the back of the robot
+     * @param h How far from the ground the first pivot point is
+     * @param L1 Length of the "Tower" that the arm rests on
+     * @param L2 Length of the first stage of the arm. (shoulder)
+     * @param L3 Length of the second stage of the arm. (elbow)
+     */
+    public ArmKinematics(double d, double h, double L1, double L2, double L3) {
+        this.d = d;
+        this.h = h;
+        this.L1 = L1;
+        this.L2 = L2;
+        this.L3 = L3;
+    }
+    
 
-    private double L1 = ArmConstants.TOWER_CHASSIS_HEIGHT_METERS;
-    private double L2 = ArmConstants.SHOULDER_LENGTH_METERS;
-    private double L3 = ArmConstants.ELBOW_LENGTH_METERS;
     private double L4 = 0.0;
     //private double L5 = 0.0;
-    private double L6 = 0.0;
+    private double L6 = 0.0;    
+    
+    private double xTarget = 0.0;
+    private double yTarget = 0.0;
 
     private Rotation2d theta1 = Rotation2d.fromRadians(0.0);
     private Rotation2d relativeTheta2 = Rotation2d.fromRadians(0.0);
@@ -42,8 +59,8 @@ public class ArmKinematics {
     private Rotation2d[] armAngles = new Rotation2d[2];
 
     /**
-     * @param xSetpoint The x coordinate of the target
-     * @param ySetpoint The y coordinate of the target
+     * @param xSetpoint The x coordinate of the target in meters
+     * @param ySetpoint The y coordinate of the target in meters
      * @return The angles of the arm joints - value is dependent on the active encoders.
      */
     public Rotation2d[] calculateArmAngles(double xTarget, double yTarget) {
