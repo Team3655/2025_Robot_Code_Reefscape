@@ -130,6 +130,7 @@ public class ArmIOTalonFX implements ArmIO {
     }
 
     var slot0Shoulder = shoulderConfiguration.Slot0;
+    slot0Shoulder.kG = ArmConstants.KG_SHOULDER;
     slot0Shoulder.kS = ArmConstants.KS_SHOULDER;
     slot0Shoulder.kV = ArmConstants.KV_SHOULDER;
     slot0Shoulder.kA = ArmConstants.KA_SHOULDER;
@@ -138,6 +139,7 @@ public class ArmIOTalonFX implements ArmIO {
     slot0Shoulder.kD = ArmConstants.KD_SHOULDER;
 
     var slot0Elbow = elbowConfiguration.Slot0;
+    slot0Elbow.kG = ArmConstants.KG_ELBOW;
     slot0Elbow.kS = ArmConstants.KS_ELBOW;
     slot0Elbow.kV = ArmConstants.KV_ELBOW;
     slot0Elbow.kA = ArmConstants.KA_ELBOW;
@@ -146,6 +148,7 @@ public class ArmIOTalonFX implements ArmIO {
     slot0Elbow.kD = ArmConstants.KD_ELBOW;
 
     var slot0Wrist = wristConfiguration.Slot0;
+    slot0Wrist.kG = ArmConstants.KG_WRIST;
     slot0Wrist.kS = ArmConstants.KS_WRIST;
     slot0Wrist.kV = ArmConstants.KV_WRIST;
     slot0Wrist.kA = ArmConstants.KA_WRIST;
