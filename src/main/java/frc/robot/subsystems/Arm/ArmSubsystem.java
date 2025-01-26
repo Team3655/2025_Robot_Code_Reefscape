@@ -38,6 +38,7 @@ public class ArmSubsystem extends SubsystemBase {
     updateSetpoint(ArmStates.START);
     DriverStation.reportWarning(
         "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS.  IS THIS CORRECT?", false);
+        armKinematics = new ArmKinematics(ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS, ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, ArmConstants.SHOULDER_LENGTH_METERS, ArmConstants.ELBOW_LENGTH_METERS);
   }
 
   @Override

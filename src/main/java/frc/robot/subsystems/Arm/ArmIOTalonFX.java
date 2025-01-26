@@ -130,17 +130,28 @@ public class ArmIOTalonFX implements ArmIO {
 
     }
 
-    var slot0Shoulder = new Slot0Configs();
-    var slot0Elbow = new Slot0Configs();
-    var slot0Wrist = new Slot0Configs();
-
+    var slot0Shoulder = shoulderConfiguration.Slot0;
+    slot0Shoulder.kS = ArmConstants.KS_SHOULDER;
+    slot0Shoulder.kV = ArmConstants.KV_SHOULDER;
+    slot0Shoulder.kA = ArmConstants.KA_SHOULDER;
     slot0Shoulder.kP = ArmConstants.KP_SHOULDER;
+    slot0Shoulder.kI = ArmConstants.KI_SHOULDER;
     slot0Shoulder.kD = ArmConstants.KD_SHOULDER;
 
+    var slot0Elbow = elbowConfiguration.Slot0;
+    slot0Elbow.kS = ArmConstants.KS_ELBOW;
+    slot0Elbow.kV = ArmConstants.KV_ELBOW;
+    slot0Elbow.kA = ArmConstants.KA_ELBOW;
     slot0Elbow.kP = ArmConstants.KP_ELBOW;
+    slot0Elbow.kI = ArmConstants.KI_ELBOW;
     slot0Elbow.kD = ArmConstants.KD_ELBOW;
 
+    var slot0Wrist = wristConfiguration.Slot0;
+    slot0Wrist.kS = ArmConstants.KS_WRIST;
+    slot0Wrist.kV = ArmConstants.KV_WRIST;
+    slot0Wrist.kA = ArmConstants.KA_WRIST;
     slot0Wrist.kP = ArmConstants.KP_WRIST;
+    slot0Wrist.kI = ArmConstants.KI_WRIST;
     slot0Wrist.kD = ArmConstants.KD_WRIST;
 
     // Apply configurations to the motors
