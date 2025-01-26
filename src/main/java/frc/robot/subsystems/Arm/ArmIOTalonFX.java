@@ -4,7 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -156,11 +156,30 @@ public class ArmIOTalonFX implements ArmIO {
     slot0Wrist.kI = ArmConstants.KI_WRIST;
     slot0Wrist.kD = ArmConstants.KD_WRIST;
 
+    // set Motion Magic settings - Shoulder
+    var motionMagicConfigsShoulder = shoulderConfiguration.MotionMagic;
+    motionMagicConfigsShoulder.MotionMagicCruiseVelocity =ArmConstants.SHOULDER_MAX_VELOCITY_RPS;
+    motionMagicConfigsShoulder.MotionMagicAcceleration = ArmConstants.SHOULDER_MAX_ACCELERATION_RPS2;
+    motionMagicConfigsShoulder.MotionMagicJerk = ArmConstants.SHOULDER_MAX_JERK_RPS3;
+
+    // set Motion Magic settings - Elbow
+    var motionMagicConfigsElbow = elbowConfiguration.MotionMagic;
+    motionMagicConfigsElbow.MotionMagicCruiseVelocity = ArmConstants.ELBOW_MAX_VELOCITY_RPS;
+    motionMagicConfigsElbow.MotionMagicAcceleration = ArmConstants.ELBOW_MAX_ACCELERATION_RPS2;
+    motionMagicConfigsElbow.MotionMagicJerk = ArmConstants.ELBOW_MAX_JERK_RPS3;
+
+    // set Motion Magic settings - Wrist
+    var motionMagicConfigsWrist = wristConfiguration.MotionMagic;
+    motionMagicConfigsWrist.MotionMagicCruiseVelocity = ArmConstants.WRIST_MAX_VELOCITY_RPS;
+    motionMagicConfigsWrist.MotionMagicAcceleration = ArmConstants.WRIST_MAX_ACCELERATION_RPS2;
+    motionMagicConfigsWrist.MotionMagicJerk = ArmConstants.WRIST_MAX_JERK_RPS3;
+
     // Apply configurations to the motors
     shoulderTalon.getConfigurator().apply(shoulderConfiguration);
     elbowTalon.getConfigurator().apply(elbowConfiguration);
     wristTalon.getConfigurator().apply(wristConfiguration);
 
+    // Configure inputs
     shoulderPosition = shoulderTalon.getPosition();
     shoulderVelocity = shoulderTalon.getVelocity();
     shoulderAppliedVolts = shoulderTalon.getMotorVoltage();
@@ -207,17 +226,29 @@ public class ArmIOTalonFX implements ArmIO {
   //TODO: Need to do motion profiling here
   @Override
   public void setShoulderPositionWithFeedForward(Rotation2d position) {
-    shoulderTalon.setControl(new PositionVoltage(position.getRotations()));
+      // create a Motion Magic request, voltage output
+      final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+
+      // set target position to 100 rotations
+      shoulderTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   @Override
   public void setElbowPositionWithFeedForward(Rotation2d position) {
-    elbowTalon.setControl(new PositionVoltage(position.getRotations()));
+      // create a Motion Magic request, voltage output
+      final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+
+      // set target position to 100 rotations
+      elbowTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   @Override
   public void setWristPositionWithFeedForward(Rotation2d position) {
-    wristTalon.setControl(new PositionVoltage(position.getRotations()));
+      // create a Motion Magic request, voltage output
+      final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+
+      // set target position to 100 rotations
+      wristTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   @Override

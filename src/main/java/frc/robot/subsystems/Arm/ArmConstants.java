@@ -34,6 +34,9 @@ public class ArmConstants {
     public static final double KP_SHOULDER = 28.0;
     public static final double KI_SHOULDER = 0.0;
     public static final double KD_SHOULDER = 0.0;
+    public static final double SHOULDER_MAX_VELOCITY_RPS = 0.5;
+    public static final double SHOULDER_MAX_ACCELERATION_RPS2 = 8.0;
+    public static final double SHOULDER_MAX_JERK_RPS3 = 60.0;
 
     public static final int ELBOW_CANCODER_ID = 0;
     public static final int ELBOW_MOTOR_ID = 0;
@@ -51,6 +54,9 @@ public class ArmConstants {
     public static final double KP_ELBOW = 28.0;
     public static final double KI_ELBOW = 0.0;
     public static final double KD_ELBOW = 0.0;
+    public static final double ELBOW_MAX_VELOCITY_RPS = 0.5;
+    public static final double ELBOW_MAX_ACCELERATION_RPS2 = 8.0;
+    public static final double ELBOW_MAX_JERK_RPS3 = 60.0;
 
     public static final int WRIST_CANCODER_ID = 0;
     public static final int WRIST_MOTOR_ID = 0;
@@ -68,6 +74,9 @@ public class ArmConstants {
     public static final double KP_WRIST = 0.1;
     public static final double KI_WRIST = 0.0;
     public static final double KD_WRIST = 0.0;
+    public static final double WRIST_MAX_VELOCITY_RPS = 0.5;
+    public static final double WRIST_MAX_ACCELERATION_RPS2 = 8.0;
+    public static final double WRIST_MAX_JERK_RPS3 = 60.0;
 
     public static final double H_TOWER_GROUND_HEIGHT_METERS = Units.inchesToMeters(32.0);
     public static final double D_ARM_HORIZONTAL_OFFSET_METERS = Units.inchesToMeters(6.0);
