@@ -19,6 +19,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.ParentDevice;
 
 import edu.wpi.first.units.measure.Angle;
+import frc.robot.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class PhoenixOdometryThread extends Thread {
     signalsLock.lock();
     DriveSubsystem.odometryLock.lock();
     try {
-      CANBus bus = new CANBus(DriveConstants.CANIVORE_NAME);
+      CANBus bus = new CANBus(Constants.CANIVORE_NAME);
       isCANFD = bus.isNetworkFD();
       BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 1];
       System.arraycopy(signals, 0, newSignals, 0, signals.length);
