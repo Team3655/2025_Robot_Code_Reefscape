@@ -63,8 +63,5 @@ public interface ModuleIO {
 
   public default void setDriveVelocity(double rotationsPerSecond) {
   }
-
-  public default Rotation2d getPositionError() {
-    return new Rotation2d();
-  }
+  
 }
