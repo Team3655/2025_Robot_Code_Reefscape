@@ -158,12 +158,12 @@ public class ArmKinematics {
 
     public double[] calculateForwardKinematics(Rotation2d theta1, Rotation2d theta2) {
 
-        Translation2d base = new Translation2d(ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, Rotation2d.fromDegrees(90));
-        Translation2d shoulder = base.plus(new Translation2d(ArmConstants.SHOULDER_LENGTH_METERS, theta1));
-        Translation2d elbow = shoulder.plus(new Translation2d(ArmConstants.ELBOW_LENGTH_METERS, theta2));
+        Translation2d base = new Translation2d(h, Rotation2d.fromDegrees(90));
+        Translation2d shoulder = base.plus(new Translation2d(L1, theta1));
+        Translation2d elbow = shoulder.plus(new Translation2d(L2, theta2));
 
-        double x = (elbow.getX() < 0) ? ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS - elbow.getX()
-                : elbow.getX() + ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
+        double x = (elbow.getX() < 0) ? d - elbow.getX()
+                : elbow.getX() + d;
         double y = elbow.getY();
 
         return new double[] { x, y };
