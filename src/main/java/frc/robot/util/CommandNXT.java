@@ -132,7 +132,7 @@ public class CommandNXT extends CommandGenericHID {
     return new Trigger(() -> hid.getRawButton(A4_DOWN));
   }
 
-  // top rigjt joystick left
+  // top right joystick left
   public Trigger A4_LEFT() {
     return new Trigger(() -> hid.getRawButton(A4_LEFT));
   }

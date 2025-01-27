@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 public class JoystickUtils {
 
   /**
-   * squares the joystick input and uses clever math to compansate for the offset caused by the
+   * squares the joystick input and compensates for the offset caused by the
    * deadband
    *
    * @param input The input from the joystick
@@ -21,7 +21,7 @@ public class JoystickUtils {
 
     double correctedValue = input;
 
-    // does funky math to force linear output between deanband and 1
+    // does funky math to force linear output between deadband and 1
     correctedValue = (correctedValue - (deadband * Math.signum(correctedValue))) / (1 - deadband);
 
     // raises input to a specified power for a smoother feel
@@ -31,7 +31,7 @@ public class JoystickUtils {
   }
 
   public static Translation2d curveTranslation2d(Translation2d translation, double deadband) {
-    // gets the length and rotarion of the Translation2d (vector)
+    // gets the length and rotation of the Translation2d (vector)
     double norm = translation.getNorm();
     Rotation2d angle = translation.getAngle();
 
