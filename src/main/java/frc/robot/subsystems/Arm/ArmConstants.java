@@ -4,7 +4,18 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 
-public class ArmConstants {
+public class ArmConstants {    
+
+    /*
+     * Kg - output to overcome gravity (output)
+     * Ks - output to overcome static friction (output)
+     * Kv - output per unit of target velocity (output/rps)
+     * Ka - output per unit of target acceleration (output/(rps/s))
+     * Kp - output per unit of error in position (output/rotation)
+     * Ki - output per unit of integrated error in position (output/(rotation*s))
+     * Kd - output per unit of error in velocity (output/rps)
+     */
+
     public static final String CANBUS_NAME = "rio";
 
     public static final ArmEncoders activeEncoders = ArmEncoders.RELATIVE;
@@ -25,7 +36,7 @@ public class ArmConstants {
     public static final double SHOULDER_MASS_KG = 1;
     public static final Rotation2d SHOULDER_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d SHOULDER_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
-    public static final double SHOULDER_REDUCTION = 63.78;
+    public static final double SHOULDER_REDUCTION = 63.78; // TODO: Write as - Motor rotations / output rotations (encoder rotations)
     public static final double KG_SHOULDER = 0.3;
     public static final double KS_SHOULDER = 0.1;
     public static final double KV_SHOULDER = 0.12;
@@ -55,7 +66,7 @@ public class ArmConstants {
     public static final double ELBOW_MAX_VELOCITY_RPS = 0.5;
     public static final double ELBOW_MAX_ACCELERATION_RPS2 = 8.0;
     public static final double ELBOW_MAX_JERK_RPS3 = 60.0;
-    
+
     public static final int WRIST_MOTOR_ID = 3;
     public static final int WRIST_CANCODER_ID = 6;
     public static final Rotation2d WRIST_ENCODER_OFFSET = Rotation2d.fromRotations(0);

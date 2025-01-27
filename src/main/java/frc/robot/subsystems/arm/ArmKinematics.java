@@ -18,17 +18,19 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class ArmKinematics {
-    
+
     private double d = 0.0;
     private double h = 0.0;
 
-    private double L1 = 0.0 ;
+    private double L1 = 0.0;
     private double L2 = 0.0;
     private double L3 = 0.0;
+
     /**
      * Creates a new `ArmKinematics` object
-     * @param d How far the arm is from the back of the robot
-     * @param h How far from the ground the first pivot point is
+     * 
+     * @param d  How far the arm is from the back of the robot
+     * @param h  How far from the ground the first pivot point is
      * @param L1 Length of the "Tower" that the arm rests on
      * @param L2 Length of the first stage of the arm. (shoulder)
      * @param L3 Length of the second stage of the arm. (elbow)
@@ -40,14 +42,10 @@ public class ArmKinematics {
         this.L2 = L2;
         this.L3 = L3;
     }
-    
 
     private double L4 = 0.0;
-    //private double L5 = 0.0;
-    private double L6 = 0.0;    
-    
-    private double xTarget = 0.0;
-    private double yTarget = 0.0;
+    // private double L5 = 0.0;
+    private double L6 = 0.0;
 
     private Rotation2d theta1 = Rotation2d.fromRadians(0.0);
     private Rotation2d relativeTheta2 = Rotation2d.fromRadians(0.0);
@@ -63,74 +61,78 @@ public class ArmKinematics {
      * @param ySetpoint The y coordinate of the target in meters
      * @return The angles of the arm joints - value is dependent on the active encoders.
      */
-    public Rotation2d[] calculateArmAngles(double xTarget, double yTarget) {
-        this.xTarget = xTarget;
-        this.yTarget = yTarget;
+    public Rotation2d[] getArmAngles(double xTarget, double yTarget) {
 
-        calculate();
+        calculateInverseKinematics(xTarget, yTarget);
 
         try {
-            validateState(L4, 
-                        L6, 
-                        theta1.getRadians(), 
-                        relativeTheta2.getRadians(),
-                        theta3.getRadians(), 
-                        theta4.getRadians());
-          } catch (InvalidArmState e) {
-                System.out.println(e.getMessage());
-                throw e;
-          }
+            validateState(L4,
+                    L6,
+                    theta1.getRadians(),
+                    relativeTheta2.getRadians(),
+                    theta3.getRadians(),
+                    theta4.getRadians());
+        } catch (InvalidArmState e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
 
         armAngles[0] = theta1;
 
-        switch(ArmConstants.activeEncoders) {
+        switch (ArmConstants.activeEncoders) {
             case ABSOLUTE:
                 armAngles[1] = absoluteTheta2;
                 break;
             case RELATIVE:
                 armAngles[1] = relativeTheta2;
-            break;
+                break;
         }
 
         return armAngles;
 
     }
 
-    private void calculate() {
+    private void calculateInverseKinematics(double xTarget, double yTarget) {
         // Derived from arm constants and setpoint - Pythagorean Theorem
         L4 = Math.sqrt(
-            (Math.pow(xTarget - d, 2)
-                + Math.pow(yTarget - h, 2)));
+                (Math.pow(xTarget - d, 2)
+                        + Math.pow(yTarget - h, 2)));
 
         // Derived from arm constants and setpoint - Pythagorean Theorem
         L6 = Math.sqrt(
-            Math.pow(xTarget - d, 2) + Math.pow(
-                yTarget - h + L1,
-                2));
+                Math.pow(xTarget - d, 2) + Math.pow(
+                        yTarget - h + L1,
+                        2));
 
         // Derived from arm constants and L4 - Law of Cosines
         theta3 = Rotation2d.fromRadians(
-            Math.acos(
-                (Math.pow(L4, 2) + Math.pow(L2, 2)
-                    - Math.pow(L3, 2)) /
-                (2 * L4 * L2)));
+                Math.acos(
+                        (Math.pow(L4, 2) + Math.pow(L2, 2)
+                                - Math.pow(L3, 2)) /
+                                (2 * L4 * L2)));
 
         // Derived from arm constants and L4 - Law of Cosines
         theta4 = Rotation2d.fromRadians(Math.acos(
-            (Math.pow(L2, 2) + Math.pow(L3, 2)
-                - Math.pow(L4, 2)) /
-                (2 * L2 * L3)));
-                
-        // Theta 6 is calculated using triangles that change dramatically when the arm is behind the tower
-        calculateTheta6();
+                (Math.pow(L2, 2) + Math.pow(L3, 2)
+                        - Math.pow(L4, 2)) /
+                        (2 * L2 * L3)));
+
+        // Derived from arm constants, L4, and L6 - Law of Cosines
+        theta6 = Rotation2d.fromRadians(
+                Math.acos(
+                        (Math.pow(L1, 2) + Math.pow(L4, 2) - Math.pow(L6, 2)) /
+                                (2 * L1 * L4)));
 
         // Derived from theta6 and theta3 - Angle Addition Postulate
-        theta1 =  theta6.minus(theta3).minus(Rotation2d.kCCW_Pi_2);
+        theta1 = theta6.minus(theta3).minus(Rotation2d.kCCW_Pi_2);
 
-        // Absolute angle of L3 joint is supplement to theta4 - Definition of Supplemental Angles
+        // Absolute angle of L3 joint is supplement to theta4 - Definition of
+        // Supplemental Angles
+        // Are .kPi and .fromRations(MATH.PI) the same?
         absoluteTheta2 = Rotation2d.fromRadians(Math.PI).minus(theta4);
 
-        // Derived from theta1 and theta4 - Supplementary angles, Triangle Sum Theorem, Corresponding Angles Postulate
+        // Derived from theta1 and theta4 - Supplementary angles, Triangle Sum Theorem,
+        // Corresponding Angles Postulate
         relativeTheta2 = Rotation2d.kPi.plus(theta1).minus(theta4);
 
     }
@@ -155,20 +157,21 @@ public class ArmKinematics {
         }
      }
 
-      /**
-   * Validates that the requested state of the arm is possible to achieve
-   * @param theta 
-   * @param L4
-   * @param L5
-   * @param L6
-   * @param theta1
-   * @param relativeTheta2
-   * @param theta3
-   * @param thetaL4
-   * @throws InvalidArmState Error to throw when state is not valid
-   */
+    /**
+     * Validates that the requested state of the arm is possible to achieve
+     * 
+     * @param theta
+     * @param L4
+     * @param L5
+     * @param L6
+     * @param theta1
+     * @param relativeTheta2
+     * @param theta3
+     * @param thetaL4
+     * @throws InvalidArmState Error to throw when state is not valid
+     */
     private static void validateState(double L4, double L6, double theta1, double relativeTheta2,
-                                        double theta3, double thetaL4) throws InvalidArmState {
+            double theta3, double thetaL4) throws InvalidArmState {
         if (theta1 > Math.PI || theta1 < 0) {
             throw new InvalidArmState("ARM SEGMENT 2 CANNOT EXTEND PAST 180 DEG");
         }
@@ -189,9 +192,9 @@ public class ArmKinematics {
         }
     }
 
-  /**
-   * Error to throw when state is not valid
-   */
+    /**
+     * Error to throw when state is not valid
+     */
     private static class InvalidArmState extends RuntimeException {
         public InvalidArmState(String m) {
             super(m);

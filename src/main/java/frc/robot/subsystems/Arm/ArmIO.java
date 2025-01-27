@@ -31,12 +31,12 @@ public interface ArmIO {
 
   public default void updateInputs(ArmIOInputs inputs){}
 
-  public default void setShoulderPositionWithFeedForward(Rotation2d position){
+  public default void setShoulderPosition(Rotation2d position) {
   }
-  public default void setElbowPositionWithFeedForward(Rotation2d position) {
+  public default void setElbowPosition(Rotation2d position) {
   }
 
-  public default void setWristPositionWithFeedForward(Rotation2d positoin) {
+  public default void setWristPosition(Rotation2d position) {
   }
 
   public default void setShoulderVoltage(double volts) {
@@ -47,5 +47,4 @@ public interface ArmIO {
 
   public default void setWristVoltage(double volts) {
   }
-
 }
