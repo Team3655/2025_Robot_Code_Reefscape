@@ -222,13 +222,17 @@ public class RobotContainer {
                 () -> -programmingController.getLeftX(),
                 () -> programmingController.getRightX()));
 
-        programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        programmingController.back().onTrue(drive.zeroDrive());
+        // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+        // programmingController.back().onTrue(drive.zeroDrive());
 
         // programmingController.a().onTrue(Commands.runOnce(() ->
         // arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
+        
         // programmingController.b().onTrue(Commands.runOnce(() ->
         // arm.updateSetpoint(ArmStates.START), arm));
+
+        programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
+        programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
         break;
 
       case MACBOOK:
@@ -258,8 +262,7 @@ public class RobotContainer {
         // programmingController.b().onTrue(Commands.runOnce(() ->
         // arm.updateSetpoint(ArmStates.START), arm));
 
-        programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
-        programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
+
 
         break;
     }

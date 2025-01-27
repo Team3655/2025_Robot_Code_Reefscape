@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 
 public class ArmIOTalonFX implements ArmIO {
 
@@ -42,9 +43,9 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFXConfiguration wristConfiguration;
 
   public ArmIOTalonFX() {
-    shoulderTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_ID, ArmConstants.CANBUS_NAME);
-    elbowTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_ID, ArmConstants.CANBUS_NAME);
-    wristTalon = new TalonFX(ArmConstants.WRIST_MOTOR_ID, ArmConstants.CANBUS_NAME);
+    shoulderTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_ID, Constants.CANIVORE_NAME);
+    elbowTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_ID, Constants.CANIVORE_NAME);
+    wristTalon = new TalonFX(ArmConstants.WRIST_MOTOR_ID, Constants.CANIVORE_NAME);
 
     shoulderConfiguration = new TalonFXConfiguration();
     elbowConfiguration = new TalonFXConfiguration();

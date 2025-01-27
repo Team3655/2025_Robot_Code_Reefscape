@@ -17,6 +17,8 @@ package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmKinematics {
 
@@ -67,17 +69,17 @@ public class ArmKinematics {
 
         calculateInverseKinematics(xTarget, yTarget);
 
-        try {
-            validateState(L4,
-                    L6,
-                    theta1.getRadians(),
-                    relativeTheta2.getRadians(),
-                    theta3.getRadians(),
-                    theta4.getRadians());
-        } catch (InvalidArmState e) {
-            System.out.println(e.getMessage());
-            throw e;
-        }
+        // try {
+        //     validateState(L4,
+        //             L6,
+        //             theta1.getRadians(),
+        //             relativeTheta2.getRadians(),
+        //             theta3.getRadians(),
+        //             theta4.getRadians());
+        // } catch (InvalidArmState e) {
+        //     System.out.println(e.getMessage());
+        //     throw e;
+        // }
 
         armAngles[0] = theta1;
 
@@ -89,6 +91,10 @@ public class ArmKinematics {
                 armAngles[1] = relativeTheta2;
                 break;
         }
+
+        SmartDashboard.putNumber("Theta1Deg", theta1.getDegrees());
+        SmartDashboard.putNumber("Theta2Deg", armAngles[1].getDegrees());
+        
 
         return armAngles;
 
@@ -185,12 +191,11 @@ public class ArmKinematics {
      */
     private static void validateState(double L4, double L6, double theta1, double relativeTheta2,
             double theta3, double thetaL4) throws InvalidArmState {
-        if (theta1 > Math.PI || theta1 < 0) {
-            throw new InvalidArmState("ARM SEGMENT 2 CANNOT EXTEND PAST 180 DEG");
+        if (theta1 > (Math.PI / 2) || theta1 < -Units.degreesToRadians(-80)) {
+            throw new InvalidArmState("ARM SEGMENT 2 CANNOT EXTEND PAST 180 DEG.  THETA1:  " + theta1);
         }
 
         double[] values = new double[6];
-
         values[0] = L4;
         values[1] = L6;
         values[2] = theta1;

@@ -11,7 +11,6 @@ import static edu.wpi.first.units.Units.Volts;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,9 +55,9 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(
             Volts.of(0.25).per(Second),
-            Volts.of(1),
-            Seconds.of(3),
-            (state) -> Logger.recordOutput("Shoulder/SysIDState", state.toString())),
+            Volts.of(0.5),
+            Seconds.of(5),
+            null),
 
         new SysIdRoutine.Mechanism(
             (voltage) -> io.setShoulderVoltage(voltage.in(Volts)), 
@@ -86,14 +85,17 @@ public class ArmSubsystem extends SubsystemBase {
     targetAngles[0] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget)[0];
     targetAngles[1] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget)[1];
 
+    targetAngles[0] = Rotation2d.fromDegrees(0);
+    targetAngles[1] = Rotation2d.fromDegrees(0);
+
     // For readability
     Rotation2d shoulderSetPoint = targetAngles[0];
     Rotation2d elbowSetPoint = targetAngles[1];
     Rotation2d wristSetPoint = setpoint.wristAngle;
 
-    io.setShoulderPosition(shoulderSetPoint);
-    io.setElbowPosition(elbowSetPoint);
-    io.setWristPosition(setpoint.wristAngle);
+    // io.setShoulderPosition(shoulderSetPoint);
+    // io.setElbowPosition(elbowSetPoint);
+    // io.setWristPosition(setpoint.wristAngle);
 
     // Update visualizers
     setpointVisualizer.update(shoulderSetPoint.getDegrees(), elbowSetPoint.getDegrees(), wristSetPoint.getDegrees());
