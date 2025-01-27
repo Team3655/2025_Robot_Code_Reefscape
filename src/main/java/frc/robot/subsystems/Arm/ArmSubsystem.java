@@ -57,7 +57,7 @@ public class ArmSubsystem extends SubsystemBase {
             Volts.of(0.25).per(Second),
             Volts.of(0.5),
             Seconds.of(5),
-            null),
+            (state) -> Logger.recordOutput("Arm/SysIdState", state.toString())),
 
         new SysIdRoutine.Mechanism(
             (voltage) -> io.setShoulderVoltage(voltage.in(Volts)), 

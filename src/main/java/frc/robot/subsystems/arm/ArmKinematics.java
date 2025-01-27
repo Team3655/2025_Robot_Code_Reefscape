@@ -175,7 +175,7 @@ public class ArmKinematics {
         return new double[] { x, y };
     }
 
-     //TODO: Garrett comment on these
+    //TODO: Garrett comment on these
     /**
      * Validates that the requested state of the arm is possible to achieve
      * 

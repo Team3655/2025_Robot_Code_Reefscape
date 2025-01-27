@@ -122,11 +122,7 @@ public class DriveSubsystem extends SubsystemBase {
             null,
             (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
         new SysIdRoutine.Mechanism(
-            (voltage) -> {
-              for (int i = 0; i < 4; i++) {
-                modules[i].runCharacterization(voltage.in(Volts));
-              }
-            },
+            (voltage) -> runCharacterization(voltage.in(Volts)),
             null,
             this));
   }
