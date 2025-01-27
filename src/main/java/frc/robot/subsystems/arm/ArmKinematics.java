@@ -16,6 +16,7 @@
 package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class ArmKinematics {
 
@@ -31,7 +32,7 @@ public class ArmKinematics {
      * 
      * @param d  How far the arm is from the back of the robot
      * @param h  How far from the ground the first pivot point is
-     * @param L1 Length of the "Tower" that the arm rests on
+     * @param L1 Length of the "tower" that the arm rests on
      * @param L2 Length of the first stage of the arm. (shoulder)
      * @param L3 Length of the second stage of the arm. (elbow)
      */
@@ -59,7 +60,8 @@ public class ArmKinematics {
     /**
      * @param xSetpoint The x coordinate of the target in meters
      * @param ySetpoint The y coordinate of the target in meters
-     * @return The angles of the arm joints - value is dependent on the active encoders.
+     * @return The angles of the arm joints - value is dependent on the active
+     *         encoders.
      */
     public Rotation2d[] getArmAngles(double xTarget, double yTarget) {
 
@@ -134,24 +136,38 @@ public class ArmKinematics {
     }
 
     private void calculateTheta6(double xTarget, double yTarget) {
-        // Triangles used to calculate measurements change when moving the target behind the tower (L1)
-        if(xTarget < d){
+        // Triangles used to calculate measurements change when moving the target behind
+        // the tower (L1)
+        if (xTarget < d) {
             // Derived from arm constants, L4, and L6 - Law of Cosines
             theta6 = Rotation2d.fromRadians(
-                (2 * Math.PI) - 
-                    (Math.acos(
-                        (Math.pow(L1, 2) + Math.pow(L4, 2) - Math.pow(L6, 2)) /
-                        (2 * L1 * L4))));
-        } else if(xTarget == d){
+                    (2 * Math.PI) -
+                            (Math.acos(
+                                    (Math.pow(L1, 2) + Math.pow(L4, 2) - Math.pow(L6, 2)) /
+                                            (2 * L1 * L4))));
+        } else if (xTarget == d) {
             theta6 = Rotation2d.kPi;
         } else {
             // Derived from arm constants, L4, and L6 - Law of Cosines
             theta6 = Rotation2d.fromRadians(
-                Math.acos(
-                    (Math.pow(L1, 2) + Math.pow(L4, 2) - Math.pow(L6, 2)) /
-                    (2 * L1 * L4)));
+                    Math.acos(
+                            (Math.pow(L1, 2) + Math.pow(L4, 2) - Math.pow(L6, 2)) /
+                                    (2 * L1 * L4)));
         }
-     }
+    }
+
+    public double[] calculateForwardKinematics(Rotation2d theta1, Rotation2d theta2) {
+
+        Translation2d base = new Translation2d(h, Rotation2d.fromDegrees(90));
+        Translation2d shoulder = base.plus(new Translation2d(L1, theta1));
+        Translation2d elbow = shoulder.plus(new Translation2d(L2, theta2));
+
+        double x = (elbow.getX() < 0) ? d - elbow.getX()
+                : elbow.getX() + d;
+        double y = elbow.getY();
+
+        return new double[] { x, y };
+    }
 
      //TODO: Garrett comment on these
     /**
