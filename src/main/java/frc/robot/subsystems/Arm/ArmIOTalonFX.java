@@ -102,11 +102,6 @@ public class ArmIOTalonFX implements ArmIO {
         elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         wristConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-        // Not needed if value is set to 1
-        // shoulderConfiguration.Feedback.RotorToSensorRatio = 1;
-        // elbowConfiguration.Feedback.RotorToSensorRatio = 1;
-        // wristConfiguration.Feedback.RotorToSensorRatio = 1;
-
         shoulderConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.SHOULDER_REDUCTION;
         elbowConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.ELBOW_REDUCTION;
         wristConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.WRIST_REDUCTION;
@@ -118,10 +113,6 @@ public class ArmIOTalonFX implements ArmIO {
         shoulderConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         wristConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-
-        // shoulderConfiguration.Feedback.RotorToSensorRatio = 1;
-        // elbowConfiguration.Feedback.RotorToSensorRatio = 1;
-        // wristConfiguration.Feedback.RotorToSensorRatio = 1;
 
         shoulderConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.SHOULDER_REDUCTION;
         elbowConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.ELBOW_REDUCTION;

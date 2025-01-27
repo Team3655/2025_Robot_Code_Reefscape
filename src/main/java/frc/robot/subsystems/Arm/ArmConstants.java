@@ -36,7 +36,7 @@ public class ArmConstants {
     public static final double SHOULDER_MASS_KG = 1;
     public static final Rotation2d SHOULDER_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d SHOULDER_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
-    public static final double SHOULDER_REDUCTION = 63.78; // TODO: Write as - Motor rotations / output rotations (encoder rotations)
+    public static final double SHOULDER_REDUCTION = 7500000 / 117600;
     public static final double KG_SHOULDER = 0.3;
     public static final double KS_SHOULDER = 0.1;
     public static final double KV_SHOULDER = 0.12;
@@ -55,7 +55,7 @@ public class ArmConstants {
     public static final double ELBOW_MASS_KG = 1;
     public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
-    public static final double ELBOW_REDUCTION = 63.78;
+    public static final double ELBOW_REDUCTION = 7500000 / 117600;
     public static final double KG_ELBOW = 0.0; // KG_ELBOW should remain 0.0 based on the arm's design
     public static final double KS_ELBOW = 0.1;
     public static final double KV_ELBOW = 0.0;
@@ -75,7 +75,7 @@ public class ArmConstants {
     public static final double WRIST_MASS_KG = 1;
     public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
-    public static final double WRIST_REDUCTION = 1;
+    public static final double WRIST_REDUCTION = 7500000 / 117600;
     public static final double KG_WRIST = 0.0;
     public static final double KS_WRIST = 0.0;
     public static final double KV_WRIST = 0.0;
