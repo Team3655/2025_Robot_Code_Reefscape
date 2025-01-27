@@ -29,7 +29,7 @@ public class ArmConstants {
     public static final double SHOULDER_REDUCTION = 63.78;
     public static final double KG_SHOULDER = 0.3;
     public static final double KS_SHOULDER = 0.1;
-    public static final double KV_SHOULDER = 0.0;
+    public static final double KV_SHOULDER = 0.12;
     public static final double KA_SHOULDER = 0.0;
     public static final double KP_SHOULDER = 28.0;
     public static final double KI_SHOULDER = 0.0;
@@ -46,6 +46,7 @@ public class ArmConstants {
     public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
     public static final double ELBOW_REDUCTION = 63.78;
+
     // KG_ELBOW should remain 0.0 based on the arm's design
     public static final double KG_ELBOW = 0.0;
     public static final double KS_ELBOW = 0.1;

@@ -4,7 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -72,7 +72,7 @@ public class ArmIOTalonFX implements ArmIO {
         // TODO: Need to see constructed wrist to identify
         wristEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
 
-        // Apply configurations to specific encoders. 
+        // Apply configurations to specific encoders.
         shoulderEncoder.getConfigurator().apply(shoulderEncoderConfig);
         elbowEncoder.getConfigurator().apply(elbowEncoderConfig);
         wristEncoder.getConfigurator().apply(wristEncoderConfig);
@@ -156,21 +156,37 @@ public class ArmIOTalonFX implements ArmIO {
     slot0Wrist.kI = ArmConstants.KI_WRIST;
     slot0Wrist.kD = ArmConstants.KD_WRIST;
 
+    /*
+     * Kg - output to overcome gravity (output)
+     * Ks - output to overcome static friction (output)
+     * Kv - output per unit of target velocity (output/rps)
+     * Ka - output per unit of target acceleration (output/(rps/s))
+     * Kp - output per unit of error in position (output/rotation)
+     * Ki - output per unit of integrated error in position (output/(rotation*s))
+     * Kd - output per unit of error in velocity (output/rps)
+     */
+
     // set Motion Magic settings - Shoulder
     var motionMagicConfigsShoulder = shoulderConfiguration.MotionMagic;
-    motionMagicConfigsShoulder.MotionMagicCruiseVelocity =ArmConstants.SHOULDER_MAX_VELOCITY_RPS;
+    motionMagicConfigsShoulder.MotionMagicCruiseVelocity = ArmConstants.SHOULDER_MAX_VELOCITY_RPS;
+    motionMagicConfigsShoulder.MotionMagicExpo_kV = ArmConstants.KV_SHOULDER;
+    motionMagicConfigsShoulder.MotionMagicExpo_kA = ArmConstants.KA_SHOULDER;
     motionMagicConfigsShoulder.MotionMagicAcceleration = ArmConstants.SHOULDER_MAX_ACCELERATION_RPS2;
     motionMagicConfigsShoulder.MotionMagicJerk = ArmConstants.SHOULDER_MAX_JERK_RPS3;
 
     // set Motion Magic settings - Elbow
     var motionMagicConfigsElbow = elbowConfiguration.MotionMagic;
     motionMagicConfigsElbow.MotionMagicCruiseVelocity = ArmConstants.ELBOW_MAX_VELOCITY_RPS;
+    motionMagicConfigsElbow.MotionMagicExpo_kV = ArmConstants.KV_ELBOW;
+    motionMagicConfigsElbow.MotionMagicExpo_kA = ArmConstants.KA_ELBOW;
     motionMagicConfigsElbow.MotionMagicAcceleration = ArmConstants.ELBOW_MAX_ACCELERATION_RPS2;
     motionMagicConfigsElbow.MotionMagicJerk = ArmConstants.ELBOW_MAX_JERK_RPS3;
 
     // set Motion Magic settings - Wrist
     var motionMagicConfigsWrist = wristConfiguration.MotionMagic;
     motionMagicConfigsWrist.MotionMagicCruiseVelocity = ArmConstants.WRIST_MAX_VELOCITY_RPS;
+    motionMagicConfigsWrist.MotionMagicExpo_kV = ArmConstants.KV_WRIST;
+    motionMagicConfigsWrist.MotionMagicExpo_kA = ArmConstants.KA_WRIST;
     motionMagicConfigsWrist.MotionMagicAcceleration = ArmConstants.WRIST_MAX_ACCELERATION_RPS2;
     motionMagicConfigsWrist.MotionMagicJerk = ArmConstants.WRIST_MAX_JERK_RPS3;
 
@@ -198,7 +214,7 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   @Override
-  /** 
+  /**
    * Updates the inputs cerated in ArmIO to be real values from the motors.
    */
   public void updateInputs(ArmIOInputs inputs) {
@@ -223,32 +239,32 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.wristVelocityRadPerSec = wristVelocity.getValueAsDouble();
   }
 
-  //TODO: Need to do motion profiling here
+  // TODO: Need to do motion profiling here
   @Override
   public void setShoulderPositionWithFeedForward(Rotation2d position) {
-      // create a Motion Magic request, voltage output
-      final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    // create a Motion Magic request, voltage output
+    final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
-      // set target position to 100 rotations
-      shoulderTalon.setControl(m_request.withPosition(position.getRotations()));
+    // set target position to 100 rotations
+    shoulderTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   @Override
   public void setElbowPositionWithFeedForward(Rotation2d position) {
-      // create a Motion Magic request, voltage output
-      final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    // create a Motion Magic request, voltage output
+    final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
-      // set target position to 100 rotations
-      elbowTalon.setControl(m_request.withPosition(position.getRotations()));
+    // set target position to 100 rotations
+    elbowTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   @Override
   public void setWristPositionWithFeedForward(Rotation2d position) {
-      // create a Motion Magic request, voltage output
-      final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    // create a Motion Magic request, voltage output
+    final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
-      // set target position to 100 rotations
-      wristTalon.setControl(m_request.withPosition(position.getRotations()));
+    // set target position to 100 rotations
+    wristTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   @Override
