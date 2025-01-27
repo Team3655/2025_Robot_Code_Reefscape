@@ -16,8 +16,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   // (x, y) marks the desired target of the elbow/wrist joint
   // with origin at the rear of the robot frame where it would meet the ground
-  public record ArmPose(double xTarget, double yTarget, Rotation2d wristAngle) {
-  }
+  public record ArmPose(double xTarget, double yTarget, Rotation2d wristAngle) {}
 
   private final ArmIO io;
 

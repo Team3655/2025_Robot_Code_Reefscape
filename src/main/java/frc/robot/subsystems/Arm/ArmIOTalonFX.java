@@ -42,9 +42,9 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFXConfiguration wristConfiguration;
 
   public ArmIOTalonFX() {
-    shoulderTalon = new TalonFX(20, ArmConstants.CANBUS_NAME); // TODO: get real id
-    elbowTalon = new TalonFX(21, ArmConstants.CANBUS_NAME);
-    wristTalon = new TalonFX(22, ArmConstants.CANBUS_NAME);
+    shoulderTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_ID, ArmConstants.CANBUS_NAME);
+    elbowTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_ID, ArmConstants.CANBUS_NAME);
+    wristTalon = new TalonFX(ArmConstants.WRIST_MOTOR_ID, ArmConstants.CANBUS_NAME);
 
     shoulderConfiguration = new TalonFXConfiguration();
     elbowConfiguration = new TalonFXConfiguration();
@@ -54,9 +54,9 @@ public class ArmIOTalonFX implements ArmIO {
 
       case ABSOLUTE:
 
-        CANcoder shoulderEncoder = new CANcoder(3, ArmConstants.CANBUS_NAME);
-        CANcoder elbowEncoder = new CANcoder(4, ArmConstants.CANBUS_NAME);
-        CANcoder wristEncoder = new CANcoder(5, ArmConstants.CANBUS_NAME);
+        CANcoder shoulderEncoder = new CANcoder(ArmConstants.SHOULDER_CANCODER_ID, ArmConstants.CANBUS_NAME);
+        CANcoder elbowEncoder = new CANcoder(ArmConstants.ELBOW_CANCODER_ID, ArmConstants.CANBUS_NAME);
+        CANcoder wristEncoder = new CANcoder(ArmConstants.WRIST_CANCODER_ID, ArmConstants.CANBUS_NAME);
 
         // Create configuration settings for encoders.
         CANcoderConfiguration shoulderEncoderConfig = new CANcoderConfiguration();
@@ -69,6 +69,7 @@ public class ArmIOTalonFX implements ArmIO {
 
         shoulderEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
         elbowEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+
         // TODO: Need to see constructed wrist to identify
         wristEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
 
@@ -166,6 +167,8 @@ public class ArmIOTalonFX implements ArmIO {
      * Kd - output per unit of error in velocity (output/rps)
      */
 
+    // TODO: Refine these values with real Arm
+    
     // set Motion Magic settings - Shoulder
     var motionMagicConfigsShoulder = shoulderConfiguration.MotionMagic;
     motionMagicConfigsShoulder.MotionMagicCruiseVelocity = ArmConstants.SHOULDER_MAX_VELOCITY_RPS;
@@ -239,7 +242,6 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.wristVelocityRadPerSec = wristVelocity.getValueAsDouble();
   }
 
-  // TODO: Need to do motion profiling here
   @Override
   public void setShoulderPositionWithFeedForward(Rotation2d position) {
     // create a Motion Magic request, voltage output
