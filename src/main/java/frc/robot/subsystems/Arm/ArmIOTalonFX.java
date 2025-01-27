@@ -3,9 +3,8 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -19,9 +18,9 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class ArmIOTalonFX implements ArmIO {
 
-  private final TalonFX shoulder;
-  private final TalonFX elbow;
-  private final TalonFX wrist;
+  private final TalonFX shoulderTalon;
+  private final TalonFX elbowTalon;
+  private final TalonFX wristTalon;
 
   private final StatusSignal<Angle> shoulderPosition;
   private final StatusSignal<AngularVelocity> shoulderVelocity;
@@ -43,9 +42,9 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFXConfiguration wristConfiguration;
 
   public ArmIOTalonFX() {
-    shoulder = new TalonFX(0, ArmConstants.CANBUS_NAME); // TODO: get real id
-    elbow = new TalonFX(1, ArmConstants.CANBUS_NAME);
-    wrist = new TalonFX(2, ArmConstants.CANBUS_NAME);
+    shoulderTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_ID, ArmConstants.CANBUS_NAME);
+    elbowTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_ID, ArmConstants.CANBUS_NAME);
+    wristTalon = new TalonFX(ArmConstants.WRIST_MOTOR_ID, ArmConstants.CANBUS_NAME);
 
     shoulderConfiguration = new TalonFXConfiguration();
     elbowConfiguration = new TalonFXConfiguration();
@@ -55,9 +54,9 @@ public class ArmIOTalonFX implements ArmIO {
 
       case ABSOLUTE:
 
-        CANcoder shoulderEncoder = new CANcoder(3, ArmConstants.CANBUS_NAME);
-        CANcoder elbowEncoder = new CANcoder(4, ArmConstants.CANBUS_NAME);
-        CANcoder wristEncoder = new CANcoder(5, ArmConstants.CANBUS_NAME);
+        CANcoder shoulderEncoder = new CANcoder(ArmConstants.SHOULDER_CANCODER_ID, ArmConstants.CANBUS_NAME);
+        CANcoder elbowEncoder = new CANcoder(ArmConstants.ELBOW_CANCODER_ID, ArmConstants.CANBUS_NAME);
+        CANcoder wristEncoder = new CANcoder(ArmConstants.WRIST_CANCODER_ID, ArmConstants.CANBUS_NAME);
 
         // Create configuration settings for encoders.
         CANcoderConfiguration shoulderEncoderConfig = new CANcoderConfiguration();
@@ -70,10 +69,11 @@ public class ArmIOTalonFX implements ArmIO {
 
         shoulderEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
         elbowEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+
         // TODO: Need to see constructed wrist to identify
         wristEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
 
-        // Apply configurations to specific encoders. 
+        // Apply configurations to specific encoders.
         shoulderEncoder.getConfigurator().apply(shoulderEncoderConfig);
         elbowEncoder.getConfigurator().apply(elbowEncoderConfig);
         wristEncoder.getConfigurator().apply(wristEncoderConfig);
@@ -130,43 +130,94 @@ public class ArmIOTalonFX implements ArmIO {
 
     }
 
-    var slot0Shoulder = new Slot0Configs();
-    var slot0Elbow = new Slot0Configs();
-    var slot0Wrist = new Slot0Configs();
-
+    var slot0Shoulder = shoulderConfiguration.Slot0;
+    slot0Shoulder.kG = ArmConstants.KG_SHOULDER;
+    slot0Shoulder.kS = ArmConstants.KS_SHOULDER;
+    slot0Shoulder.kV = ArmConstants.KV_SHOULDER;
+    slot0Shoulder.kA = ArmConstants.KA_SHOULDER;
     slot0Shoulder.kP = ArmConstants.KP_SHOULDER;
+    slot0Shoulder.kI = ArmConstants.KI_SHOULDER;
     slot0Shoulder.kD = ArmConstants.KD_SHOULDER;
 
+    var slot0Elbow = elbowConfiguration.Slot0;
+    slot0Elbow.kG = ArmConstants.KG_ELBOW;
+    slot0Elbow.kS = ArmConstants.KS_ELBOW;
+    slot0Elbow.kV = ArmConstants.KV_ELBOW;
+    slot0Elbow.kA = ArmConstants.KA_ELBOW;
     slot0Elbow.kP = ArmConstants.KP_ELBOW;
+    slot0Elbow.kI = ArmConstants.KI_ELBOW;
     slot0Elbow.kD = ArmConstants.KD_ELBOW;
 
+    var slot0Wrist = wristConfiguration.Slot0;
+    slot0Wrist.kG = ArmConstants.KG_WRIST;
+    slot0Wrist.kS = ArmConstants.KS_WRIST;
+    slot0Wrist.kV = ArmConstants.KV_WRIST;
+    slot0Wrist.kA = ArmConstants.KA_WRIST;
     slot0Wrist.kP = ArmConstants.KP_WRIST;
+    slot0Wrist.kI = ArmConstants.KI_WRIST;
     slot0Wrist.kD = ArmConstants.KD_WRIST;
 
+    /*
+     * Kg - output to overcome gravity (output)
+     * Ks - output to overcome static friction (output)
+     * Kv - output per unit of target velocity (output/rps)
+     * Ka - output per unit of target acceleration (output/(rps/s))
+     * Kp - output per unit of error in position (output/rotation)
+     * Ki - output per unit of integrated error in position (output/(rotation*s))
+     * Kd - output per unit of error in velocity (output/rps)
+     */
+
+    // TODO: Refine these values with real Arm
+    
+    // set Motion Magic settings - Shoulder
+    var motionMagicConfigsShoulder = shoulderConfiguration.MotionMagic;
+    motionMagicConfigsShoulder.MotionMagicCruiseVelocity = ArmConstants.SHOULDER_MAX_VELOCITY_RPS;
+    motionMagicConfigsShoulder.MotionMagicExpo_kV = ArmConstants.KV_SHOULDER;
+    motionMagicConfigsShoulder.MotionMagicExpo_kA = ArmConstants.KA_SHOULDER;
+    motionMagicConfigsShoulder.MotionMagicAcceleration = ArmConstants.SHOULDER_MAX_ACCELERATION_RPS2;
+    motionMagicConfigsShoulder.MotionMagicJerk = ArmConstants.SHOULDER_MAX_JERK_RPS3;
+
+    // set Motion Magic settings - Elbow
+    var motionMagicConfigsElbow = elbowConfiguration.MotionMagic;
+    motionMagicConfigsElbow.MotionMagicCruiseVelocity = ArmConstants.ELBOW_MAX_VELOCITY_RPS;
+    motionMagicConfigsElbow.MotionMagicExpo_kV = ArmConstants.KV_ELBOW;
+    motionMagicConfigsElbow.MotionMagicExpo_kA = ArmConstants.KA_ELBOW;
+    motionMagicConfigsElbow.MotionMagicAcceleration = ArmConstants.ELBOW_MAX_ACCELERATION_RPS2;
+    motionMagicConfigsElbow.MotionMagicJerk = ArmConstants.ELBOW_MAX_JERK_RPS3;
+
+    // set Motion Magic settings - Wrist
+    var motionMagicConfigsWrist = wristConfiguration.MotionMagic;
+    motionMagicConfigsWrist.MotionMagicCruiseVelocity = ArmConstants.WRIST_MAX_VELOCITY_RPS;
+    motionMagicConfigsWrist.MotionMagicExpo_kV = ArmConstants.KV_WRIST;
+    motionMagicConfigsWrist.MotionMagicExpo_kA = ArmConstants.KA_WRIST;
+    motionMagicConfigsWrist.MotionMagicAcceleration = ArmConstants.WRIST_MAX_ACCELERATION_RPS2;
+    motionMagicConfigsWrist.MotionMagicJerk = ArmConstants.WRIST_MAX_JERK_RPS3;
+
     // Apply configurations to the motors
-    shoulder.getConfigurator().apply(shoulderConfiguration);
-    elbow.getConfigurator().apply(elbowConfiguration);
-    wrist.getConfigurator().apply(wristConfiguration);
+    shoulderTalon.getConfigurator().apply(shoulderConfiguration);
+    elbowTalon.getConfigurator().apply(elbowConfiguration);
+    wristTalon.getConfigurator().apply(wristConfiguration);
 
-    shoulderPosition = shoulder.getPosition();
-    shoulderVelocity = shoulder.getVelocity();
-    shoulderAppliedVolts = shoulder.getMotorVoltage();
-    shoulderCurrent = shoulder.getSupplyCurrent();
+    // Configure inputs
+    shoulderPosition = shoulderTalon.getPosition();
+    shoulderVelocity = shoulderTalon.getVelocity();
+    shoulderAppliedVolts = shoulderTalon.getMotorVoltage();
+    shoulderCurrent = shoulderTalon.getSupplyCurrent();
 
-    elbowPosition = elbow.getPosition();
-    elbowAppliedVolts = elbow.getMotorVoltage();
-    elbowVelocity = elbow.getVelocity();
-    elbowCurrent = elbow.getSupplyCurrent();
+    elbowPosition = elbowTalon.getPosition();
+    elbowAppliedVolts = elbowTalon.getMotorVoltage();
+    elbowVelocity = elbowTalon.getVelocity();
+    elbowCurrent = elbowTalon.getSupplyCurrent();
 
-    wristPosition = wrist.getPosition();
-    wristVelocity = wrist.getVelocity();
-    wristAppliedVolts = wrist.getMotorVoltage();
-    wristCurrent = wrist.getSupplyCurrent();
+    wristPosition = wristTalon.getPosition();
+    wristVelocity = wristTalon.getVelocity();
+    wristAppliedVolts = wristTalon.getMotorVoltage();
+    wristCurrent = wristTalon.getSupplyCurrent();
 
   }
 
   @Override
-  /** 
+  /**
    * Updates the inputs cerated in ArmIO to be real values from the motors.
    */
   public void updateInputs(ArmIOInputs inputs) {
@@ -192,33 +243,45 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   @Override
-  public void setShoulderPositionWithFeedForward(Rotation2d position, double feedForward) {
-    shoulder.setControl(new PositionVoltage(position.getRotations()).withFeedForward(feedForward));
+  public void setShoulderPositionWithFeedForward(Rotation2d position) {
+    // create a Motion Magic request, voltage output
+    final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
+
+    // set target position to 100 rotations
+    shoulderTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   @Override
-  public void setElbowPositionWithFeedForward(Rotation2d position, double feedForward) {
-    elbow.setControl(new PositionVoltage(position.getRotations()).withFeedForward(feedForward));
+  public void setElbowPositionWithFeedForward(Rotation2d position) {
+    // create a Motion Magic request, voltage output
+    final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
+
+    // set target position to 100 rotations
+    elbowTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   @Override
-  public void setWristPositionWithFeedForward(Rotation2d position, double feedForward) {
-    wrist.setControl(new PositionVoltage(position.getRotations()).withFeedForward(feedForward));
+  public void setWristPositionWithFeedForward(Rotation2d position) {
+    // create a Motion Magic request, voltage output
+    final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
+
+    // set target position to 100 rotations
+    wristTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   @Override
   public void setShoulderVoltage(double volts) {
-    shoulder.setControl(new VoltageOut(volts));
+    shoulderTalon.setControl(new VoltageOut(volts));
   }
 
   @Override
   public void setElbowVoltage(double volts) {
-    elbow.setControl(new VoltageOut(volts));
+    elbowTalon.setControl(new VoltageOut(volts));
   }
 
   @Override
   public void setWristVoltage(double volts) {
-    wrist.setControl(new VoltageOut(volts));
+    wristTalon.setControl(new VoltageOut(volts));
   }
 
 }

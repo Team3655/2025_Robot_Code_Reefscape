@@ -34,6 +34,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 
 import java.util.Queue;
 
@@ -83,7 +84,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
-  private final String canivoreName = DriveConstants.CANIVORE_NAME;
+  private final String canivoreName = Constants.CANIVORE_NAME;
 
   public ModuleIOTalonFX(int index) {
 
@@ -210,6 +211,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         .minus(absoluteEncoderOffset);
     inputs.turnPosition = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
     inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble()) / TURN_GEAR_RATIO;
+    inputs.turnPositionError = new Rotation2d(turnTalon.getClosedLoopError().getValueAsDouble());
     inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
     inputs.turnCurrentAmps = new double[] { turnCurrent.getValueAsDouble() };
 

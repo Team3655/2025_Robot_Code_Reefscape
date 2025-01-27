@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj.RobotBase;
  */
 public final class Constants {
 
+  public static final String CANIVORE_NAME = "ctre";
+
   public static final Mode simMode = Mode.SIM;
 
   // Prevent initializing a real robot as sim 
