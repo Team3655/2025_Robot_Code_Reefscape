@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 import frc.robot.subsystems.arm.ArmIO;
@@ -252,10 +253,13 @@ public class RobotContainer {
         // programmingController.povUp().onTrue(ClimbCommands.setArmClimbPosition(climber));
         // programmingController.povDown().onTrue(ClimbCommands.setArmInitPosition(climber));
 
-        programmingController.a().onTrue(Commands.runOnce(() ->
-        arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
-        programmingController.b().onTrue(Commands.runOnce(() ->
-        arm.updateSetpoint(ArmStates.START), arm));
+        // programmingController.a().onTrue(Commands.runOnce(() ->
+        // arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
+        // programmingController.b().onTrue(Commands.runOnce(() ->
+        // arm.updateSetpoint(ArmStates.START), arm));
+
+        programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
+        programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
 
         break;
     }

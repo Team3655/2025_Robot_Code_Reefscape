@@ -153,6 +153,7 @@ public class ArmKinematics {
         }
      }
 
+     //TODO: Garrett comment on these
     /**
      * Validates that the requested state of the arm is possible to achieve
      * 

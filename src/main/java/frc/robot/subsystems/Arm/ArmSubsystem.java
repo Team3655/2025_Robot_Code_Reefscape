@@ -4,12 +4,19 @@
 
 package frc.robot.subsystems.arm;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -31,13 +38,40 @@ public class ArmSubsystem extends SubsystemBase {
 
   private Rotation2d[] targetAngles = new Rotation2d[2];
 
+  public SysIdRoutine shoulderRoutine;
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
     this.io = io;
     updateSetpoint(ArmStates.START);
     DriverStation.reportWarning(
         "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
-        armKinematics = new ArmKinematics(ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS, ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, ArmConstants.SHOULDER_LENGTH_METERS, ArmConstants.ELBOW_LENGTH_METERS);
+        armKinematics = new ArmKinematics(
+          ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS, 
+          ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 
+          ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 
+          ArmConstants.SHOULDER_LENGTH_METERS, 
+          ArmConstants.ELBOW_LENGTH_METERS);
+
+    shoulderRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            Volts.of(0.25).per(Second),
+            Volts.of(1),
+            Seconds.of(3),
+            (state) -> Logger.recordOutput("Shoulder/SysIDState", state.toString())),
+
+        new SysIdRoutine.Mechanism(
+            (voltage) -> io.setShoulderVoltage(voltage.in(Volts)), 
+            null, 
+            this));
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+      return shoulderRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+      return shoulderRoutine.dynamic(direction);
   }
 
   @Override
@@ -88,9 +122,9 @@ public class ArmSubsystem extends SubsystemBase {
   // TODO: make forward kinematics to return arm state
   public ArmPose getState() {
     return new ArmPose(
-        setpoint.xTarget,
-        setpoint.yTarget,
-        inputs.wristPosition);
+      setpoint.xTarget,
+      setpoint.yTarget,
+      inputs.wristPosition);
   }
 
   /** 
