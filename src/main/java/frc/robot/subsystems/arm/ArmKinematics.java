@@ -117,11 +117,7 @@ public class ArmKinematics {
                         - Math.pow(L4, 2)) /
                         (2 * L2 * L3)));
 
-        // Derived from arm constants, L4, and L6 - Law of Cosines
-        theta6 = Rotation2d.fromRadians(
-                Math.acos(
-                        (Math.pow(L1, 2) + Math.pow(L4, 2) - Math.pow(L6, 2)) /
-                                (2 * L1 * L4)));
+        calculateTheta6(xTarget, yTarget);
 
         // Derived from theta6 and theta3 - Angle Addition Postulate
         theta1 = theta6.minus(theta3).minus(Rotation2d.kCCW_Pi_2);
@@ -137,7 +133,7 @@ public class ArmKinematics {
 
     }
 
-    private void calculateTheta6() {
+    private void calculateTheta6(double xTarget, double yTarget) {
         // Triangles used to calculate measurements change when moving the target behind the tower (L1)
         if(xTarget < d){
             // Derived from arm constants, L4, and L6 - Law of Cosines
