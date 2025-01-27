@@ -85,11 +85,12 @@ public class ArmSubsystem extends SubsystemBase {
    * 
    * @return The current state of the arm
    */
-  // TODO: make forward kinematics to return arm state
   public ArmPose getState() {
+    double[] armPosition = armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition);
+    
     return new ArmPose(
-        setpoint.xTarget,
-        setpoint.yTarget,
+        armPosition[0],
+        armPosition[1],
         inputs.wristPosition);
   }
 
