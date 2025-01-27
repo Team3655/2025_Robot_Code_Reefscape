@@ -102,9 +102,10 @@ public class ArmIOTalonFX implements ArmIO {
         elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         wristConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-        shoulderConfiguration.Feedback.RotorToSensorRatio = 1;
-        elbowConfiguration.Feedback.RotorToSensorRatio = 1;
-        wristConfiguration.Feedback.RotorToSensorRatio = 1;
+        // Not needed if value is set to 1
+        // shoulderConfiguration.Feedback.RotorToSensorRatio = 1;
+        // elbowConfiguration.Feedback.RotorToSensorRatio = 1;
+        // wristConfiguration.Feedback.RotorToSensorRatio = 1;
 
         shoulderConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.SHOULDER_REDUCTION;
         elbowConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.ELBOW_REDUCTION;
@@ -113,14 +114,14 @@ public class ArmIOTalonFX implements ArmIO {
         break;
 
       default:
-
+        // Default to relative
         shoulderConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         wristConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-        shoulderConfiguration.Feedback.RotorToSensorRatio = 1;
-        elbowConfiguration.Feedback.RotorToSensorRatio = 1;
-        wristConfiguration.Feedback.RotorToSensorRatio = 1;
+        // shoulderConfiguration.Feedback.RotorToSensorRatio = 1;
+        // elbowConfiguration.Feedback.RotorToSensorRatio = 1;
+        // wristConfiguration.Feedback.RotorToSensorRatio = 1;
 
         shoulderConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.SHOULDER_REDUCTION;
         elbowConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.ELBOW_REDUCTION;
@@ -156,16 +157,6 @@ public class ArmIOTalonFX implements ArmIO {
     slot0Wrist.kP = ArmConstants.KP_WRIST;
     slot0Wrist.kI = ArmConstants.KI_WRIST;
     slot0Wrist.kD = ArmConstants.KD_WRIST;
-
-    /*
-     * Kg - output to overcome gravity (output)
-     * Ks - output to overcome static friction (output)
-     * Kv - output per unit of target velocity (output/rps)
-     * Ka - output per unit of target acceleration (output/(rps/s))
-     * Kp - output per unit of error in position (output/rotation)
-     * Ki - output per unit of integrated error in position (output/(rotation*s))
-     * Kd - output per unit of error in velocity (output/rps)
-     */
 
     // TODO: Refine these values with real Arm
     
@@ -243,7 +234,7 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   @Override
-  public void setShoulderPositionWithFeedForward(Rotation2d position) {
+  public void setShoulderPosition(Rotation2d position) {
     // create a Motion Magic request, voltage output
     final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
@@ -252,7 +243,7 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   @Override
-  public void setElbowPositionWithFeedForward(Rotation2d position) {
+  public void setElbowPosition(Rotation2d position) {
     // create a Motion Magic request, voltage output
     final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
@@ -261,7 +252,7 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   @Override
-  public void setWristPositionWithFeedForward(Rotation2d position) {
+  public void setWristPosition(Rotation2d position) {
     // create a Motion Magic request, voltage output
     final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 

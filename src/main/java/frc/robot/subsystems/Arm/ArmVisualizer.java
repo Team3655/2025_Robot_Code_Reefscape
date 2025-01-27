@@ -67,8 +67,8 @@ public class ArmVisualizer {
    * Updates the visualizer to the given values
    * 
    * @param shoulderRelative Shoulder angle value
-   * @param elbowRelative    Elbow angle value
-   * @param wristRelative    Wrist angle value
+   * @param elbowRelative Elbow angle value
+   * @param wristRelative Wrist angle value
    */
   public void update(double shoulderRelative, double elbowRelative, double wristRelative) {
     shoulder.setAngle(shoulderRelative);

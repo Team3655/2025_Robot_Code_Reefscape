@@ -76,17 +76,17 @@ public class ArmIOSim implements ArmIO {
   }
 
   @Override
-  public void setShoulderPositionWithFeedForward(Rotation2d position) {
+  public void setShoulderPosition(Rotation2d position) {
     shoulderSim.setState(position.getRadians(), 1);
   }
 
   @Override
-  public void setElbowPositionWithFeedForward(Rotation2d position) {
+  public void setElbowPosition(Rotation2d position) {
     shoulderSim.setState(position.getRadians(), 1);
   }
 
   @Override
-  public void setWristPositionWithFeedForward(Rotation2d position) {
+  public void setWristPosition(Rotation2d position) {
     shoulderSim.setState(position.getRadians(), 1);
   }
 
