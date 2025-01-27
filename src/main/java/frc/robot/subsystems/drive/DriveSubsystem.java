@@ -286,14 +286,13 @@ public class DriveSubsystem extends SubsystemBase {
     return states;
   }
 
-  // /** Returns the module positions (turn angles and drive positions) for all of
-  // the modules. */
-  // private SwerveModulePosition[] getModulePositions() {
-  // SwerveModulePosition[] states = new SwerveModulePosition[4];
-  // for (int i = 0; i < 4; i++) {
-  // states[i] = modules[i].getPosition();
-  // }
-  // return states;
-  // }
+  /** Returns the position of each module in radians. */
+  public double[] getWheelRadiusCharacterizationPositions() {
+    double[] values = new double[4];
+    for (int i = 0; i < 4; i++) {
+      values[i] = modules[i].getWheelRadiusCharacterizationPosition();
+    }
+    return values;
+  }
 
 }
