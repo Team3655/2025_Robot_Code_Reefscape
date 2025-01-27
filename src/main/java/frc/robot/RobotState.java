@@ -121,4 +121,8 @@ public class RobotState {
     return odometry.getPoseMeters();
   }
 
+  public Rotation2d getRotation() {
+    return getOdometryPose().getRotation();
+  }
+
 }
