@@ -16,6 +16,8 @@ package frc.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -29,7 +31,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.ArmCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -180,6 +184,11 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption("Test PathPlanner auto", new PathPlannerAuto("Test Path 1"));
+
+    NamedCommands.registerCommand("Set Arm Start State", ArmCommands.updateSetpoint(arm, ArmStates.START));
+    NamedCommands.registerCommand("Set Arm Intake State", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+    NamedCommands.registerCommand("Set Arm Feed State", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -227,17 +236,13 @@ public class RobotContainer {
         //programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.back().onTrue(drive.zeroDrive());
 
-        programmingController.a().onTrue(Commands.runOnce(() ->
-          arm.updateSetpoint(ArmStates.START), arm));
+        programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
 
-        programmingController.b().onTrue(Commands.runOnce(() ->
-          arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
+        programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
 
-        programmingController.y().onTrue(Commands.runOnce(() ->
-          arm.updateSetpoint(ArmStates.FRONT_L2_REEF), arm));
+        programmingController.y().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
 
-        programmingController.x().onTrue(Commands.runOnce(() ->
-          arm.updateSetpoint(ArmStates.REAR_L4_REEF), arm));
+        programmingController.x().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
         // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
         // programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
@@ -284,6 +289,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    return null;
+    return autoChooser.get();
   }
 }
