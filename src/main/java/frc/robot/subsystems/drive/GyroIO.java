@@ -31,8 +31,4 @@ public interface GyroIO {
 
   public default void resetGyro() {
   }
-
-  public default double getGyroHeading() {
-    return 0.0;
-  }
 }

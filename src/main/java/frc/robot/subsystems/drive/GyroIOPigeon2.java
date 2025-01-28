@@ -13,19 +13,19 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.Queue;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
-
-import java.util.OptionalDouble;
-import java.util.Queue;
 
 /** IO implementation for Pigeon2 */
 public class GyroIOPigeon2 implements GyroIO {
@@ -41,28 +41,14 @@ public class GyroIOPigeon2 implements GyroIO {
   private final Queue<Double> yawTimestampQueue;
   private final StatusSignal<AngularVelocity> yawVelocity = pidgey.getAngularVelocityZWorld();
 
-  public GyroIOPigeon2(boolean phoenixDrive) {
+  public GyroIOPigeon2() {
     pidgey.getConfigurator().apply(new Pigeon2Configuration());
     pidgey.getConfigurator().setYaw(0.0);
-    yaw.setUpdateFrequency(Module.ODOMETRY_FREQUENCY);
+    yaw.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
     yawVelocity.setUpdateFrequency(100.0);
     pidgey.optimizeBusUtilization();
-    if (phoenixDrive) {
-      yawTimestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
-      yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(pidgey, pidgey.getYaw());
-    } else {
-      yawTimestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
-      yawPositionQueue = SparkMaxOdometryThread.getInstance()
-          .registerSignal(
-              () -> {
-                boolean valid = yaw.refresh().getStatus().isOK();
-                if (valid) {
-                  return OptionalDouble.of(yaw.getValueAsDouble());
-                } else {
-                  return OptionalDouble.empty();
-                }
-              });
-    }
+    yawTimestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
+    yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(pidgey, pidgey.getYaw());
   }
 
   @Override
@@ -84,8 +70,4 @@ public class GyroIOPigeon2 implements GyroIO {
     pidgey.reset();
   }
 
-  @Override
-  public double getGyroHeading() {
-    return yaw.getValueAsDouble();
-  }
 }

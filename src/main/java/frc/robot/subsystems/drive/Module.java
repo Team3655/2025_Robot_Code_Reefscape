@@ -25,7 +25,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class Module {
   private static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
-  static final double ODOMETRY_FREQUENCY = 250.0;
 
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
@@ -157,7 +156,6 @@ public class Module {
    */
   public void runSetpoint(SwerveModuleState targetState) {
     // Optimize state based on current angle
-    // Controllers run in "periodic" when the setpoint is not null
     targetState.optimize(getAngle());
     targetState.cosineScale(getAngle());
 
@@ -167,16 +165,10 @@ public class Module {
     io.setDriveVelocity(targetState.speedMetersPerSecond / WHEEL_RADIUS);
   }
 
-  /**
-   * Runs the module with the specified voltage while controlling to zero degrees.
-   */
-  public void runCharacterization(double volts) {
-    // Closed loop turn control
-    angleSetpoint = new Rotation2d();
-
-    // Open loop drive control
-    io.setDriveVoltage(volts);
-    speedSetpoint = null;
+  /** Runs the module with the specified output while controlling to zero degrees. */
+  public void runCharacterization(double output) {
+    io.setDriveVoltage(output);
+    io.setTurnPosition(new Rotation2d());
   }
 
   /** Disables all outputs to motors. */
@@ -239,8 +231,8 @@ public class Module {
     return inputs.drivePositionRad;
   }
 
-  /** Returns the drive velocity in radians/sec. */
-  public double getCharacterizationVelocity() {
-    return inputs.driveVelocityRadPerSec;
+  /** Returns the module velocity in rotations/sec (Phoenix native units). */
+  public double getFFCharacterizationVelocity() {
+    return Units.radiansToRotations(inputs.driveVelocityRadPerSec);
   }
 }

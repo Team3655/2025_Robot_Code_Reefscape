@@ -13,7 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Volts;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -27,6 +27,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -36,7 +37,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -62,13 +62,6 @@ public class DriveSubsystem extends SubsystemBase {
           new SwerveModulePosition()
       };
 
-  // private SwerveDrivePoseEstimator poseEstimator =
-  // new SwerveDrivePoseEstimator(
-  // DriveConstants.kinematics,
-  // rawGyroRotation,
-  // lastModulePositions,
-  // new Pose2d());
-
   public DriveSubsystem(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -76,35 +69,21 @@ public class DriveSubsystem extends SubsystemBase {
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
     this.gyroIO = gyroIO;
-    modules[0] = new Module(brModuleIO, 0);
-    modules[1] = new Module(blModuleIO, 1);
-    modules[2] = new Module(frModuleIO, 2);
-    modules[3] = new Module(flModuleIO, 3);
+    modules[0] = new Module(flModuleIO, 0);
+    modules[1] = new Module(frModuleIO, 1);
+    modules[2] = new Module(blModuleIO, 2);
+    modules[3] = new Module(brModuleIO, 3);
 
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
-    SparkMaxOdometryThread.getInstance().start();
-
-    // Configure AutoBuilder for PathPlanner
-    // AutoBuilder.configureHolonomic(
-    // () -> RobotState.getInstance().getEstimatedPose(),
-    // (pose) -> RobotState.getInstance().resetPose(pose),
-    // () -> DriveConstants.kinematics.toChassisSpeeds(getModuleStates()),
-    // this::runVelocity,
-    // new HolonomicPathFollowerConfig(
-    // DriveConstants.MAX_LINEAR_SPEED, DriveConstants.MAX_ANGULAR_SPEED, new
-    // ReplanningConfig()),
-    // () -> DriverStation.getAlliance().isPresent()
-    // && DriverStation.getAlliance().get() == Alliance.Red,
-    // this);
 
     try {
       RobotConfig config = RobotConfig.fromGUISettings();
 
       AutoBuilder.configure(
-          () -> RobotState.getInstance().getEstimatedPose(),
-          (pose) -> RobotState.getInstance().resetPose(pose),
-          () -> DriveConstants.kinematics.toChassisSpeeds(getModuleStates()),
+          RobotState.getInstance()::getEstimatedPose,
+          RobotState.getInstance()::resetPose,
+          this::getChassisSpeeds,
           this::runVelocity,
           new PPHolonomicDriveController(
               new PIDConstants(5, 0, 0),
@@ -121,6 +100,7 @@ public class DriveSubsystem extends SubsystemBase {
     } catch (Exception e) {
       DriverStation.reportError("Failed to load pathplanner config !!! :3", e.getStackTrace());
     }
+    
     Pathfinding.setPathfinder(new LocalADStarAK());
 
     PathPlannerLogging.setLogActivePathCallback(
@@ -142,11 +122,7 @@ public class DriveSubsystem extends SubsystemBase {
             null,
             (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
         new SysIdRoutine.Mechanism(
-            (voltage) -> {
-              for (int i = 0; i < 4; i++) {
-                modules[i].runCharacterization(voltage.in(Volts));
-              }
-            },
+            (voltage) -> runCharacterization(voltage.in(Volts)),
             null,
             this));
   }
@@ -159,8 +135,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
     odometryLock.unlock();
 
-    SmartDashboard.putNumber("Gyro Heading", gyroIO.getGyroHeading());
-
     Logger.processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();
@@ -172,6 +146,7 @@ public class DriveSubsystem extends SubsystemBase {
         module.stop();
       }
     }
+
     // Log empty setpoint states when disabled
     if (DriverStation.isDisabled()) {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
@@ -239,6 +214,13 @@ public class DriveSubsystem extends SubsystemBase {
     Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 
+  /** Runs the drive in a straight line with the specified drive output. */
+  public void runCharacterization(double output) {
+    for (int i = 0; i < 4; i++) {
+      modules[i].runCharacterization(output);
+    }
+  }
+
   /** Stops the drive. */
   public void stop() {
     runVelocity(new ChassisSpeeds());
@@ -286,6 +268,12 @@ public class DriveSubsystem extends SubsystemBase {
     return states;
   }
 
+  /** Returns the measured chassis speeds of the robot. */
+  @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
+  private ChassisSpeeds getChassisSpeeds() {
+    return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
+  }
+
   /** Returns the position of each module in radians. */
   public double[] getWheelRadiusCharacterizationPositions() {
     double[] values = new double[4];
@@ -293,6 +281,15 @@ public class DriveSubsystem extends SubsystemBase {
       values[i] = modules[i].getWheelRadiusCharacterizationPosition();
     }
     return values;
+  }
+
+  /** Returns the average velocity of the modules in rotations/sec (Phoenix native units). */
+  public double getFFCharacterizationVelocity() {
+    double output = 0.0;
+    for (int i = 0; i < 4; i++) {
+      output += modules[i].getFFCharacterizationVelocity() / 4.0;
+    }
+    return output;
   }
 
 }

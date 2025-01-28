@@ -13,6 +13,10 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -23,9 +27,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -33,7 +37,6 @@ import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
-import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
@@ -67,7 +70,7 @@ public class RobotContainer {
   // private final IntakeSubsystem intake;
 
   // Controller
-  // Programmign contoller
+  // programming controller
   private final CommandXboxController programmingController = new CommandXboxController(5);
 
   // Matt's controller
@@ -83,7 +86,7 @@ public class RobotContainer {
   private final CommandGenericHID tractorController = new CommandGenericHID(4);
 
   // Dashboard inputs
-  // private final LoggedDashboardChooser<Command> autoChooser;
+  private final LoggedDashboardChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -93,7 +96,7 @@ public class RobotContainer {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         drive = new DriveSubsystem(
-            new GyroIOPigeon2(true),
+            new GyroIOPigeon2(),
             new ModuleIOTalonFX(0),
             new ModuleIOTalonFX(1),
             new ModuleIOTalonFX(2),
@@ -110,7 +113,7 @@ public class RobotContainer {
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive = new DriveSubsystem(
-            new GyroIOSim(),
+            new GyroIO(){},
             new ModuleIOSim(),
             new ModuleIOSim(),
             new ModuleIOSim(),
@@ -146,11 +149,9 @@ public class RobotContainer {
             },
             new ModuleIO() {
             },
-            new ModuleIO() {
-            });
+            new ModuleIO() {});
         vision = new VisionSubsystem(
-            new VisionIO() {
-            });
+            new VisionIO() {});
             
         arm = new ArmSubsystem(new ArmIO() {});
 
@@ -161,23 +162,24 @@ public class RobotContainer {
         break;
     }
 
-    // Set up auto routines
-    // autoChooser = new LoggedDashboardChooser<>("Auto Choices",
-    // AutoBuilder.buildAutoChooser());
+    //Set up auto routines
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    // Set up SysId routines
-    // autoChooser.addOption(
-    // "Drive SysId (Quasistatic Forward)",
-    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    // "Drive SysId (Quasistatic Reverse)",
-    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    // "Drive SysId (Dynamic Forward)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    // "Drive SysId (Dynamic Reverse)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    //Set up SysId routines
+    autoChooser.addOption(
+        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addOption(
+        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Forward)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Reverse)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();
