@@ -11,8 +11,10 @@ import static edu.wpi.first.units.Units.Volts;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -38,6 +40,8 @@ public class ArmSubsystem extends SubsystemBase {
   private Rotation2d[] targetAngles = new Rotation2d[2];
 
   public SysIdRoutine shoulderRoutine;
+
+  public SysIdRoutineLog sysIdLog;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
@@ -85,16 +89,13 @@ public class ArmSubsystem extends SubsystemBase {
     targetAngles[0] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget)[0];
     targetAngles[1] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget)[1];
 
-    targetAngles[0] = Rotation2d.fromDegrees(0);
-    targetAngles[1] = Rotation2d.fromDegrees(0);
-
     // For readability
     Rotation2d shoulderSetPoint = targetAngles[0];
     Rotation2d elbowSetPoint = targetAngles[1];
     Rotation2d wristSetPoint = setpoint.wristAngle;
 
-    // io.setShoulderPosition(shoulderSetPoint);
-    // io.setElbowPosition(elbowSetPoint);
+    io.setShoulderPosition(shoulderSetPoint);
+    io.setElbowPosition(elbowSetPoint);
     // io.setWristPosition(setpoint.wristAngle);
 
     // Update visualizers
@@ -115,6 +116,9 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Wrist Degrees", inputs.wristPosition.getDegrees());
     Logger.recordOutput("Arm/Wrist/Setpoint", wristSetPoint.getDegrees());
     Logger.recordOutput("Arm/Wrist/Degrees", inputs.wristPosition.getDegrees());
+
+    SmartDashboard.putNumber("ShoulderDeg", inputs.shoulderPosition.getDegrees());
+    SmartDashboard.putNumber("ElbowDeg", inputs.elbowPosition.getDegrees());
   }
 
   /**

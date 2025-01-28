@@ -222,17 +222,23 @@ public class RobotContainer {
                 () -> -programmingController.getLeftX(),
                 () -> programmingController.getRightX()));
 
-        // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        // programmingController.back().onTrue(drive.zeroDrive());
+        //programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+        programmingController.back().onTrue(drive.zeroDrive());
 
-        // programmingController.a().onTrue(Commands.runOnce(() ->
-        // arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
-        
-        // programmingController.b().onTrue(Commands.runOnce(() ->
-        // arm.updateSetpoint(ArmStates.START), arm));
+        programmingController.a().onTrue(Commands.runOnce(() ->
+          arm.updateSetpoint(ArmStates.START), arm));
 
-        programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
-        programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
+        programmingController.b().onTrue(Commands.runOnce(() ->
+          arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
+
+        programmingController.y().onTrue(Commands.runOnce(() ->
+          arm.updateSetpoint(ArmStates.FRONT_L2_REEF), arm));
+
+        programmingController.x().onTrue(Commands.runOnce(() ->
+          arm.updateSetpoint(ArmStates.REAR_L4_REEF), arm));
+
+        // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
+        // programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
         break;
 
       case MACBOOK:

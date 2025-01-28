@@ -1,5 +1,6 @@
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -9,8 +10,10 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -107,6 +110,10 @@ public class ArmIOTalonFX implements ArmIO {
         elbowConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.ELBOW_REDUCTION;
         wristConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.WRIST_REDUCTION;
 
+        shoulderConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        wristConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake; 
+
         break;
 
       default:
@@ -180,6 +187,16 @@ public class ArmIOTalonFX implements ArmIO {
     shoulderTalon.getConfigurator().apply(shoulderConfiguration);
     elbowTalon.getConfigurator().apply(elbowConfiguration);
     wristTalon.getConfigurator().apply(wristConfiguration);
+
+    switch(ArmConstants.activeEncoders){
+      case RELATIVE:
+        elbowTalon.setPosition(Units.degreesToRotations(105));
+        shoulderTalon.setPosition(Units.degreesToRotations(-65));
+      break;
+
+      case ABSOLUTE:
+      break;
+    }
 
     // Configure inputs
     shoulderPosition = shoulderTalon.getPosition();

@@ -37,7 +37,7 @@ public class ArmConstants {
     public static final Rotation2d SHOULDER_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
     public static final Rotation2d SHOULDER_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
     public static final double SHOULDER_REDUCTION = 7500000 / 117600;
-    public static final double KG_SHOULDER = 0.3;
+    public static final double KG_SHOULDER = 0.6;
     public static final double KS_SHOULDER = 0.1;
     public static final double KV_SHOULDER = 0.12;
     public static final double KA_SHOULDER = 0.0;
@@ -57,13 +57,13 @@ public class ArmConstants {
     public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
     public static final double ELBOW_REDUCTION = 7500000 / 117600;
     public static final double KG_ELBOW = 0.0; // KG_ELBOW should remain 0.0 based on the arm's design
-    public static final double KS_ELBOW = 0.1;
+    public static final double KS_ELBOW = 0.2;
     public static final double KV_ELBOW = 0.0;
     public static final double KA_ELBOW = 0.0;
     public static final double KP_ELBOW = 28.0;
     public static final double KI_ELBOW = 0.0;
     public static final double KD_ELBOW = 0.0;
-    public static final double ELBOW_MAX_VELOCITY_RPS = 0.5;
+    public static final double ELBOW_MAX_VELOCITY_RPS = 1;
     public static final double ELBOW_MAX_ACCELERATION_RPS2 = 8.0;
     public static final double ELBOW_MAX_JERK_RPS3 = 60.0;
 
@@ -97,7 +97,7 @@ public class ArmConstants {
         // yTarget
         // wristPosition
         public static final ArmPose START = new ArmPose(
-                Units.inchesToMeters(11),
+                Units.inchesToMeters(18),
                 Units.inchesToMeters(35),
                 Rotation2d.fromDegrees(0));
 
@@ -106,24 +106,29 @@ public class ArmConstants {
                 Units.inchesToMeters(36),
                 Rotation2d.fromDegrees(0));
 
+        public static final ArmPose FRONT_L2_REEF = new ArmPose(
+                Units.inchesToMeters(31),
+                Units.inchesToMeters(45),
+                Rotation2d.fromDegrees(0));
+
         public static final ArmPose REAR_L4_REEF = new ArmPose(
-                Units.inchesToMeters(0),
-                Units.inchesToMeters(0),
+                Units.inchesToMeters(-2.7),
+                Units.inchesToMeters(74),
                 Rotation2d.fromDegrees(0));
 
-        public static final ArmPose REAR_L3_REEF = new ArmPose(
-                Units.inchesToMeters(0),
-                Units.inchesToMeters(0),
-                Rotation2d.fromDegrees(0));
+        // public static final ArmPose REAR_L3_REEF = new ArmPose(
+        //         Units.inchesToMeters(0),
+        //         Units.inchesToMeters(0),
+        //         Rotation2d.fromDegrees(0));
 
-        public static final ArmPose REAR_L2_REEF = new ArmPose(
-                Units.inchesToMeters(0),
-                Units.inchesToMeters(0),
-                Rotation2d.fromDegrees(0));
+        // public static final ArmPose REAR_L2_REEF = new ArmPose(
+        //         Units.inchesToMeters(0),
+        //         Units.inchesToMeters(0),
+        //         Rotation2d.fromDegrees(0));
 
-        public static final ArmPose REAR_L1_REEF = new ArmPose(
-                Units.inchesToMeters(0),
-                Units.inchesToMeters(0),
-                Rotation2d.fromDegrees(0));
+        // public static final ArmPose REAR_L1_REEF = new ArmPose(
+        //         Units.inchesToMeters(0),
+        //         Units.inchesToMeters(0),
+        //         Rotation2d.fromDegrees(0));
     }
 }
