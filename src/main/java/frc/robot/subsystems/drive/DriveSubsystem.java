@@ -86,8 +86,8 @@ public class DriveSubsystem extends SubsystemBase {
           this::getChassisSpeeds,
           this::runVelocity,
           new PPHolonomicDriveController(
-              new PIDConstants(5, 0, 0),
-              new PIDConstants(5, 0, 0)),
+              new PIDConstants(3, 0, 0),
+              new PIDConstants(3, 0, 0)),
           config,
           () -> {
             var alliance = DriverStation.getAlliance();
@@ -160,6 +160,7 @@ public class DriveSubsystem extends SubsystemBase {
       // Read wheel positions and deltas from each module
       SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
       SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+
       for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
         moduleDeltas[moduleIndex] = new SwerveModulePosition(

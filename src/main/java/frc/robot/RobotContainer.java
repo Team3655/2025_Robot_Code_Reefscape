@@ -61,7 +61,6 @@ import frc.robot.util.CommandNXT;
  */
 public class RobotContainer {
 
-  @SuppressWarnings("unused")
   private final RobotState robotState = RobotState.getInstance();
 
   // Subsystems
@@ -70,7 +69,7 @@ public class RobotContainer {
   private final VisionSubsystem vision;
 
   // private final ClimberSubsystem climber;
-  private final ArmSubsystem arm;
+  // private final ArmSubsystem arm;
   // private final IntakeSubsystem intake;
 
   // Controller
@@ -95,7 +94,7 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer() {
+  public RobotContainer() { 
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -109,7 +108,7 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIOLimelight("llone"));
 
-        arm = new ArmSubsystem(new ArmIOTalonFX());
+        // arm = new ArmSubsystem(new ArmIOTalonFX());
         // climber = new ClimberSubsystem(new ClimberIOTalonFX());
         // intake = new IntakeSubsystem(new IntakeIOTalonFX());
         break;
@@ -135,7 +134,7 @@ public class RobotContainer {
                 Rotation2d.fromDegrees(62.5),
                 Rotation2d.fromDegrees(48.9)));
 
-        arm = new ArmSubsystem(new ArmIOSim());
+        // arm = new ArmSubsystem(new ArmIOSim());
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
         // intake = new IntakeSubsystem(new IntakeIO() {});
@@ -157,7 +156,7 @@ public class RobotContainer {
         vision = new VisionSubsystem(
             new VisionIO() {});
             
-        arm = new ArmSubsystem(new ArmIO() {});
+        // arm = new ArmSubsystem(new ArmIO() {});
 
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
@@ -184,11 +183,13 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption("Test PathPlanner auto", new PathPlannerAuto("Test Path 1"));
 
-    NamedCommands.registerCommand("Set Arm Start State", ArmCommands.updateSetpoint(arm, ArmStates.START));
-    NamedCommands.registerCommand("Set Arm Intake State", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-    NamedCommands.registerCommand("Set Arm Feed State", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+    autoChooser.addOption("Test PathPlanner auto", new PathPlannerAuto("Example Auto"));
+    autoChooser.addOption("Line Auto", new PathPlannerAuto("Straight Auto"));
+
+    // NamedCommands.registerCommand("Set Arm Start State", ArmCommands.updateSetpoint(arm, ArmStates.START));
+    // NamedCommands.registerCommand("Set Arm Intake State", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+    // NamedCommands.registerCommand("Set Arm Feed State", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -231,18 +232,18 @@ public class RobotContainer {
                 drive,
                 () -> -programmingController.getLeftY(),
                 () -> -programmingController.getLeftX(),
-                () -> programmingController.getRightX()));
+                () -> -programmingController.getRightX()));
 
         //programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        programmingController.back().onTrue(drive.zeroDrive());
+        programmingController.button(8).onTrue(drive.zeroDrive());
 
-        programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
+        // programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
 
-        programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+        // programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
 
-        programmingController.y().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+        // programmingController.y().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
 
-        programmingController.x().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+        // programmingController.x().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
         // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
         // programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
