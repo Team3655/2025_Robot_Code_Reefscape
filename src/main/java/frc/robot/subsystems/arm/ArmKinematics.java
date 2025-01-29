@@ -58,7 +58,8 @@ public class ArmKinematics {
     private Rotation2d theta4 = Rotation2d.fromRadians(0.0);
     private Rotation2d theta6 = Rotation2d.fromRadians(0.0);
 
-    private Rotation2d[] armAngles = new Rotation2d[2];
+    public Rotation2d[] currentArmState = new Rotation2d[2];
+    private Rotation2d[] calculatedArmAngles = new Rotation2d[2];
 
     /**
      * @param xSetpoint The x coordinate of the target in meters
@@ -70,34 +71,34 @@ public class ArmKinematics {
 
         calculateInverseKinematics(xTarget, yTarget);
 
-        // try {
-        //     validateState(L4,
-        //             L6,
-        //             theta1.getRadians(),
-        //             relativeTheta2.getRadians(),
-        //             theta3.getRadians(),
-        //             theta4.getRadians());
-        // } catch (InvalidArmState e) {
-        //     System.out.println(e.getMessage());
-        //     throw e;
-        // }
+        try {
+            validateState(L4,
+                    L6,
+                    theta1.getRadians(),
+                    relativeTheta2.getRadians(),
+                    theta3.getRadians(),
+                    theta4.getRadians());
 
-        armAngles[0] = theta1;
+            calculatedArmAngles[0] = theta1;
 
-        switch (ArmConstants.activeEncoders) {
-            case ABSOLUTE:
-                armAngles[1] = absoluteTheta2;
-                break;
-            case RELATIVE:
-                armAngles[1] = relativeTheta2;
-                break;
+            switch (ArmConstants.activeEncoders) {
+                case ABSOLUTE:
+                    calculatedArmAngles[1] = absoluteTheta2;
+                    break;
+                case RELATIVE:
+                    calculatedArmAngles[1] = relativeTheta2;
+                    break;
+            }
+
+            SmartDashboard.putNumber("Theta1Deg Target", theta1.getDegrees());
+            SmartDashboard.putNumber("Theta2Deg Target", calculatedArmAngles[1].getDegrees());
+
+            return calculatedArmAngles;
+
+        } catch (InvalidArmState e) {
+            DriverStation.reportError("INVALID ARM STATE INPUT, CANNOT MOVE ARM", true);
+            return currentArmState;
         }
-
-        SmartDashboard.putNumber("Theta1Deg Target", theta1.getDegrees());
-        SmartDashboard.putNumber("Theta2Deg Target", armAngles[1].getDegrees());
-        
-
-        return armAngles;
 
     }
 
@@ -176,7 +177,7 @@ public class ArmKinematics {
         return new double[] { x, y };
     }
 
-    //TODO: Garrett comment on these
+    // TODO: Garrett comment on these
     /**
      * Validates that the requested state of the arm is possible to achieve
      * 
@@ -209,34 +210,6 @@ public class ArmKinematics {
                 throw new InvalidArmState("ARM OUT OF BOUNDS - INVALID X AND Y");
             }
         }
-    }
-
-    private static boolean isValidState(double L4, double L6, double theta1, double relativeTheta2,
-      double theta3, double thetaL4) {
-
-      boolean validState = true;
-
-      if (theta1 > Units.degreesToRadians(90) || theta1 < -Units.degreesToRadians(-80)) {
-        validState = false;
-        DriverStation.reportWarning("INVALID SHOULDER ANGLE CALCULATED", null);
-      }
-
-      double[] values = new double[6];
-      values[0] = L4;
-      values[1] = L6;
-      values[2] = theta1;
-      values[3] = relativeTheta2;
-      values[4] = theta3;
-      values[5] = thetaL4;
-
-      for (int i = 0; i < 6; i++) {
-        if (!Double.isFinite(values[i])) {
-            validState = false;
-            DriverStation.reportWarning("INVALID ARM STATE CALCULATED", null);
-        }
-      }
-
-      return validState;
     }
 
     /**

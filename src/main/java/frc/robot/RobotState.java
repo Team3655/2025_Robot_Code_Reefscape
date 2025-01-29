@@ -29,12 +29,16 @@ public class RobotState {
       Matrix<N3, N1> stdDevs) {
   }
 
+  public record ArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle){}
+
   private SwerveDriveKinematics kinematics;
 
   private SwerveDriveOdometry odometry;
   private SwerveDrivePoseEstimator poseEstimator;
 
   private SwerveModulePosition[] lastModulePositions;
+
+  public ArmState armState;
 
   private static RobotState instance;
 
@@ -68,6 +72,8 @@ public class RobotState {
         new Pose2d(),
         VecBuilder.fill(Units.inchesToMeters(2.0), Units.inchesToMeters(2.0), Units.degreesToRadians(2.0)),
         VecBuilder.fill(0.5, 0.5, 0.5));
+    
+    armState = new ArmState(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
   }
 
   public synchronized void addOdometryMeasurement(OdometryMeasurement measurement) {
@@ -86,6 +92,10 @@ public class RobotState {
         measurement.pose,
         measurement.timestamp,
         measurement.stdDevs);
+  }
+
+  public synchronized void updateArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle){
+    armState = new ArmState(shoulderAngle, elbowAngle, wristAngle);
   }
 
   public void resetPose(Pose2d pose) {
@@ -117,6 +127,11 @@ public class RobotState {
 
   public Rotation2d getRotation() {
     return getOdometryPose().getRotation();
+  }
+
+  public Rotation2d[] getArmState(){
+    Rotation2d[] state = {armState.shoulderAngle, armState.elbowAngle, armState.wristAngle};
+    return state;
   }
 
 }

@@ -15,9 +15,11 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -36,7 +38,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -77,30 +78,37 @@ public class DriveSubsystem extends SubsystemBase {
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
 
+
+    RobotConfig config;
     try {
-      RobotConfig config = RobotConfig.fromGUISettings();
+      config = RobotConfig.fromGUISettings();
 
       AutoBuilder.configure(
-          RobotState.getInstance()::getEstimatedPose,
-          RobotState.getInstance()::resetPose,
-          this::getChassisSpeeds,
-          this::runVelocity,
+          RobotState.getInstance()::getEstimatedPose, // Robot pose supplier
+          RobotState.getInstance()::resetPose, // Method to reset odometry
+          this::getChassisSpeeds, // ChassisSpeeds supplier
+          this::runVelocity, // Runs robot given chassis speeds
           new PPHolonomicDriveController(
-              new PIDConstants(3, 0, 0),
-              new PIDConstants(3, 0, 0)),
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+          ),
           config,
           () -> {
+            // allows path to be flipped for red and blue alliance
             var alliance = DriverStation.getAlliance();
             if (alliance.isPresent()) {
-              return alliance.get() == Alliance.Red;
+              return alliance.get() == DriverStation.Alliance.Red;
             }
             return false;
           },
-          this);
-    } catch (Exception e) {
-      DriverStation.reportError("Failed to load pathplanner config !!! :3", e.getStackTrace());
+          this
+      );
+    } catch (IOException e) {
+      DriverStation.reportError("PATHPLANNER IO ERROR", e.getStackTrace());
+    } catch (ParseException e){
+      DriverStation.reportError("PATHPLANNER FAILED TO PARSE JSON", e.getStackTrace());
     }
-    
+
     Pathfinding.setPathfinder(new LocalADStarAK());
 
     PathPlannerLogging.setLogActivePathCallback(
@@ -284,7 +292,10 @@ public class DriveSubsystem extends SubsystemBase {
     return values;
   }
 
-  /** Returns the average velocity of the modules in rotations/sec (Phoenix native units). */
+  /**
+   * Returns the average velocity of the modules in rotations/sec (Phoenix native
+   * units).
+   */
   public double getFFCharacterizationVelocity() {
     double output = 0.0;
     for (int i = 0; i < 4; i++) {

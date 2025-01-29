@@ -92,7 +92,7 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
+   * The container for the robot. Contains subsystems, IO devices, and commands.
    */
   public RobotContainer() { 
     switch (Constants.currentMode) {
@@ -167,25 +167,21 @@ public class RobotContainer {
 
     //Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-    //Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    autoChooser.addOption("Test PathPlanner auto", new PathPlannerAuto("Example Auto"));
-    autoChooser.addOption("Line Auto", new PathPlannerAuto("Straight Auto"));
+        //Set up SysId routines
+        autoChooser.addOption(
+          "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+      autoChooser.addOption(
+          "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+      autoChooser.addOption(
+          "Drive SysId (Quasistatic Forward)",
+          drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      autoChooser.addOption(
+          "Drive SysId (Quasistatic Reverse)",
+          drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      autoChooser.addOption(
+          "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      autoChooser.addOption(
+          "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // NamedCommands.registerCommand("Set Arm Start State", ArmCommands.updateSetpoint(arm, ArmStates.START));
     // NamedCommands.registerCommand("Set Arm Intake State", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
