@@ -18,6 +18,7 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmKinematics {
@@ -92,8 +93,8 @@ public class ArmKinematics {
                 break;
         }
 
-        SmartDashboard.putNumber("Theta1Deg", theta1.getDegrees());
-        SmartDashboard.putNumber("Theta2Deg", armAngles[1].getDegrees());
+        SmartDashboard.putNumber("Theta1Deg Target", theta1.getDegrees());
+        SmartDashboard.putNumber("Theta2Deg Target", armAngles[1].getDegrees());
         
 
         return armAngles;
@@ -208,6 +209,34 @@ public class ArmKinematics {
                 throw new InvalidArmState("ARM OUT OF BOUNDS - INVALID X AND Y");
             }
         }
+    }
+
+    private static boolean isValidState(double L4, double L6, double theta1, double relativeTheta2,
+      double theta3, double thetaL4) {
+
+      boolean validState = true;
+
+      if (theta1 > Units.degreesToRadians(90) || theta1 < -Units.degreesToRadians(-80)) {
+        validState = false;
+        DriverStation.reportWarning("INVALID SHOULDER ANGLE CALCULATED", null);
+      }
+
+      double[] values = new double[6];
+      values[0] = L4;
+      values[1] = L6;
+      values[2] = theta1;
+      values[3] = relativeTheta2;
+      values[4] = theta3;
+      values[5] = thetaL4;
+
+      for (int i = 0; i < 6; i++) {
+        if (!Double.isFinite(values[i])) {
+            validState = false;
+            DriverStation.reportWarning("INVALID ARM STATE CALCULATED", null);
+        }
+      }
+
+      return validState;
     }
 
     /**
