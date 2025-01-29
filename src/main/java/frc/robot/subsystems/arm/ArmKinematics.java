@@ -21,6 +21,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/**
+ * Kinematics class for a two stage arm
+ */
 public class ArmKinematics {
 
     private double d = 0.0;
@@ -58,7 +61,8 @@ public class ArmKinematics {
     private Rotation2d theta4 = Rotation2d.fromRadians(0.0);
     private Rotation2d theta6 = Rotation2d.fromRadians(0.0);
 
-    public Rotation2d[] currentArmState = new Rotation2d[2];
+    // Ensure that these values are always updated
+    public Rotation2d[] currentArmAngles = new Rotation2d[2];
     private Rotation2d[] calculatedArmAngles = new Rotation2d[2];
 
     /**
@@ -97,7 +101,7 @@ public class ArmKinematics {
 
         } catch (InvalidArmState e) {
             DriverStation.reportError("INVALID ARM STATE INPUT, CANNOT MOVE ARM", true);
-            return currentArmState;
+            return currentArmAngles;
         }
 
     }

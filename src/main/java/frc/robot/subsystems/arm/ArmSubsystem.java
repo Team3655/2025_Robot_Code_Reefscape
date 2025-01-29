@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.RobotState;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -99,11 +98,10 @@ public class ArmSubsystem extends SubsystemBase {
     io.setElbowPosition(elbowSetPoint);
     // io.setWristPosition(setpoint.wristAngle);
 
-    // Updates the arm state data
+    // Updates the current arm angles in ArmKinematics
+    armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
+    armKinematics.currentArmAngles[1] = inputs.elbowPosition;
 
-    armKinematics.currentArmState[0] = inputs.shoulderPosition;
-    armKinematics.currentArmState[1] = inputs.elbowPosition;
-    
     // Update visualizers
     setpointVisualizer.update(shoulderSetPoint.getDegrees(), elbowSetPoint.getDegrees(), wristSetPoint.getDegrees());
     Logger.recordOutput("Arm/Mechanism2dSetpoint", setpointVisualizer.arm);
@@ -149,11 +147,16 @@ public class ArmSubsystem extends SubsystemBase {
 
   /** 
    * Updates the setpoint to a new ArmPose
+   * @param pose The pose to update to
    */
   public void updateSetpoint(ArmPose pose) {
     setpoint = pose;
   }
 
+  /**
+   * Increment the wrist angle by degrees
+   * @param degrees The degrees to increment by
+   */
   public void jogWrist(double degrees) {
     setpoint = new ArmPose(setpoint.xTarget, setpoint.yTarget, setpoint.wristAngle.plus(Rotation2d.fromDegrees(degrees)));
   }

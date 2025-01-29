@@ -42,7 +42,7 @@ public class ArmVisualizer {
       case "setpoint":
 
         // Appends the arm ligaments onto other ligaments without color to visualize the setpoint. 
-        //Should be the same in sim and real modes.
+        // Should be the same in sim and real modes.
         base = root.append(new LoggedMechanismLigament2d("Base", ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 90, 7,
             new Color8Bit(Color.kGray)));
         shoulder = base.append(new LoggedMechanismLigament2d("Shoulder", ArmConstants.SHOULDER_LENGTH_METERS, 200, 6,
