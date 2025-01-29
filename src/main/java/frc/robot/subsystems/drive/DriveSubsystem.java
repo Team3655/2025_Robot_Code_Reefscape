@@ -38,6 +38,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -137,6 +138,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
+
+    SmartDashboard.putNumber("Wheel Speeds", modules[0].getVelocityMetersPerSec());
     gyroIO.updateInputs(gyroInputs);
     for (var module : modules) {
       module.updateInputs();

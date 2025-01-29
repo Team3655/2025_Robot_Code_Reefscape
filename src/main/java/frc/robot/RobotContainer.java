@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -168,6 +169,7 @@ public class RobotContainer {
 
     //Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
         //Set up SysId routines
         autoChooser.addOption(
           "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
@@ -183,6 +185,8 @@ public class RobotContainer {
           "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
       autoChooser.addOption(
           "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+          NamedCommands.registerCommand("Print arm working", new PrintCommand("Arm probably works"));
 
     // NamedCommands.registerCommand("Set Arm Start State", ArmCommands.updateSetpoint(arm, ArmStates.START));
     // NamedCommands.registerCommand("Set Arm Intake State", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));

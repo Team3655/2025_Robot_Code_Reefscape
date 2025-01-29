@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.7125575086805547,
+        "y": 7.351389973958334
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.6265096932870358,
+        "y": 6.557337601273148
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.186274594907406,
-        "y": 7.0
+        "x": 3.622044994212962,
+        "y": 5.4732895688657415
       },
       "prevControl": {
-        "x": 4.186274594907406,
-        "y": 7.0
+        "x": 2.967341941550925,
+        "y": 6.312588252314815
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Print arm working",
+      "waypointRelativePos": 0.5274994808970093,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
@@ -42,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -56.4360030483671
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -52.51898138918038
   },
   "useDefaultConstraints": false
 }

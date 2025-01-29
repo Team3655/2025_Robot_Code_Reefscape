@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.drive.DriveConstants;
 
 public class RobotState {
@@ -99,6 +100,7 @@ public class RobotState {
   }
 
   public void resetPose(Pose2d pose) {
+
     odometry.resetPosition(
         pose.getRotation(),
         lastModulePositions,
