@@ -79,7 +79,6 @@ public class DriveSubsystem extends SubsystemBase {
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
 
-
     RobotConfig config;
     try {
       config = RobotConfig.fromGUISettings();
@@ -102,11 +101,10 @@ public class DriveSubsystem extends SubsystemBase {
             }
             return false;
           },
-          this
-      );
+          this);
     } catch (IOException e) {
       DriverStation.reportError("PATHPLANNER IO ERROR", e.getStackTrace());
-    } catch (ParseException e){
+    } catch (ParseException e) {
       DriverStation.reportError("PATHPLANNER FAILED TO PARSE JSON", e.getStackTrace());
     }
 
@@ -167,6 +165,7 @@ public class DriveSubsystem extends SubsystemBase {
     // Update odometry
     double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;
+
     for (int i = 0; i < sampleCount; i++) {
       // Read wheel positions and deltas from each module
       SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
@@ -175,8 +174,7 @@ public class DriveSubsystem extends SubsystemBase {
       for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
         moduleDeltas[moduleIndex] = new SwerveModulePosition(
-            modulePositions[moduleIndex].distanceMeters
-                - lastModulePositions[moduleIndex].distanceMeters,
+          modulePositions[moduleIndex].distanceMeters - lastModulePositions[moduleIndex].distanceMeters,
             modulePositions[moduleIndex].angle);
         lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
       }
@@ -254,7 +252,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Command zeroDrive() {
-    return Commands.runOnce(() -> gyroIO.resetGyro());
+    return Commands
+        .runOnce(() -> RobotState.getInstance().resetPose(
+            new Pose2d(
+                RobotState.getInstance().getEstimatedPose().getX(),
+                RobotState.getInstance().getEstimatedPose().getY(),
+                new Rotation2d())));
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */

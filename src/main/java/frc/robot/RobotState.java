@@ -100,7 +100,6 @@ public class RobotState {
   }
 
   public void resetPose(Pose2d pose) {
-
     odometry.resetPosition(
         pose.getRotation(),
         lastModulePositions,
