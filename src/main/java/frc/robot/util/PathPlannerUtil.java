@@ -58,7 +58,7 @@ public class PathPlannerUtil {
     }
 
     FileWriter writer = new FileWriter(file);
-    writer.write(json.toJSONString());
+    json.writeJSONString(writer);
     writer.flush();
     writer.close();
   }
