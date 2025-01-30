@@ -84,7 +84,7 @@ public class DriveSubsystem extends SubsystemBase {
       config = RobotConfig.fromGUISettings();
 
       AutoBuilder.configure(
-          RobotState.getInstance()::getEstimatedPose, // Robot pose supplier
+          RobotState.getInstance()::getPose, // Robot pose supplier
           RobotState.getInstance()::resetPose, // Method to reset odometry
           this::getChassisSpeeds, // ChassisSpeeds supplier
           this::runVelocity, // Runs robot given chassis speeds
@@ -188,10 +188,6 @@ public class DriveSubsystem extends SubsystemBase {
         Twist2d twist = DriveConstants.kinematics.toTwist2d(moduleDeltas);
         rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
       }
-
-      // Apply update
-      // poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation,
-      // modulePositions);
 
       RobotState.getInstance().addOdometryMeasurement(
           new OdometryMeasurement(

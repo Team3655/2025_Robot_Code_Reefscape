@@ -202,7 +202,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble());
     inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble());
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
-    inputs.driveCurrentAmps = new double[] { driveCurrent.getValueAsDouble() };
+    inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
 
     // inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
     //     .minus(absoluteEncoderOffset);
@@ -210,7 +210,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
     inputs.turnPositionError = Rotation2d.fromRotations(turnTalon.getClosedLoopError().getValueAsDouble());
     inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
-    inputs.turnCurrentAmps = new double[] { turnCurrent.getValueAsDouble() };
+    inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();
 
     inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryDrivePositionsRad = drivePositionQueue.stream()

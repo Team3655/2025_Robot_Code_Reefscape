@@ -83,6 +83,7 @@ public class DriveCommands {
 
           Logger.recordOutput("Drive/Commands/omega", omega);
           Logger.recordOutput("Drive/Commands/linear velocity", linearVelocity);
+          Logger.recordOutput("Drive/Commands/linear magnitude", linearVelocity.getNorm());
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =

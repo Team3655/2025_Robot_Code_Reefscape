@@ -13,7 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.drive.DriveConstants;
 
 public class RobotState {
@@ -99,21 +98,29 @@ public class RobotState {
     armState = new ArmState(shoulderAngle, elbowAngle, wristAngle);
   }
 
-  public void resetPose(Pose2d pose) {
+  public synchronized void resetPose(Pose2d pose) {
     odometry.resetPosition(
-        pose.getRotation(),
+        getRotation(),
         lastModulePositions,
         pose);
 
     poseEstimator.resetPosition(
-        pose.getRotation(),
+        getRotation(),
         lastModulePositions,
         pose);
   }
 
-  public void zeroEstimation() {
-    poseEstimator.resetPosition(Rotation2d.fromDegrees(0), lastModulePositions, getEstimatedPose());
-    odometry.resetPosition(Rotation2d.fromDegrees(0), lastModulePositions, getEstimatedPose());
+  public synchronized void zeroHeading() {
+    odometry.resetRotation(new Rotation2d());
+    poseEstimator.resetRotation(new Rotation2d());
+  }
+
+  @AutoLogOutput(key = "RobotState/Pose")
+  public Pose2d getPose() {
+    return new Pose2d(
+      getEstimatedPose().getTranslation(),
+      getRotation()
+    );
   }
 
   @AutoLogOutput(key = "RobotState/EstimatedPose")
