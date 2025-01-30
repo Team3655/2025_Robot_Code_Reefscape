@@ -24,6 +24,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -37,6 +38,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotState;
 import frc.robot.RobotState.OdometryMeasurement;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.PathPlannerUtil;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -79,34 +82,46 @@ public class DriveSubsystem extends SubsystemBase {
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
 
-    RobotConfig config;
-    try {
-      config = RobotConfig.fromGUISettings();
+    ModuleConfig moduleConfig = new ModuleConfig(
+        DriveConstants.WHEEL_RADIUS,
+        DriveConstants.MAX_LINEAR_SPEED,
+        DriveConstants.WHEEL_COF,
+        DCMotor.getKrakenX60Foc(1),
+        DriveConstants.DRIVE_CURRENT_LIMIT,
+        1);
 
-      AutoBuilder.configure(
-          RobotState.getInstance()::getPose, // Robot pose supplier
-          RobotState.getInstance()::resetPose, // Method to reset odometry
-          this::getChassisSpeeds, // ChassisSpeeds supplier
-          this::runVelocity, // Runs robot given chassis speeds
-          new PPHolonomicDriveController(
-              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-          ),
-          config,
-          () -> {
-            // allows path to be flipped for red and blue alliance
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          },
-          this);
-    } catch (IOException e) {
-      DriverStation.reportError("PATHPLANNER IO ERROR", e.getStackTrace());
-    } catch (ParseException e) {
-      DriverStation.reportError("PATHPLANNER FAILED TO PARSE JSON", e.getStackTrace());
+    RobotConfig config = new RobotConfig(
+        DriveConstants.ROBOT_MASS_KG,
+        DriveConstants.ROBOT_MOI,
+        moduleConfig,
+        DriveConstants.moduleTranslations);
+
+    try {
+      PathPlannerUtil.writeSettings(config, moduleConfig, DriveConstants.DRIVE_GEAR_RATIO);
+      RobotConfig.fromGUISettings().hasValidConfig();
+    } catch (IOException | ParseException e) {
+      e.printStackTrace();
     }
+
+    AutoBuilder.configure(
+        RobotState.getInstance()::getPose, // Robot pose supplier
+        RobotState.getInstance()::resetPose, // Method to reset odometry
+        this::getChassisSpeeds, // ChassisSpeeds supplier
+        this::runVelocity, // Runs robot given chassis speeds
+        new PPHolonomicDriveController(
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+        ),
+        config,
+        () -> {
+          // allows path to be flipped for red and blue alliance
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
 
     Pathfinding.setPathfinder(new LocalADStarAK());
 
@@ -174,7 +189,7 @@ public class DriveSubsystem extends SubsystemBase {
       for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
         moduleDeltas[moduleIndex] = new SwerveModulePosition(
-          modulePositions[moduleIndex].distanceMeters - lastModulePositions[moduleIndex].distanceMeters,
+            modulePositions[moduleIndex].distanceMeters - lastModulePositions[moduleIndex].distanceMeters,
             modulePositions[moduleIndex].angle);
         lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
       }
