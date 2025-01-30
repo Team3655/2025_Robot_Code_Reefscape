@@ -42,6 +42,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotState;
@@ -59,12 +60,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   private Rotation2d rawGyroRotation = new Rotation2d();
   // private SwerveModulePosition[] lastModulePositions = // For delta tracking
-  //     new SwerveModulePosition[] {
-  //         new SwerveModulePosition(),
-  //         new SwerveModulePosition(),
-  //         new SwerveModulePosition(),
-  //         new SwerveModulePosition()
-  //     };
+  // new SwerveModulePosition[] {
+  // new SwerveModulePosition(),
+  // new SwerveModulePosition(),
+  // new SwerveModulePosition(),
+  // new SwerveModulePosition()
+  // };
 
   public DriveSubsystem(
       GyroIO gyroIO,
@@ -188,9 +189,10 @@ public class DriveSubsystem extends SubsystemBase {
       for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
         moduleDeltas[moduleIndex] = new SwerveModulePosition(
-            modulePositions[moduleIndex].distanceMeters - RobotState.getInstance().lastModulePositions[moduleIndex].distanceMeters,
+            modulePositions[moduleIndex].distanceMeters
+                - RobotState.getInstance().lastModulePositions[moduleIndex].distanceMeters,
             modulePositions[moduleIndex].angle);
-            RobotState.getInstance().lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+        RobotState.getInstance().lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
       }
 
       // Update gyro angle
@@ -309,6 +311,10 @@ public class DriveSubsystem extends SubsystemBase {
       output += modules[i].getFFCharacterizationVelocity() / 4.0;
     }
     return output;
+  }
+
+  public void resetGyro() {
+    gyroIO.resetGyro();
   }
 
 }

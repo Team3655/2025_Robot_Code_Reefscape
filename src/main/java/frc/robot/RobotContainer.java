@@ -54,7 +54,6 @@ import frc.robot.util.CommandNXT;
  */
 public class RobotContainer {
 
-  @SuppressWarnings("unused")
   private final RobotState robotState = RobotState.getInstance();
 
   // Subsystems
@@ -250,7 +249,7 @@ public class RobotContainer {
                 () -> -programmingController.getRawAxis(2)));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        programmingController.back().onTrue(Commands.runOnce(robotState::zeroHeading));
+        programmingController.button(12).onTrue(Commands.runOnce(()-> drive.resetGyro(), drive));
 
         // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake,
         // 12)).onFalse(IntakeCommands.stopIntake(intake));
