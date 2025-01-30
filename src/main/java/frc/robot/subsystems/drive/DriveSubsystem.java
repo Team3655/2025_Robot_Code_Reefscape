@@ -33,7 +33,6 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -42,7 +41,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotState;
@@ -57,15 +55,6 @@ public class DriveSubsystem extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
-
-  private Rotation2d rawGyroRotation = new Rotation2d();
-  // private SwerveModulePosition[] lastModulePositions = // For delta tracking
-  // new SwerveModulePosition[] {
-  // new SwerveModulePosition(),
-  // new SwerveModulePosition(),
-  // new SwerveModulePosition(),
-  // new SwerveModulePosition()
-  // };
 
   public DriveSubsystem(
       GyroIO gyroIO,
@@ -195,20 +184,11 @@ public class DriveSubsystem extends SubsystemBase {
         RobotState.getInstance().lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
       }
 
-      // Update gyro angle
-      if (gyroInputs.connected) {
-        // Use the real gyro angle
-        rawGyroRotation = gyroInputs.odometryYawPositions[i];
-      } else {
-        // Use the angle delta from the kinematics and module deltas
-        Twist2d twist = DriveConstants.kinematics.toTwist2d(moduleDeltas);
-        rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
-      }
-
       RobotState.getInstance().addOdometryMeasurement(
           new OdometryMeasurement(
               sampleTimestamps[i],
-              rawGyroRotation,
+              gyroInputs.connected ? gyroInputs.odometryYawPositions[i] : null,
+              moduleDeltas,
               modulePositions));
     }
   }
@@ -311,10 +291,6 @@ public class DriveSubsystem extends SubsystemBase {
       output += modules[i].getFFCharacterizationVelocity() / 4.0;
     }
     return output;
-  }
-
-  public void resetGyro() {
-    gyroIO.resetGyro();
   }
 
 }

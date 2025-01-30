@@ -7,6 +7,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -19,7 +20,8 @@ public class RobotState {
 
   public record OdometryMeasurement(
       double timestamp,
-      Rotation2d gyroAngle,
+      Rotation2d gyroRotation,
+      SwerveModulePosition[] moduleDeltas,
       SwerveModulePosition[] wheelPositions) {
   }
 
@@ -38,6 +40,7 @@ public class RobotState {
   private SwerveDrivePoseEstimator poseEstimator;
 
   public SwerveModulePosition[] lastModulePositions;
+  public Rotation2d rawGyroRotation;
 
   public ArmState armState;
 
@@ -74,17 +77,29 @@ public class RobotState {
         VecBuilder.fill(Units.inchesToMeters(2.0), Units.inchesToMeters(2.0), Units.degreesToRadians(2.0)),
         VecBuilder.fill(0.5, 0.5, 0.5));
 
+    rawGyroRotation = new Rotation2d();
+
     armState = new ArmState(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
   }
 
   public synchronized void addOdometryMeasurement(OdometryMeasurement measurement) {
+    // Update gyro angle
+    if (measurement.gyroRotation != null) {
+      // Use the real gyro angle
+      rawGyroRotation = measurement.gyroRotation;
+    } else {
+      // Use the angle delta from the kinematics and module deltas
+      Twist2d twist = DriveConstants.kinematics.toTwist2d(measurement.moduleDeltas);
+      rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+    }
+
     odometry.update(
-        measurement.gyroAngle,
+        rawGyroRotation,
         measurement.wheelPositions);
 
     poseEstimator.updateWithTime(
         measurement.timestamp,
-        measurement.gyroAngle,
+        rawGyroRotation,
         measurement.wheelPositions);
   }
 
@@ -95,18 +110,14 @@ public class RobotState {
         measurement.stdDevs);
   }
 
-  public synchronized void updateArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle) {
-    armState = new ArmState(shoulderAngle, elbowAngle, wristAngle);
-  }
-
   public synchronized void resetPose(Pose2d pose) {
     odometry.resetPosition(
-        odometry.getPoseMeters().getRotation(),
+        rawGyroRotation,
         lastModulePositions,
         pose);
 
     poseEstimator.resetPosition(
-        poseEstimator.getEstimatedPosition().getRotation(),
+        rawGyroRotation,
         lastModulePositions,
         pose);
   }
@@ -137,6 +148,11 @@ public class RobotState {
 
   public Rotation2d getRotation() {
     return getOdometryPose().getRotation();
+  }
+
+
+  public synchronized void updateArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle) {
+    armState = new ArmState(shoulderAngle, elbowAngle, wristAngle);
   }
 
   public Rotation2d[] getArmState() {

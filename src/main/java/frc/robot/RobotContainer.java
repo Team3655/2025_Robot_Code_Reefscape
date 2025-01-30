@@ -249,7 +249,7 @@ public class RobotContainer {
                 () -> -programmingController.getRawAxis(2)));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        programmingController.button(12).onTrue(Commands.runOnce(()-> drive.resetGyro(), drive));
+        programmingController.button(12).onTrue(Commands.runOnce(RobotState.getInstance()::zeroHeading));
 
         // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake,
         // 12)).onFalse(IntakeCommands.stopIntake(intake));
@@ -266,9 +266,6 @@ public class RobotContainer {
         // arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
         // programmingController.b().onTrue(Commands.runOnce(() ->
         // arm.updateSetpoint(ArmStates.START), arm));
-
-
-
         break;
     }
 
