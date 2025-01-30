@@ -29,14 +29,15 @@ public class RobotState {
       Matrix<N3, N1> stdDevs) {
   }
 
-  public record ArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle){}
+  public record ArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle) {
+  }
 
   private SwerveDriveKinematics kinematics;
 
   private SwerveDriveOdometry odometry;
   private SwerveDrivePoseEstimator poseEstimator;
 
-  private SwerveModulePosition[] lastModulePositions;
+  public SwerveModulePosition[] lastModulePositions;
 
   public ArmState armState;
 
@@ -72,7 +73,7 @@ public class RobotState {
         new Pose2d(),
         VecBuilder.fill(Units.inchesToMeters(2.0), Units.inchesToMeters(2.0), Units.degreesToRadians(2.0)),
         VecBuilder.fill(0.5, 0.5, 0.5));
-    
+
     armState = new ArmState(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
   }
 
@@ -94,33 +95,34 @@ public class RobotState {
         measurement.stdDevs);
   }
 
-  public synchronized void updateArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle){
+  public synchronized void updateArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle) {
     armState = new ArmState(shoulderAngle, elbowAngle, wristAngle);
   }
 
   public synchronized void resetPose(Pose2d pose) {
     odometry.resetPosition(
-        getRotation(),
+        odometry.getPoseMeters().getRotation(),
         lastModulePositions,
         pose);
 
     poseEstimator.resetPosition(
-        getRotation(),
+        poseEstimator.getEstimatedPosition().getRotation(),
         lastModulePositions,
         pose);
   }
 
   public synchronized void zeroHeading() {
-    odometry.resetRotation(new Rotation2d());
-    poseEstimator.resetRotation(new Rotation2d());
+    resetPose(new Pose2d(
+        poseEstimator.getEstimatedPosition().getX(),
+        poseEstimator.getEstimatedPosition().getY(),
+        new Rotation2d()));
   }
 
   @AutoLogOutput(key = "RobotState/Pose")
   public Pose2d getPose() {
     return new Pose2d(
-      getEstimatedPose().getTranslation(),
-      getRotation()
-    );
+        getEstimatedPose().getTranslation(),
+        getRotation());
   }
 
   @AutoLogOutput(key = "RobotState/EstimatedPose")
@@ -137,8 +139,8 @@ public class RobotState {
     return getOdometryPose().getRotation();
   }
 
-  public Rotation2d[] getArmState(){
-    Rotation2d[] state = {armState.shoulderAngle, armState.elbowAngle, armState.wristAngle};
+  public Rotation2d[] getArmState() {
+    Rotation2d[] state = { armState.shoulderAngle, armState.elbowAngle, armState.wristAngle };
     return state;
   }
 

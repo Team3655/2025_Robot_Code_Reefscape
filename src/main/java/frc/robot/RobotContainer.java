@@ -206,7 +206,7 @@ public class RobotContainer {
                 () -> -mattTranslation.StickXAxis(),
                 () -> mattRotation.StickXAxis()));
 
-        mattRotation.B1().onTrue(drive.zeroDrive());
+        mattRotation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
         break;
       case ETHAN:
@@ -227,7 +227,7 @@ public class RobotContainer {
                 () -> -programmingController.getRightX()));
 
         //programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        programmingController.button(8).onTrue(drive.zeroDrive());
+        programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
 
         // programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
 
@@ -250,7 +250,7 @@ public class RobotContainer {
                 () -> -programmingController.getRawAxis(2)));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        programmingController.back().onTrue(drive.zeroDrive());
+        programmingController.back().onTrue(Commands.runOnce(robotState::zeroHeading));
 
         // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake,
         // 12)).onFalse(IntakeCommands.stopIntake(intake));

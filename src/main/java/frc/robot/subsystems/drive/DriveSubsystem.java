@@ -42,7 +42,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotState;
@@ -59,13 +58,13 @@ public class DriveSubsystem extends SubsystemBase {
   private final SysIdRoutine sysId;
 
   private Rotation2d rawGyroRotation = new Rotation2d();
-  private SwerveModulePosition[] lastModulePositions = // For delta tracking
-      new SwerveModulePosition[] {
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition()
-      };
+  // private SwerveModulePosition[] lastModulePositions = // For delta tracking
+  //     new SwerveModulePosition[] {
+  //         new SwerveModulePosition(),
+  //         new SwerveModulePosition(),
+  //         new SwerveModulePosition(),
+  //         new SwerveModulePosition()
+  //     };
 
   public DriveSubsystem(
       GyroIO gyroIO,
@@ -86,7 +85,7 @@ public class DriveSubsystem extends SubsystemBase {
         DriveConstants.WHEEL_RADIUS,
         DriveConstants.MAX_LINEAR_SPEED,
         DriveConstants.WHEEL_COF,
-        DCMotor.getKrakenX60Foc(1),
+        DCMotor.getKrakenX60Foc(1).withReduction(DriveConstants.DRIVE_GEAR_RATIO),
         DriveConstants.DRIVE_CURRENT_LIMIT,
         1);
 
@@ -104,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     AutoBuilder.configure(
-        RobotState.getInstance()::getPose, // Robot pose supplier
+        RobotState.getInstance()::getOdometryPose, // Robot pose supplier
         RobotState.getInstance()::resetPose, // Method to reset odometry
         this::getChassisSpeeds, // ChassisSpeeds supplier
         this::runVelocity, // Runs robot given chassis speeds
@@ -189,9 +188,9 @@ public class DriveSubsystem extends SubsystemBase {
       for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
         moduleDeltas[moduleIndex] = new SwerveModulePosition(
-            modulePositions[moduleIndex].distanceMeters - lastModulePositions[moduleIndex].distanceMeters,
+            modulePositions[moduleIndex].distanceMeters - RobotState.getInstance().lastModulePositions[moduleIndex].distanceMeters,
             modulePositions[moduleIndex].angle);
-        lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+            RobotState.getInstance().lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
       }
 
       // Update gyro angle
@@ -260,15 +259,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
     DriveConstants.kinematics.resetHeadings(headings);
     stop();
-  }
-
-  public Command zeroDrive() {
-    return Commands
-        .runOnce(() -> RobotState.getInstance().resetPose(
-            new Pose2d(
-                RobotState.getInstance().getEstimatedPose().getX(),
-                RobotState.getInstance().getEstimatedPose().getY(),
-                new Rotation2d())));
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */

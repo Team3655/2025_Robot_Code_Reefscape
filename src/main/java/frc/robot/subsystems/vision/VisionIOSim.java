@@ -109,7 +109,7 @@ public class VisionIOSim implements VisionIO {
 
     // update inputs
     if (hasValid) {
-      inputs.hasValidTarget = true;
+      inputs.hasValidTarget = false;
       if (USE_RANDOM) {
         robotPose = robotPose.plus(
             new Transform2d(
