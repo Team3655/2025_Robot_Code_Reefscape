@@ -78,7 +78,7 @@ public class Module {
     SmartDashboard.putNumber("Module " + this.index + " target position", targetState.angle.getDegrees());
 
     io.setTurnPosition(targetState.angle);
-    io.setDriveVelocity(targetState.speedMetersPerSecond / DriveConstants.WHEEL_RADIUS);
+    io.setDriveVelocity(targetState.speedMetersPerSecond / (2 * Math.PI * DriveConstants.WHEEL_RADIUS));
   }
 
   /** Runs the module with the specified output while controlling to zero degrees. */
