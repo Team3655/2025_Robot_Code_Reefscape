@@ -11,6 +11,7 @@ public class DriveConstants {
   public static final double ODOMETRY_FREQUENCY = 250.0;
 
   public static final double MAX_LINEAR_SPEED = Units.feetToMeters(19.5);
+
   // TODO: get real bumper width
   public static final double BUMPER_WIDTH_X = Units.inchesToMeters(36.0);
   public static final double BUMPER_WIDTH_Y = Units.inchesToMeters(36.0);
@@ -33,7 +34,7 @@ public class DriveConstants {
       ROBOT_MASS_KG, 
       BUMPER_WIDTH_X, 
       BUMPER_WIDTH_Y);
-  public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
+  public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
   public static final double WHEEL_COF = 1.5;
 
   public static final double KP_TURN = 100;
