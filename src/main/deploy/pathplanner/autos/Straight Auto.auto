@@ -9,12 +9,6 @@
           "data": {
             "pathName": "Straight Path"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Print arm working"
-          }
         }
       ]
     }

@@ -11,6 +11,7 @@ public class DriveConstants {
   public static final double ODOMETRY_FREQUENCY = 250.0;
 
   public static final double MAX_LINEAR_SPEED = Units.feetToMeters(19.5);
+
   // TODO: get real bumper width
   public static final double BUMPER_WIDTH_X = Units.inchesToMeters(36.0);
   public static final double BUMPER_WIDTH_Y = Units.inchesToMeters(36.0);
@@ -24,7 +25,7 @@ public class DriveConstants {
   public static final Rotation2d FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.026);// (0.115479);
   public static final Rotation2d FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.088); // (-0.095947);
 
-  public static final double DRIVE_GEAR_RATIO = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);
+  public static final double DRIVE_GEAR_RATIO = (50.0 / 16.0) * (16.0 / 27.0) * (45.0 / 15.0);
   public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
   // TODO: get real mass
@@ -33,7 +34,7 @@ public class DriveConstants {
       ROBOT_MASS_KG, 
       BUMPER_WIDTH_X, 
       BUMPER_WIDTH_Y);
-  public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
+  public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
   public static final double WHEEL_COF = 1.5;
 
   public static final double KP_TURN = 100;

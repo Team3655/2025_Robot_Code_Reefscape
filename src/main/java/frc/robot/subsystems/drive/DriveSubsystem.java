@@ -98,8 +98,8 @@ public class DriveSubsystem extends SubsystemBase {
         this::getChassisSpeeds, // ChassisSpeeds supplier
         this::runVelocity, // Runs robot given chassis speeds
         new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            new PIDConstants(0.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(0.0, 0.0, 0.0) // Rotation PID constants
         ),
         config,
         () -> {
@@ -140,7 +140,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
-
     SmartDashboard.putNumber("Wheel Speeds", modules[0].getVelocityMetersPerSec());
     gyroIO.updateInputs(gyroInputs);
     for (var module : modules) {
@@ -149,6 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
     odometryLock.unlock();
 
     Logger.processInputs("Drive/Gyro", gyroInputs);
+
     for (var module : modules) {
       module.periodic();
     }
