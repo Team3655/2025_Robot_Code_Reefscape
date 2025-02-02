@@ -87,30 +87,30 @@ public class ModuleIOTalonFX implements ModuleIO {
     switch (index) {
       // Front left
       case 0:
-        driveTalon = new TalonFX(0, canivoreName);
-        turnTalon = new TalonFX(1, canivoreName);
-        cancoder = new CANcoder(2, canivoreName);
+        driveTalon = new TalonFX(1, canivoreName);
+        turnTalon = new TalonFX(2, canivoreName);
+        cancoder = new CANcoder(3, canivoreName);
         absoluteEncoderOffset = DriveConstants.FRONT_LEFT_ENCODER_OFFSET;
         break;
       // Front right
       case 1:
-        driveTalon = new TalonFX(3, canivoreName);
-        turnTalon = new TalonFX(4, canivoreName);
-        cancoder = new CANcoder(5, canivoreName);
+        driveTalon = new TalonFX(4, canivoreName);
+        turnTalon = new TalonFX(5, canivoreName);
+        cancoder = new CANcoder(6, canivoreName);
         absoluteEncoderOffset = DriveConstants.FRONT_RIGHT_ENCODER_OFFSET;
         break;
       // Back left
       case 2:
-        driveTalon = new TalonFX(6, canivoreName);
-        turnTalon = new TalonFX(7, canivoreName);
-        cancoder = new CANcoder(8, canivoreName);
+        driveTalon = new TalonFX(7, canivoreName);
+        turnTalon = new TalonFX(8, canivoreName);
+        cancoder = new CANcoder(9, canivoreName);
         absoluteEncoderOffset = DriveConstants.BACK_LEFT_ENCODER_OFFSET;
         break;
       // Back right
       case 3:
-        driveTalon = new TalonFX(9, canivoreName);
-        turnTalon = new TalonFX(10, canivoreName);
-        cancoder = new CANcoder(11, canivoreName);
+        driveTalon = new TalonFX(10, canivoreName);
+        turnTalon = new TalonFX(11, canivoreName);
+        cancoder = new CANcoder(12, canivoreName);
         absoluteEncoderOffset = DriveConstants.BACK_RIGHT_ENCODER_OFFSET;
         break;
       default:
