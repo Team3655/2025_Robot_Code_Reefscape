@@ -197,7 +197,7 @@ public class ArmKinematics {
      */
     private static void validateState(double L4, double L6, double theta1, double relativeTheta2,
             double theta3, double thetaL4) throws InvalidArmState {
-        if (theta1 > (Math.PI / 2) || theta1 < -Units.degreesToRadians(-80)) {
+        if (theta1 > (Math.PI / 2) || theta1 < Units.degreesToRadians(-80)) {
             throw new InvalidArmState("ARM SEGMENT 2 CANNOT EXTEND PAST 180 DEG.  THETA1:  " + theta1);
         }
 
