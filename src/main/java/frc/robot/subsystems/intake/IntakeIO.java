@@ -15,11 +15,12 @@ public interface IntakeIO {
     public double intakeVelocityRadPerSec = 0.0;
     public double intakeAppliedVolts = 0.0;
     public double[] intakeCurrentAmps = new double[] {};
+    public double intakeTemp = 0.0;
 
     public double vacuumAppliedVolts = 0.0;
+    public double vacuumTemp = 0.0;
 
-    public boolean frontSensorState = false;
-    public boolean backSensorState = false;
+    public boolean hasCoral = false;
 
   }
 
