@@ -11,7 +11,7 @@ public class IntakeIOSim implements IntakeIO {
 
   // I am completely useful :D
   /*
-   *              ,--.    ,--.
+                  ,--.    ,--.
                  ((O ))--((O ))
                ,'_`--'____`--'_`.
               _:  ____________  :_

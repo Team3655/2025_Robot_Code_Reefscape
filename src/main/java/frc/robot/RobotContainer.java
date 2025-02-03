@@ -17,11 +17,13 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -93,7 +95,7 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
    */
-  public RobotContainer() { 
+  public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -115,7 +117,8 @@ public class RobotContainer {
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive = new DriveSubsystem(
-            new GyroIO(){},
+            new GyroIO() {
+            },
             new ModuleIOSim(),
             new ModuleIOSim(),
             new ModuleIOSim(),
@@ -151,11 +154,14 @@ public class RobotContainer {
             },
             new ModuleIO() {
             },
-            new ModuleIO() {});
+            new ModuleIO() {
+            });
         vision = new VisionSubsystem(
-            new VisionIO() {});
-            
-        arm = new ArmSubsystem(new ArmIO() {});
+            new VisionIO() {
+            });
+
+        arm = new ArmSubsystem(new ArmIO() {
+        });
 
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
@@ -164,30 +170,32 @@ public class RobotContainer {
         break;
     }
 
-    //Set up auto routines
+    // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-        //Set up SysId routines
-        autoChooser.addOption(
-          "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-      autoChooser.addOption(
-          "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-      autoChooser.addOption(
-          "Drive SysId (Quasistatic Forward)",
-          drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-      autoChooser.addOption(
-          "Drive SysId (Quasistatic Reverse)",
-          drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-      autoChooser.addOption(
-          "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-      autoChooser.addOption(
-          "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // Set up SysId routines
+    autoChooser.addOption(
+        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addOption(
+        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Forward)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Reverse)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-          NamedCommands.registerCommand("Print arm working", new PrintCommand("Arm probably works"));
-
-    // NamedCommands.registerCommand("Set Arm Start State", ArmCommands.updateSetpoint(arm, ArmStates.START));
-    // NamedCommands.registerCommand("Set Arm Intake State", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-    // NamedCommands.registerCommand("Set Arm Feed State", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+    NamedCommands.registerCommand("Print arm working", new PrintCommand("**********Arm probably works**********"));
+    // NamedCommands.registerCommand("Set Arm Start State",
+    // ArmCommands.updateSetpoint(arm, ArmStates.START));
+    // NamedCommands.registerCommand("Set Arm Intake State",
+    // ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+    // NamedCommands.registerCommand("Set Arm Feed State",
+    // ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -196,9 +204,10 @@ public class RobotContainer {
   /**
    * Use this method to define your button -> command mappings. Buttons can be
    * created by
-   * instantiating a {@link GenericHID} or one of its subclasses 
-   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), 
-   * and then passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * instantiating a {@link GenericHID} or one of its subclasses
+   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}),
+   * and then passing it to a
+   * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
 
@@ -231,7 +240,7 @@ public class RobotContainer {
                 () -> -programmingController.getLeftX(),
                 () -> -programmingController.getRightX()));
 
-        //programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+        // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
 
         programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
@@ -285,5 +294,16 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     return autoChooser.get();
+    //     try{
+    //     // Load the path you want to follow using its name in the GUI
+    //     PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
+
+    //     // Create a path following command using AutoBuilder. This will also trigger event markers.
+    //     return AutoBuilder.followPath(path);
+
+    // } catch (Exception e) {
+    //     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+    //     return Commands.none();
+    // }
   }
 }

@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 2.5,
-        "y": 6.25
+        "y": 6.75
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,14 +31,7 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Print arm working",
-      "waypointRelativePos": 0.5274994808970093,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.0,
     "maxAcceleration": 3.0,

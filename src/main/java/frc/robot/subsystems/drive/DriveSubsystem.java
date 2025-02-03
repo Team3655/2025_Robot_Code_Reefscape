@@ -87,6 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     try {
       PathPlannerUtil.writeSettings(config, moduleConfig, DriveConstants.DRIVE_GEAR_RATIO);
+      PathPlannerUtil.writeSettings(config, moduleConfig, getFFCharacterizationVelocity());
       RobotConfig.fromGUISettings().hasValidConfig();
     } catch (IOException | ParseException e) {
       e.printStackTrace();

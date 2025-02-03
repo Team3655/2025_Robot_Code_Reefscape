@@ -10,7 +10,7 @@ public class DriveConstants {
 
   public static final double ODOMETRY_FREQUENCY = 250.0;
 
-  public static final double MAX_LINEAR_SPEED = Units.feetToMeters(19.5);
+  public static final double MAX_LINEAR_SPEED = Units.feetToMeters(15);
 
   // TODO: get real bumper width
   public static final double BUMPER_WIDTH_X = Units.inchesToMeters(36.0);
@@ -29,7 +29,7 @@ public class DriveConstants {
   public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
   // TODO: get real mass
-  public static final double BATTERY_MASS_KG = Units.lbsToKilograms(30);
+  public static final double BATTERY_MASS_KG = Units.lbsToKilograms(12.85);
   public static final double BUMPER_MASS_KG = Units.lbsToKilograms(10);
   public static final double CHASSIS_MASS_KG = Units.lbsToKilograms(100);
   public static final double ROBOT_MASS_KG = CHASSIS_MASS_KG + BUMPER_MASS_KG + BATTERY_MASS_KG;
@@ -45,7 +45,7 @@ public class DriveConstants {
   public static final double KP_DRIVE = 0.3;
   public static final double KV_DRIVE = 0.13;
 
-  public static final int DRIVE_CURRENT_LIMIT = 92;
+  public static final int DRIVE_CURRENT_LIMIT = 155;
   public static final int TURN_CURRENT_LIMIT = 15;
 
   // Used to calculate feed forward for turn speed in 2nd order dynamics calc.
