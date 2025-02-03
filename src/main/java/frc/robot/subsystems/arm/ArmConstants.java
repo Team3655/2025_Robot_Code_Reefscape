@@ -28,7 +28,6 @@ public class ArmConstants {
         ABSOLUTE
     }
 
-    // TODO: make these real values
     public static final int SHOULDER_MOTOR_ID = 30;
     public static final int SHOULDER_MOTOR_FOLLOWER_ID = 31;
     public static final int SHOULDER_CANCODER_ID = 32;

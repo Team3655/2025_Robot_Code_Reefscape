@@ -46,6 +46,7 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmSubsystem(ArmIO io) {
     this.io = io;
     updateSetpoint(ArmStates.START);
+
     DriverStation.reportWarning(
         "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
         armKinematics = new ArmKinematics(
@@ -104,9 +105,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Update visualizers
     setpointVisualizer.update(shoulderSetPoint.getDegrees(), elbowSetPoint.getDegrees(), wristSetPoint.getDegrees());
+    
     Logger.recordOutput("Arm/Mechanism2dSetpoint", setpointVisualizer.arm);
 
     currentVisualizer.update(inputs.shoulderPosition.getDegrees(), inputs.elbowPosition.getDegrees(), inputs.wristPosition.getDegrees());
+
     Logger.recordOutput("Arm/Mechanism2dCurrent" , currentVisualizer.arm);
 
     SmartDashboard.putNumber("Shoulder Setpoint", shoulderSetPoint.getDegrees());

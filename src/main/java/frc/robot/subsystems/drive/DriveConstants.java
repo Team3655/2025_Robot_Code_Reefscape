@@ -25,15 +25,19 @@ public class DriveConstants {
   public static final Rotation2d FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.026);// (0.115479);
   public static final Rotation2d FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.088); // (-0.095947);
 
-  public static final double DRIVE_GEAR_RATIO = (50.0 / 16.0) * (16.0 / 27.0) * (45.0 / 15.0);
+  public static final double DRIVE_GEAR_RATIO = (50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0);
   public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
   // TODO: get real mass
-  public static final double ROBOT_MASS_KG = Units.lbsToKilograms(125.0);
+  public static final double BATTERY_MASS_KG = Units.lbsToKilograms(30);
+  public static final double BUMPER_MASS_KG = Units.lbsToKilograms(10);
+  public static final double CHASSIS_MASS_KG = Units.lbsToKilograms(100);
+  public static final double ROBOT_MASS_KG = CHASSIS_MASS_KG + BUMPER_MASS_KG + BATTERY_MASS_KG;
   public static final double ROBOT_MOI = PhysicsUtil.estimateRobotMOI(
       ROBOT_MASS_KG, 
       BUMPER_WIDTH_X, 
       BUMPER_WIDTH_Y);
+
   public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
   public static final double WHEEL_COF = 1.5;
 
@@ -41,7 +45,7 @@ public class DriveConstants {
   public static final double KP_DRIVE = 0.3;
   public static final double KV_DRIVE = 0.13;
 
-  public static final int DRIVE_CURRENT_LIMIT = 102;
+  public static final int DRIVE_CURRENT_LIMIT = 92;
   public static final int TURN_CURRENT_LIMIT = 15;
 
   // Used to calculate feed forward for turn speed in 2nd order dynamics calc.

@@ -164,7 +164,6 @@ public class ArmIOTalonFX implements ArmIO {
     slot0Wrist.kI = ArmConstants.KI_WRIST;
     slot0Wrist.kD = ArmConstants.KD_WRIST;
 
-    // TODO: Refine these values with real Arm
     // set Motion Magic settings - Shoulder
     var motionMagicConfigsShoulder = shoulderLeaderConfig.MotionMagic;
     motionMagicConfigsShoulder.MotionMagicCruiseVelocity = ArmConstants.SHOULDER_MAX_VELOCITY_RPS;
