@@ -33,6 +33,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeVoltage(double voltage) {
+    if(voltage < 0 && inputs.hasCoral == true) {
+      voltage = 0.0;
+    }
     intakeVoltage = voltage;
   }
 
@@ -41,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean hasCoral() {
-    return (inputs.backSensorState && inputs.frontSensorState);
+    return inputs.hasCoral;
   }
 
   public boolean checkCurrentSpike(double threshold) {
