@@ -181,18 +181,16 @@ public class ArmKinematics {
         return new double[] { x, y };
     }
 
-    // TODO: Garrett comment on these
     /**
      * Validates that the requested state of the arm is possible to achieve
      * 
-     * @param theta
-     * @param L4
-     * @param L5
-     * @param L6
-     * @param theta1
-     * @param relativeTheta2
-     * @param theta3
-     * @param thetaL4
+     * @param L4 Line segment between first joint and end of arm
+     * @param L5 Line segment between base of tower to second joint
+     * @param L6 Line segment between base of tower and end of arm
+     * @param theta1 Angle of the shoulder relative to the horizontal
+     * @param relativeTheta2  Angle of the elbow relative to the Earth
+     * @param theta3 Angle between shoulder and L4
+     * @param thetaL4 Obtuse angle between shoulder and elbow - across from L4
      * @throws InvalidArmState Error to throw when state is not valid
      */
     private static void validateState(double L4, double L6, double theta1, double relativeTheta2,
