@@ -29,7 +29,10 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -55,6 +58,10 @@ public class DriveSubsystem extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
+
+  /** see {@link https://pathplanner.dev/pplib-swerve-setpoint-generator.html} */
+  private final SwerveSetpointGenerator setpointGenerator;
+  private SwerveSetpoint previousSetpoint;
 
   public DriveSubsystem(
       GyroIO gyroIO,
@@ -84,6 +91,15 @@ public class DriveSubsystem extends SubsystemBase {
         DriveConstants.ROBOT_MOI,
         moduleConfig,
         DriveConstants.moduleTranslations);
+
+    setpointGenerator = new SwerveSetpointGenerator(
+        config,
+        DriveConstants.MAX_TURN_VELOCITY);
+
+    previousSetpoint = new SwerveSetpoint(
+        getChassisSpeeds(),
+        getModuleStates(),
+        DriveFeedforwards.zeros(config.numModules));
 
     try {
       PathPlannerUtil.writeSettings(config, moduleConfig, DriveConstants.DRIVE_GEAR_RATIO);
@@ -199,12 +215,20 @@ public class DriveSubsystem extends SubsystemBase {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
-    // Calculate module setpoints
+    // Calculate module setpoints (this is just for logging the difference between the default and generated)
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = DriveConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.MAX_LINEAR_SPEED);
-
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
+
+    previousSetpoint = setpointGenerator.generateSetpoint(
+      previousSetpoint, // The previous setpoint
+      speeds, // The desired target speeds
+      0.02 // The loop time of the robot code, in seconds
+    );
+
+    setpointStates = previousSetpoint.moduleStates();
+    Logger.recordOutput("SwerveStates/SetpointsGenerated", setpointStates);
 
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {

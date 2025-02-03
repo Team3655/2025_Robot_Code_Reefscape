@@ -40,6 +40,7 @@ public class DriveConstants {
 
   public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
   public static final double WHEEL_COF = 1.5;
+  public static final double MAX_TURN_VELOCITY = Units.rotationsToRadians(10.0);
 
   public static final double KP_TURN = 100;
   public static final double KP_DRIVE = 0.3;
