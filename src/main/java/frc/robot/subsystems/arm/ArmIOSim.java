@@ -38,7 +38,7 @@ public class ArmIOSim implements ArmIO {
    * Updates the inputs created in ArmIO to be data from the simulated motors.
    */
   public void updateInputs(ArmIOInputs inputs) {
-
+    
     shoulderSim.setInputVoltage(shoulderVolts);
     elbowSim.setInputVoltage(elbowVolts);
     wristSim.setInputVoltage(wristVolts);
@@ -77,17 +77,17 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setShoulderPosition(Rotation2d position) {
-    shoulderSim.setState(position.getRadians(), 1);
+    shoulderSim.setState(position.getRadians(),0.5);
   }
 
   @Override
   public void setElbowPosition(Rotation2d position) {
-    shoulderSim.setState(position.getRadians(), 1);
+    shoulderSim.setState(position.getRadians(), 0.5);
   }
 
   @Override
   public void setWristPosition(Rotation2d position) {
-    shoulderSim.setState(position.getRadians(), 1);
+    shoulderSim.setState(position.getRadians(), 0.5);
   }
 
 }
