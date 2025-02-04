@@ -47,6 +47,7 @@ public class Module {
 
   public void periodic() {
     Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
+    SmartDashboard.putNumber("Drive Position Meters", inputs.drivePositionRad * DriveConstants.WHEEL_RADIUS);
 
     // On first cycle, reset relative turn encoder
     // Wait until absolute angle is nonzero in case it wasn't initialized yet
@@ -62,6 +63,7 @@ public class Module {
       double positionMeters = inputs.odometryDrivePositionsRad[i] * DriveConstants.WHEEL_RADIUS;
       Rotation2d angle = inputs.odometryTurnPositions[i].plus(
           turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d());
+
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
   }

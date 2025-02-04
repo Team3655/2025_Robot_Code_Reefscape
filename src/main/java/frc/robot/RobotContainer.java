@@ -266,6 +266,14 @@ public class RobotContainer {
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.button(12).onTrue(Commands.runOnce(RobotState.getInstance()::zeroHeading));
 
+        programmingController.button(1).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
+
+        programmingController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+
+        programmingController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+
+        programmingController.button(4).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+
         // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake,
         // 12)).onFalse(IntakeCommands.stopIntake(intake));
         // programmingController.leftBumper().onTrue(IntakeCommands.runIntake(intake,

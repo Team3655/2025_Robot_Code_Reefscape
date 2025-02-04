@@ -94,7 +94,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     AutoBuilder.configure(
-        RobotState.getInstance()::getOdometryPose, // Robot pose supplier
+        RobotState.getInstance()::getPose, // Robot pose supplier
         RobotState.getInstance()::resetPose, // Method to reset odometry
         this::getChassisSpeeds, // ChassisSpeeds supplier
         this::runVelocity, // Runs robot given chassis speeds
@@ -178,10 +178,12 @@ public class DriveSubsystem extends SubsystemBase {
 
       for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
+
         moduleDeltas[moduleIndex] = new SwerveModulePosition(
             modulePositions[moduleIndex].distanceMeters
                 - RobotState.getInstance().lastModulePositions[moduleIndex].distanceMeters,
             modulePositions[moduleIndex].angle);
+
         RobotState.getInstance().lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
       }
 
