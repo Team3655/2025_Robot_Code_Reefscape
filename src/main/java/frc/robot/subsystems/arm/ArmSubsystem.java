@@ -45,7 +45,7 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
     this.io = io;
-    updateSetpoint(ArmStates.START);
+    // updateSetpoint(ArmStates.START);
 
     DriverStation.reportWarning(
         "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
