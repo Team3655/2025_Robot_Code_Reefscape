@@ -10,7 +10,8 @@ public class DriveConstants {
 
   public static final double ODOMETRY_FREQUENCY = 250.0;
 
-  public static final double MAX_LINEAR_SPEED = Units.feetToMeters(15);
+  // 16.9 rot/s of wheel -> 5.409929 m/s -> 17.7 ft/s
+  public static final double MAX_LINEAR_SPEED = Units.feetToMeters(17.7);
 
   // TODO: get real bumper width
   public static final double BUMPER_WIDTH_X = Units.inchesToMeters(36.0);
@@ -20,10 +21,11 @@ public class DriveConstants {
   public static final double DRIVE_BASE_RADIUS = Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   public static final double MAX_ANGULAR_SPEED = (MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS);
 
-  public static final Rotation2d BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.251);// (0.427);
-  public static final Rotation2d BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.442); // (0.000977);
-  public static final Rotation2d FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.026);// (0.115479);
-  public static final Rotation2d FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.088); // (-0.095947);
+  public static final Rotation2d BACK_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.248047);
+  public static final Rotation2d BACK_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.431152); // (de0.000977);
+  public static final Rotation2d FRONT_LEFT_ENCODER_OFFSET = Rotation2d.fromRotations(-0.027344);// (0.115479);
+  public static final Rotation2d FRONT_RIGHT_ENCODER_OFFSET = Rotation2d.fromRotations(0.087646); // (-0.095947);
+
 
   public static final double DRIVE_GEAR_RATIO = (50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0);
   public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
@@ -43,7 +45,7 @@ public class DriveConstants {
 
   public static final double KP_TURN = 100;
   public static final double KP_DRIVE = 0.3;
-  public static final double KV_DRIVE = 0.13;
+  public static final double KV_DRIVE = 0.70; // 12V/max speed roughly, 12/(16.9 rot/s) = .71
 
   public static final int DRIVE_CURRENT_LIMIT = 155;
   public static final int TURN_CURRENT_LIMIT = 15;

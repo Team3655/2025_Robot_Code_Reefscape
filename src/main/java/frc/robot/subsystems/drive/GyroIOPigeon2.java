@@ -25,6 +25,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 /** IO implementation for Pigeon2 */
@@ -63,6 +64,8 @@ public class GyroIOPigeon2 implements GyroIO {
         .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
+
+    SmartDashboard.putNumber("Gyro Yaw", inputs.yawPosition.getDegrees());
   }
 
   @Override

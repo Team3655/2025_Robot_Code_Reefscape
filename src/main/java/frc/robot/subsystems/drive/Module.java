@@ -27,7 +27,7 @@ public class Module {
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
 
-  private Rotation2d turnRelativeOffset = null; // Relative + Offset = Absolute
+  //private Rotation2d turnRelativeOffset = null; // Relative + Offset = Absolute
   private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
 
   public Module(ModuleIO io, int index) {
@@ -51,9 +51,9 @@ public class Module {
 
     // On first cycle, reset relative turn encoder
     // Wait until absolute angle is nonzero in case it wasn't initialized yet
-    if (turnRelativeOffset == null && inputs.turnPosition.getRadians() != 0.0) {
-      turnRelativeOffset = inputs.turnPosition.minus(inputs.turnPosition);
-    }
+    // if (turnRelativeOffset == null && inputs.turnPosition.getRadians() != 0.0) {
+    //   turnRelativeOffset = inputs.turnPosition.minus(inputs.turnPosition);
+    // }
 
 
     // Calculate positions for odometry
@@ -61,9 +61,9 @@ public class Module {
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount; i++) {
       double positionMeters = inputs.odometryDrivePositionsRad[i] * DriveConstants.WHEEL_RADIUS;
-      Rotation2d angle = inputs.odometryTurnPositions[i].plus(
-          turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d());
-
+      Rotation2d angle = inputs.odometryTurnPositions[i]
+        //.plus(turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d())
+        ;
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
   }
@@ -80,7 +80,7 @@ public class Module {
     SmartDashboard.putNumber("Module " + this.index + " target position", targetState.angle.getDegrees());
 
     io.setTurnPosition(targetState.angle);
-    io.setDriveVelocity(targetState.speedMetersPerSecond / (2 * Math.PI * DriveConstants.WHEEL_RADIUS));
+    io.setDriveVelocity(targetState.speedMetersPerSecond / DriveConstants.WHEEL_RADIUS);
   }
 
   /** Runs the module with the specified output while controlling to zero degrees. */
@@ -103,11 +103,13 @@ public class Module {
 
   /** Returns the current turn angle of the module. */
   public Rotation2d getAngle() {
-    if (turnRelativeOffset == null) {
-      return new Rotation2d();
-    } else {
-      return inputs.turnPosition;
-    }
+    // if (turnRelativeOffset == null) {
+    //   return new Rotation2d();
+    // } else {
+    //   return inputs.turnPosition;
+    // }
+
+    return inputs.turnPosition;
   }
 
   /** Returns the current drive position of the module in meters. */

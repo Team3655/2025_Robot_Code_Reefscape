@@ -75,7 +75,8 @@ public class DriveSubsystem extends SubsystemBase {
         DriveConstants.WHEEL_RADIUS,
         DriveConstants.MAX_LINEAR_SPEED,
         DriveConstants.WHEEL_COF,
-        DCMotor.getKrakenX60Foc(1).withReduction(DriveConstants.DRIVE_GEAR_RATIO),
+        DCMotor.getKrakenX60Foc(1),
+        DriveConstants.DRIVE_GEAR_RATIO,
         DriveConstants.DRIVE_CURRENT_LIMIT,
         1);
 
@@ -87,7 +88,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     try {
       PathPlannerUtil.writeSettings(config, moduleConfig, DriveConstants.DRIVE_GEAR_RATIO);
-      PathPlannerUtil.writeSettings(config, moduleConfig, getFFCharacterizationVelocity());
+      //PathPlannerUtil.writeSettings(config, moduleConfig, getFFCharacterizationVelocity());
       RobotConfig.fromGUISettings().hasValidConfig();
     } catch (IOException | ParseException e) {
       e.printStackTrace();
@@ -99,7 +100,7 @@ public class DriveSubsystem extends SubsystemBase {
         this::getChassisSpeeds, // ChassisSpeeds supplier
         this::runVelocity, // Runs robot given chassis speeds
         new PPHolonomicDriveController(
-            new PIDConstants(0.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(10.0, 0.0, 0.0), // Translation PID constants
             new PIDConstants(0.0, 0.0, 0.0) // Rotation PID constants
         ),
         config,
@@ -113,6 +114,7 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this);
 
+    // Allows AdvatangeKit to interface with PP
     Pathfinding.setPathfinder(new LocalADStarAK());
 
     PathPlannerLogging.setLogActivePathCallback(
@@ -141,7 +143,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
-    SmartDashboard.putNumber("Wheel Speeds", modules[0].getVelocityMetersPerSec());
     gyroIO.updateInputs(gyroInputs);
     for (var module : modules) {
       module.updateInputs();
@@ -194,6 +195,7 @@ public class DriveSubsystem extends SubsystemBase {
               moduleDeltas,
               modulePositions));
     }
+
   }
 
   /**

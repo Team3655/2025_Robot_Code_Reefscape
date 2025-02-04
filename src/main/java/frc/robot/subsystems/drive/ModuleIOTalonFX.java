@@ -34,6 +34,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 import java.util.Queue;
@@ -233,9 +234,17 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnTalon.setControl(positionVoltage.withPosition(setpoint.getRotations()));
   }
 
+  /*
+   * @param Radians per second of the drive wheel
+   * 
+   */
   @Override
-  public void setDriveVelocity(double rotationsPerSecond) {
+  public void setDriveVelocity(double radsPerSecond) {
+    double rotationsPerSecond = Units.radiansToRotations(radsPerSecond);
+
     driveTalon.setControl(new VelocityVoltage(rotationsPerSecond).withSlot(0));
+    SmartDashboard.putNumber("rotsPerSec Drive", rotationsPerSecond);
+    SmartDashboard.putNumber("getRotsPerSec Drive", driveTalon.getVelocity().getValueAsDouble());
   }
 
   @Override
