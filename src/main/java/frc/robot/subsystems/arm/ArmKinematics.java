@@ -174,8 +174,7 @@ public class ArmKinematics {
         Translation2d shoulder = base.plus(new Translation2d(L1, theta1));
         Translation2d elbow = shoulder.plus(new Translation2d(L2, theta2));
 
-        double x = (elbow.getX() < 0) ? d - elbow.getX()
-                : elbow.getX() + d;
+        double x = (elbow.getX() < 0) ? d - elbow.getX() : elbow.getX() + d;
         double y = elbow.getY();
 
         return new double[] { x, y };

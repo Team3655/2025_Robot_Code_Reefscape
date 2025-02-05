@@ -75,6 +75,7 @@ public class RobotContainer {
   // Subsystems
   private final DriveSubsystem drive;
 
+  @SuppressWarnings("unused")
   private final VisionSubsystem vision;
 
   // private final ClimberSubsystem climber;
@@ -202,12 +203,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("ArmState_Low", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
     NamedCommands.registerCommand("ArmState_Mid", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
     NamedCommands.registerCommand("ArmState_High", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
-    // NamedCommands.registerCommand("Set Arm Start State",
-    // ArmCommands.updateSetpoint(arm, ArmStates.START));
-    // NamedCommands.registerCommand("Set Arm Intake State",
-    // ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-    // NamedCommands.registerCommand("Set Arm Feed State",
-    // ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -273,15 +268,13 @@ public class RobotContainer {
                 () -> -programmingController.getRawAxis(2)));
 
         programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        programmingController.button(12).onTrue(Commands.runOnce(RobotState.getInstance()::zeroHeading));
+        programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
 
         programmingController.button(1).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
-
         programmingController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
-
-        programmingController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
-
-        programmingController.button(4).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+        programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+        programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+        programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
 
         // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake,
         // 12)).onFalse(IntakeCommands.stopIntake(intake));

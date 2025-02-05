@@ -116,8 +116,8 @@ public class ArmIOTalonFX implements ArmIO {
         elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         wristConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake; 
 
-        shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 90;
-        shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -65;
+        shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.SHOULDER_MAX_ANGLE_RADS.getDegrees();
+        shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.SHOULDER_MIN_ANGLE_RADS.getDegrees();
         shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 

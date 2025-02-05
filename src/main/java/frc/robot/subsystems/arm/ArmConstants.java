@@ -35,8 +35,8 @@ public class ArmConstants {
         public static final Rotation2d SHOULDER_ENCODER_OFFSET = Rotation2d.fromRotations(0);
         public static final double SHOULDER_LENGTH_METERS = Units.inchesToMeters(21);
         public static final double SHOULDER_MASS_KG = 1;
-        public static final Rotation2d SHOULDER_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
-        public static final Rotation2d SHOULDER_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
+        public static final Rotation2d SHOULDER_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-65);
+        public static final Rotation2d SHOULDER_MAX_ANGLE_RADS = Rotation2d.fromDegrees(90);
         public static final double SHOULDER_REDUCTION = 7500000 / 117600;
         public static final double KG_SHOULDER = 0.6;
         public static final double KS_SHOULDER = 0.3;
@@ -81,7 +81,7 @@ public class ArmConstants {
         public static final double KS_WRIST = 0.0;
         public static final double KV_WRIST = 0.0;
         public static final double KA_WRIST = 0.0;
-        public static final double KP_WRIST = 0.1;
+        public static final double KP_WRIST = 1.0;
         public static final double KI_WRIST = 0.0;
         public static final double KD_WRIST = 0.0;
         public static final double WRIST_MAX_VELOCITY_RPS = 0.5;

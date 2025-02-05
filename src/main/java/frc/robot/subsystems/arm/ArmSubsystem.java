@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,7 +24,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   // (x, y) marks the desired target of the elbow/wrist joint
   // with origin at the rear of the robot frame where it would meet the ground
-  public record ArmPose(double xTarget, double yTarget, Rotation2d wristAngle) {}
+  public record ArmPose(double xTarget, double yTarget, Rotation2d wristAngle) {
+  }
 
   private final ArmIO io;
 
@@ -31,8 +33,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   public final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
 
-  private final ArmVisualizer currentVisualizer = new ArmVisualizer("current");
-  private final ArmVisualizer setpointVisualizer = new ArmVisualizer("setpoint");
+  private final ArmVisualizer currentVisualizer = new ArmVisualizer("Current");
+  private final ArmVisualizer setpointVisualizer = new ArmVisualizer("Setpoint");
 
   private static ArmPose setpoint;
 
@@ -45,16 +47,17 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
     this.io = io;
+
     updateSetpoint(ArmStates.START);
 
-    DriverStation.reportWarning(
-        "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
-        armKinematics = new ArmKinematics(
-          ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS, 
-          ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 
-          ArmConstants.H_TOWER_GROUND_HEIGHT_METERS, 
-          ArmConstants.SHOULDER_LENGTH_METERS, 
-          ArmConstants.ELBOW_LENGTH_METERS);
+    DriverStation.reportWarning("ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
+
+    armKinematics = new ArmKinematics(
+        ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS,
+        ArmConstants.H_TOWER_GROUND_HEIGHT_METERS,
+        ArmConstants.H_TOWER_GROUND_HEIGHT_METERS,
+        ArmConstants.SHOULDER_LENGTH_METERS,
+        ArmConstants.ELBOW_LENGTH_METERS);
 
     shoulderRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -64,17 +67,17 @@ public class ArmSubsystem extends SubsystemBase {
             (state) -> Logger.recordOutput("Arm/SysIdState", state.toString())),
 
         new SysIdRoutine.Mechanism(
-            (voltage) -> io.setShoulderVoltage(voltage.in(Volts)), 
-            null, 
+            (voltage) -> io.setShoulderVoltage(voltage.in(Volts)),
+            null,
             this));
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-      return shoulderRoutine.quasistatic(direction);
+    return shoulderRoutine.quasistatic(direction);
   }
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-      return shoulderRoutine.dynamic(direction);
+    return shoulderRoutine.dynamic(direction);
   }
 
   @Override
@@ -105,52 +108,44 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Update visualizers
     setpointVisualizer.update(shoulderSetPoint.getDegrees(), elbowSetPoint.getDegrees(), wristSetPoint.getDegrees());
-    
-    Logger.recordOutput("Arm/Mechanism2dSetpoint", setpointVisualizer.arm);
-
-    currentVisualizer.update(inputs.shoulderPosition.getDegrees(), inputs.elbowPosition.getDegrees(), inputs.wristPosition.getDegrees());
-
-    Logger.recordOutput("Arm/Mechanism2dCurrent" , currentVisualizer.arm);
+    currentVisualizer.update(inputs.shoulderPosition.getDegrees(), inputs.elbowPosition.getDegrees(),inputs.wristPosition.getDegrees());
+    Logger.recordOutput("Arm/Mechanism2d/Setpoint", setpointVisualizer.arm);
+    Logger.recordOutput("Arm/Mechanism2d/Current", currentVisualizer.arm);
 
     SmartDashboard.putNumber("Shoulder Setpoint", shoulderSetPoint.getDegrees());
-    Logger.recordOutput("Arm/Shoulder/Setpoint", shoulderSetPoint.getDegrees());
-    Logger.recordOutput("Arm/Shoulder/Degrees", inputs.shoulderPosition.getDegrees());
-    
+
     SmartDashboard.putNumber("Elbow Setpoint", elbowSetPoint.getDegrees());
-    Logger.recordOutput("Arm/Elbow/Setpoint", elbowSetPoint.getDegrees());
-    Logger.recordOutput("Arm/Elbow/Degrees", inputs.elbowPosition.getDegrees());
 
     SmartDashboard.putNumber("Wrist Setpoint", inputs.wristPosition.getDegrees());
-    Logger.recordOutput("Arm/Wrist/Setpoint", wristSetPoint.getDegrees());
-    Logger.recordOutput("Arm/Wrist/Degrees", inputs.wristPosition.getDegrees());
 
     SmartDashboard.putNumber("ShoulderDeg", inputs.shoulderPosition.getDegrees());
-    SmartDashboard.putNumber("ElbowDeg", inputs.elbowPosition.getDegrees());
-    SmartDashboard.putNumber("WristDeg", inputs.wristPosition.getDegrees());
+
   }
 
   /**
    * 
    * @return The current state of the arm
    */
+  @AutoLogOutput(key = "Arm/Current")
   public ArmPose getState() {
     double[] armPosition = armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition);
-    
     return new ArmPose(
         armPosition[0],
         armPosition[1],
         inputs.wristPosition);
   }
 
-  /** 
+  /**
    * @return the current setpoint
    */
+  @AutoLogOutput(key = "Arm/Setpoint")
   public ArmPose getSetPoint() {
     return setpoint;
   }
 
-  /** 
+  /**
    * Updates the setpoint to a new ArmPose
+   * 
    * @param pose The pose to update to
    */
   public void updateSetpoint(ArmPose pose) {
@@ -159,9 +154,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   /**
    * Increment the wrist angle by degrees
+   * 
    * @param degrees The degrees to increment by
    */
   public void jogWrist(double degrees) {
-    setpoint = new ArmPose(setpoint.xTarget, setpoint.yTarget, setpoint.wristAngle.plus(Rotation2d.fromDegrees(degrees)));
+    setpoint = new ArmPose(setpoint.xTarget, setpoint.yTarget,
+        setpoint.wristAngle.plus(Rotation2d.fromDegrees(degrees)));
   }
 }
