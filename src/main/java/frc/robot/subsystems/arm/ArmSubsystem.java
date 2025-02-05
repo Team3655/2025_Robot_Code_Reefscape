@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
+import frc.robot.RobotState;
+import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -50,7 +53,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     updateSetpoint(ArmStates.START);
 
-    DriverStation.reportWarning("ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
+    DriverStation.reportWarning(
+        "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
 
     armKinematics = new ArmKinematics(
         ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS,
@@ -89,8 +93,19 @@ public class ArmSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
 
     // Calculate arm angles using setpoint
-    targetAngles[0] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget)[0];
-    targetAngles[1] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget)[1];
+    switch (Constants.currentMode) {
+      case REAL:
+        targetAngles[0] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget, ArmConstants.activeEncoders)[0];
+        targetAngles[1] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget, ArmConstants.activeEncoders)[1];
+        break;
+      case SIM:
+        targetAngles[0] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget, ArmEncoders.ABSOLUTE)[0];
+        targetAngles[1] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget, ArmEncoders.ABSOLUTE)[1];
+      case REPLAY:
+      break;
+      default:
+        break;
+    }
 
     // For readability
     Rotation2d shoulderSetPoint = targetAngles[0];
@@ -107,10 +122,14 @@ public class ArmSubsystem extends SubsystemBase {
     armKinematics.currentArmAngles[1] = inputs.elbowPosition;
 
     // Update visualizers
-    setpointVisualizer.update(shoulderSetPoint.getDegrees(), elbowSetPoint.getDegrees(), wristSetPoint.getDegrees());
-    currentVisualizer.update(inputs.shoulderPosition.getDegrees(), inputs.elbowPosition.getDegrees(),inputs.wristPosition.getDegrees());
+    setpointVisualizer.update(shoulderSetPoint.getDegrees() - 90, elbowSetPoint.getDegrees(),
+        wristSetPoint.getDegrees());
+    currentVisualizer.update(inputs.shoulderPosition.getDegrees() - 90, inputs.elbowPosition.getDegrees(),
+        inputs.wristPosition.getDegrees());
     Logger.recordOutput("Arm/Mechanism2d/Setpoint", setpointVisualizer.arm);
     Logger.recordOutput("Arm/Mechanism2d/Current", currentVisualizer.arm);
+
+    RobotState.getInstance().updateArmState(inputs.shoulderPosition, inputs.elbowPosition, inputs.wristPosition);
 
     SmartDashboard.putNumber("Shoulder Setpoint", shoulderSetPoint.getDegrees());
 

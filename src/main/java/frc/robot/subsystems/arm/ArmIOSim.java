@@ -20,13 +20,13 @@ public class ArmIOSim implements ArmIO {
       SingleJointedArmSim.estimateMOI(ArmConstants.SHOULDER_LENGTH_METERS,
           ArmConstants.SHOULDER_MASS_KG),
       ArmConstants.SHOULDER_LENGTH_METERS, ArmConstants.SHOULDER_MIN_ANGLE_RADS.getRadians(),
-      ArmConstants.SHOULDER_MAX_ANGLE_RADS.getRadians(), false, Rotation2d.fromDegrees(-65).getRadians());
+      ArmConstants.SHOULDER_MAX_ANGLE_RADS.getRadians(), false, Rotation2d.fromDegrees(0).getRadians());
 
   // Physics simulation for the elbow
   private final SingleJointedArmSim elbowSim = new SingleJointedArmSim(gearbox, ArmConstants.ELBOW_REDUCTION,
       SingleJointedArmSim.estimateMOI(ArmConstants.ELBOW_LENGTH_METERS, ArmConstants.ELBOW_MASS_KG),
-      ArmConstants.ELBOW_LENGTH_METERS, ArmConstants.ELBOW_MIN_ANGLE_RADS.getRadians(),
-      ArmConstants.ELBOW_MAX_ANGLE_RADS.getRadians(), false, Rotation2d.fromDegrees(90).getRadians());
+      ArmConstants.ELBOW_LENGTH_METERS, Rotation2d.fromDegrees(-360).getRadians(),
+      Rotation2d.fromDegrees(360).getRadians(), false, Rotation2d.fromDegrees(0).getRadians());
 
   // Physics simulation for the wrist
   private final SingleJointedArmSim wristSim = new SingleJointedArmSim(gearbox, ArmConstants.WRIST_REDUCTION,
@@ -34,12 +34,13 @@ public class ArmIOSim implements ArmIO {
       ArmConstants.WRIST_LENGTH_METERS, ArmConstants.WRIST_MIN_ANGLE_RADS.getRadians(),
       ArmConstants.WRIST_MAX_ANGLE_RADS.getRadians(), false, Rotation2d.fromDegrees(0).getRadians());
 
-  private final PIDController shoulderController = new PIDController(ArmConstants.KP_SHOULDER, ArmConstants.KI_SHOULDER, ArmConstants.KD_SHOULDER);
-  private final PIDController elbowController = new PIDController(ArmConstants.KP_ELBOW, ArmConstants.KI_ELBOW, ArmConstants.KD_ELBOW);
+  private final PIDController shoulderController = new PIDController(15, ArmConstants.KI_SHOULDER, ArmConstants.KD_SHOULDER);
+  private final PIDController elbowController = new PIDController(30, ArmConstants.KI_ELBOW, ArmConstants.KD_ELBOW);
   private final PIDController wristController = new PIDController(ArmConstants.KP_WRIST, ArmConstants.KI_WRIST, ArmConstants.KD_WRIST);
+
   @Override
   /** 
-   * Updates the inputs created in ArmIO to be data from the simulated motors.
+   * Updates the inputs created in ArmIO to the data calculated from the simulated motors.
    */
   public void updateInputs(ArmIOInputs inputs) {
     

@@ -31,7 +31,7 @@ public class RobotState {
       Matrix<N3, N1> stdDevs) {
   }
 
-  public record ArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle) {
+  private record ArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle) {
   }
 
   private SwerveDriveKinematics kinematics;
@@ -42,7 +42,7 @@ public class RobotState {
   public SwerveModulePosition[] lastModulePositions;
   public Rotation2d rawGyroRotation;
 
-  public ArmState armState;
+  private ArmState armState;
 
   private static RobotState instance;
 
@@ -110,6 +110,11 @@ public class RobotState {
         measurement.stdDevs);
   }
 
+  public synchronized void updateArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle) {
+    armState = new ArmState(shoulderAngle, elbowAngle, wristAngle);
+  }
+
+
   public synchronized void resetPose(Pose2d pose) {
     odometry.resetPosition(
         rawGyroRotation,
@@ -127,6 +132,10 @@ public class RobotState {
         poseEstimator.getEstimatedPosition().getX(),
         poseEstimator.getEstimatedPosition().getY(),
         new Rotation2d()));
+  }
+  
+  public Rotation2d getRotation() {
+    return getOdometryPose().getRotation();
   }
 
   @AutoLogOutput(key = "RobotState/Pose")
@@ -146,15 +155,7 @@ public class RobotState {
     return odometry.getPoseMeters();
   }
 
-  public Rotation2d getRotation() {
-    return getOdometryPose().getRotation();
-  }
-
-
-  public synchronized void updateArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle) {
-    armState = new ArmState(shoulderAngle, elbowAngle, wristAngle);
-  }
-
+  @AutoLogOutput(key = "RobotState/ArmPose")
   public Rotation2d[] getArmState() {
     Rotation2d[] state = { armState.shoulderAngle, armState.elbowAngle, armState.wristAngle };
     return state;

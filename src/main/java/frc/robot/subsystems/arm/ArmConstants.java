@@ -53,8 +53,8 @@ public class ArmConstants {
         public static final Rotation2d ELBOW_ENCODER_OFFSET = Rotation2d.fromRotations(0);
         public static final double ELBOW_LENGTH_METERS = Units.inchesToMeters(23);
         public static final double ELBOW_MASS_KG = 1;
-        public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
-        public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
+        public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(0);
+        public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(180);
         public static final double ELBOW_REDUCTION = 7500000 / 117600;
         public static final double KG_ELBOW = 0.0; // KG_ELBOW should remain 0.0 based on the arm's design
         public static final double KS_ELBOW = 0.5;
@@ -73,8 +73,8 @@ public class ArmConstants {
         public static final double WRIST_LENGTH_METERS = Units.inchesToMeters(8);
         public static final Rotation2d ARM_DEFAULT_SETPOINT = Rotation2d.fromDegrees(75);
         public static final double WRIST_MASS_KG = 1;
-        public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(90);
-        public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(200);
+        public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-360);
+        public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(360);
         public static final double WRIST_REDUCTION = 7500000 / 117600;
         public static final double KG_WRIST = 0.0;
         public static final double KS_WRIST = 0.0;

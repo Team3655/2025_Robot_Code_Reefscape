@@ -36,13 +36,13 @@ public class ArmVisualizer {
         shoulder = base.append(new LoggedMechanismLigament2d(
             "Shoulder",
             ArmConstants.SHOULDER_LENGTH_METERS,
-            -65,
+            0,
             6,
             new Color8Bit(Color.kRed)));
         elbow = shoulder.append(new LoggedMechanismLigament2d(
             "Elbow",
             ArmConstants.ELBOW_LENGTH_METERS,
-            90,
+            0,
             4,
             new Color8Bit(Color.kBlue)));
         wrist = elbow.append(new LoggedMechanismLigament2d(
@@ -67,13 +67,13 @@ public class ArmVisualizer {
       shoulder = base.append(new LoggedMechanismLigament2d(
           "Shoulder",
           ArmConstants.SHOULDER_LENGTH_METERS,
-          -65,
+          0,
           6,
           new Color8Bit(Color.kYellow)));
       elbow = shoulder.append(new LoggedMechanismLigament2d(
           "Elbow",
           ArmConstants.ELBOW_LENGTH_METERS,
-          90,
+          0,
           4,
           new Color8Bit(Color.kYellow)));
       wrist = elbow.append(new LoggedMechanismLigament2d(

@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
 
 /**
  * Kinematics class for a two stage arm
@@ -71,7 +72,7 @@ public class ArmKinematics {
      * @return The angles of the arm joints - value is dependent on the active
      *         encoders.
      */
-    public Rotation2d[] getArmAngles(double xTarget, double yTarget) {
+    public Rotation2d[] getArmAngles(double xTarget, double yTarget, ArmEncoders encoderType) {
 
         calculateInverseKinematics(xTarget, yTarget);
 
@@ -85,13 +86,16 @@ public class ArmKinematics {
 
             calculatedArmAngles[0] = theta1;
 
-            switch (ArmConstants.activeEncoders) {
+            switch (encoderType) {
                 case ABSOLUTE:
                     calculatedArmAngles[1] = absoluteTheta2;
                     break;
                 case RELATIVE:
                     calculatedArmAngles[1] = relativeTheta2;
                     break;
+                default:
+                    DriverStation.reportError("INVALID ARM ENCODER TYPE", false);
+                break;
             }
 
             SmartDashboard.putNumber("Theta1Deg Target", theta1.getDegrees());
@@ -183,13 +187,14 @@ public class ArmKinematics {
     /**
      * Validates that the requested state of the arm is possible to achieve
      * 
-     * @param L4 Line segment between first joint and end of arm
-     * @param L5 Line segment between base of tower to second joint
-     * @param L6 Line segment between base of tower and end of arm
-     * @param theta1 Angle of the shoulder relative to the horizontal
-     * @param relativeTheta2  Angle of the elbow relative to the Earth
-     * @param theta3 Angle between shoulder and L4
-     * @param thetaL4 Obtuse angle between shoulder and elbow - across from L4
+     * @param L4             Line segment between first joint and end of arm
+     * @param L5             Line segment between base of tower to second joint
+     * @param L6             Line segment between base of tower and end of arm
+     * @param theta1         Angle of the shoulder relative to the horizontal
+     * @param relativeTheta2 Angle of the elbow relative to the Earth
+     * @param theta3         Angle between shoulder and L4
+     * @param thetaL4        Obtuse angle between shoulder and elbow - across from
+     *                       L4
      * @throws InvalidArmState Error to throw when state is not valid
      */
     private static void validateState(double L4, double L6, double theta1, double relativeTheta2,
