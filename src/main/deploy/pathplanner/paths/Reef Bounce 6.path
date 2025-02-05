@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3,
-        "y": 3.85
+        "x": 3.75,
+        "y": 5.005
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3,
-        "y": 3.85
+        "x": 3.2500000000000004,
+        "y": 5.871025403784438
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.4,
-        "y": 3.85
+        "x": 3.3,
+        "y": 3.9
       },
       "prevControl": {
-        "x": 1.399999999999998,
-        "y": 3.85
+        "x": 2.3000000000000007,
+        "y": 3.9
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -45,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Reef Bounce Test",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": false
 }

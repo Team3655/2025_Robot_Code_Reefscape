@@ -45,7 +45,7 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
     this.io = io;
-    // updateSetpoint(ArmStates.START);
+    updateSetpoint(ArmStates.START);
 
     DriverStation.reportWarning(
         "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
@@ -95,9 +95,9 @@ public class ArmSubsystem extends SubsystemBase {
     Rotation2d wristSetPoint = setpoint.wristAngle;
 
     // Updates arm position
-    io.setShoulderPosition(shoulderSetPoint);
-    io.setElbowPosition(elbowSetPoint);
-    io.setWristPosition(setpoint.wristAngle);
+    // io.setShoulderPosition(shoulderSetPoint);
+    // io.setElbowPosition(elbowSetPoint);
+    // io.setWristPosition(setpoint.wristAngle);
 
     // Updates the current arm angles in ArmKinematics
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
