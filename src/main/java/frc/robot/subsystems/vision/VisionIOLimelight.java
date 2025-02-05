@@ -23,7 +23,7 @@ import frc.robot.util.LimelightHelpers.LimelightTarget_Fiducial;
 /** Add your docs here. */
 public class VisionIOLimelight implements VisionIO {
 
-  private static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+  private static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
   private final Map<VisionMode, Integer> pipelines = new HashMap<>();
 

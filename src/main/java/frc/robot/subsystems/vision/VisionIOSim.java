@@ -40,7 +40,7 @@ public class VisionIOSim implements VisionIO {
   private Random random = new Random();
 
   // load the tag layout for the current year
-  private static final List<AprilTag> TAGS = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo).getTags();
+  private static final List<AprilTag> TAGS = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape).getTags();
 
   /**
    * Simulates the outputs of a Vision IO based off of the robots current assumed

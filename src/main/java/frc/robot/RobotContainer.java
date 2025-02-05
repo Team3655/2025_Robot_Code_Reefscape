@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ArmCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -73,7 +74,7 @@ public class RobotContainer {
 
   // Subsystems
   private final DriveSubsystem drive;
-  @SuppressWarnings("unused")
+
   private final VisionSubsystem vision;
 
   // private final ClimberSubsystem climber;
@@ -196,7 +197,11 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    NamedCommands.registerCommand("Print arm working", new PrintCommand("**********Arm probably works**********"));
+    NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
+    NamedCommands.registerCommand("ArmState_Intake", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+    NamedCommands.registerCommand("ArmState_Low", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+    NamedCommands.registerCommand("ArmState_Mid", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+    NamedCommands.registerCommand("ArmState_High", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
     // NamedCommands.registerCommand("Set Arm Start State",
     // ArmCommands.updateSetpoint(arm, ArmStates.START));
     // NamedCommands.registerCommand("Set Arm Intake State",
@@ -249,14 +254,11 @@ public class RobotContainer {
 
         // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
-
         programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
-
         programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
-
-        programmingController.y().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-
-        programmingController.x().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+        programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+        programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+        programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
 
         // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
         // programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
@@ -277,7 +279,7 @@ public class RobotContainer {
 
         programmingController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
 
-        programmingController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+        programmingController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
 
         programmingController.button(4).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
