@@ -42,6 +42,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOSim;
@@ -132,12 +133,12 @@ public class RobotContainer {
                         Units.degreesToRadians(-20.0),
                         0)),
                 Rotation2d.fromDegrees(62.5),
-                Rotation2d.fromDegrees(48.9)));
+                Rotation2d.fromDegrees(48.9), "sim"));
 
         arm = new ArmSubsystem(new ArmIOSim());
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
-        // intake = new IntakeSubsystem(new IntakeIO() {});
+        // intake = new IntakeSubsystem(new IntakeIOSim() {});
 
         break;
 
@@ -168,6 +169,12 @@ public class RobotContainer {
         break;
     }
 
+    NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
+    NamedCommands.registerCommand("ArmState_Intake", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+    NamedCommands.registerCommand("ArmState_Low", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+    NamedCommands.registerCommand("ArmState_Mid", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+    NamedCommands.registerCommand("ArmState_High", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -186,13 +193,6 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
-    NamedCommands.registerCommand("ArmState_Intake", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
-    NamedCommands.registerCommand("ArmState_Low", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
-    NamedCommands.registerCommand("ArmState_Mid", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-    NamedCommands.registerCommand("ArmState_High", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
-
     // Configure the button bindings
     configureButtonBindings();
   }
