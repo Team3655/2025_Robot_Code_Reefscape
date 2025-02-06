@@ -19,8 +19,9 @@ public class ArmIOSim implements ArmIO {
       ArmConstants.SHOULDER_REDUCTION,
       SingleJointedArmSim.estimateMOI(ArmConstants.SHOULDER_LENGTH_METERS,
           ArmConstants.SHOULDER_MASS_KG),
-      ArmConstants.SHOULDER_LENGTH_METERS, ArmConstants.SHOULDER_MIN_ANGLE_RADS.getRadians(),
-      ArmConstants.SHOULDER_MAX_ANGLE_RADS.getRadians(), false, Rotation2d.fromDegrees(0).getRadians());
+      ArmConstants.SHOULDER_LENGTH_METERS, Rotation2d.fromDegrees(-360).getRadians(),
+      Rotation2d.fromDegrees(360).getRadians(), false, Rotation2d.fromDegrees(0).getRadians());
+
 
   // Physics simulation for the elbow
   private final SingleJointedArmSim elbowSim = new SingleJointedArmSim(gearbox, ArmConstants.ELBOW_REDUCTION,
@@ -34,8 +35,8 @@ public class ArmIOSim implements ArmIO {
       ArmConstants.WRIST_LENGTH_METERS, ArmConstants.WRIST_MIN_ANGLE_RADS.getRadians(),
       ArmConstants.WRIST_MAX_ANGLE_RADS.getRadians(), false, Rotation2d.fromDegrees(0).getRadians());
 
-  private final PIDController shoulderController = new PIDController(15, ArmConstants.KI_SHOULDER, ArmConstants.KD_SHOULDER);
-  private final PIDController elbowController = new PIDController(30, ArmConstants.KI_ELBOW, ArmConstants.KD_ELBOW);
+  private final PIDController shoulderController = new PIDController(10, ArmConstants.KI_SHOULDER, ArmConstants.KD_SHOULDER);
+  private final PIDController elbowController = new PIDController(10, ArmConstants.KI_ELBOW, ArmConstants.KD_ELBOW);
   private final PIDController wristController = new PIDController(ArmConstants.KP_WRIST, ArmConstants.KI_WRIST, ArmConstants.KD_WRIST);
 
   @Override
@@ -45,7 +46,7 @@ public class ArmIOSim implements ArmIO {
   public void updateInputs(ArmIOInputs inputs) {
     
     shoulderVolts = shoulderController.calculate(shoulderSim.getAngleRads());
-    elbowVolts = shoulderController.calculate(elbowSim.getAngleRads());
+    elbowVolts = elbowController.calculate(elbowSim.getAngleRads());
     wristVolts = wristController.calculate(wristSim.getAngleRads());
 
     shoulderSim.setInputVoltage(shoulderVolts);

@@ -92,9 +92,6 @@ public class ArmVisualizer {
         break;
     }
 
-    shoulder.setAngle(-65);
-    elbow.setAngle(105);
-
   }
 
   /**
