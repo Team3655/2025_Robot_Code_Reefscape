@@ -42,7 +42,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOSim;
@@ -133,7 +132,7 @@ public class RobotContainer {
                         Units.degreesToRadians(-20.0),
                         0)),
                 Rotation2d.fromDegrees(62.5),
-                Rotation2d.fromDegrees(48.9), "sim"));
+                Rotation2d.fromDegrees(48.9)));
 
         arm = new ArmSubsystem(new ArmIOSim());
         // climber = new ClimberSubsystem(new ClimberIO() {
