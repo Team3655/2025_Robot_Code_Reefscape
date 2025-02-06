@@ -40,7 +40,7 @@ public class DriveConstants {
       BUMPER_WIDTH_X, 
       BUMPER_WIDTH_Y);
 
-  public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
+  public static final double WHEEL_RADIUS = Units.inchesToMeters(2.016);
   public static final double WHEEL_COF = 1.5;
 
   public static final double KP_TURN = 100;

@@ -91,11 +91,11 @@ public class ArmConstants {
         public static final double D_ARM_HORIZONTAL_OFFSET_METERS = Units.inchesToMeters(8.25);
         public static final double TOWER_CHASSIS_HEIGHT_METERS = Units.inchesToMeters(27.5);
 
+        /**
+         * A class that stores all the states the arm could be at.
+         * <br></br> <code> ArmStates.STATE; </code>
+         */
         public class ArmStates {
-
-                // xTarget
-                // yTarget
-                // wristPosition
                 public static final ArmPose START = new ArmPose(
                                 Units.inchesToMeters(12),
                                 Units.inchesToMeters(34.4),

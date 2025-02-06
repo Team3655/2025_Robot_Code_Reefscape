@@ -52,7 +52,6 @@ public class ArmKinematics {
     }
 
     private double L4 = 0.0;
-    // private double L5 = 0.0;
     private double L6 = 0.0;
 
     private Rotation2d theta1 = Rotation2d.fromRadians(0.0);
@@ -67,10 +66,11 @@ public class ArmKinematics {
     private Rotation2d[] calculatedArmAngles = new Rotation2d[2];
 
     /**
+     * Gets the arm angles from the calculations
+     * 
      * @param xSetpoint The x coordinate of the target in meters
      * @param ySetpoint The y coordinate of the target in meters
-     * @return The angles of the arm joints - value is dependent on the active
-     *         encoders.
+     * @return The angles of the arm joints - value is dependent on the active encoders.
      */
     public Rotation2d[] getArmAngles(double xTarget, double yTarget, ArmEncoders encoderType) {
 
@@ -88,14 +88,17 @@ public class ArmKinematics {
 
             switch (encoderType) {
                 case ABSOLUTE:
+
                     calculatedArmAngles[1] = absoluteTheta2;
                     break;
                 case RELATIVE:
+
                     calculatedArmAngles[1] = relativeTheta2;
                     break;
                 default:
+
                     DriverStation.reportError("INVALID ARM ENCODER TYPE", false);
-                break;
+                    break;
             }
 
             SmartDashboard.putNumber("Theta1Deg Target", theta1.getDegrees());
@@ -110,6 +113,12 @@ public class ArmKinematics {
 
     }
 
+    /**
+     * Calculates arm angles using inverse kinematics
+     * 
+     * @param xTarget The x position in meters to set the arm at
+     * @param yTarget The y position in meters to set the arm at
+     */
     private void calculateInverseKinematics(double xTarget, double yTarget) {
         // Derived from arm constants and setpoint - Pythagorean Theorem
         L4 = Math.sqrt(
@@ -151,6 +160,11 @@ public class ArmKinematics {
 
     }
 
+    /**
+     * 
+     * @param xTarget
+     * @param yTarget
+     */
     private void calculateTheta6(double xTarget, double yTarget) {
         // Triangles used to calculate measurements change when moving the target behind
         // the tower (L1)

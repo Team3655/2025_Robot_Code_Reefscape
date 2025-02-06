@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
@@ -25,8 +26,14 @@ import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 
 public class ArmSubsystem extends SubsystemBase {
 
-  // (x, y) marks the desired target of the elbow/wrist joint
-  // with origin at the rear of the robot frame where it would meet the ground
+  /**
+   * A record to store the data for the arm position.
+   * (x, y) marks the desired target of the elbow/wrist joint,
+   * with origin at the rear of the robot frame where it would meet the ground.
+   * <br>
+   * </br>
+   * xTarget, yTarget, wristangle
+   */
   public record ArmPose(double xTarget, double yTarget, Rotation2d wristAngle) {
   }
 
@@ -53,8 +60,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     updateSetpoint(ArmStates.START);
 
-    DriverStation.reportWarning(
-        "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
+    DriverStation.reportWarning("ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
 
     armKinematics = new ArmKinematics(
         ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS,
@@ -68,7 +74,8 @@ public class ArmSubsystem extends SubsystemBase {
             Volts.of(0.25).per(Second),
             Volts.of(0.5),
             Seconds.of(5),
-            (state) -> Logger.recordOutput("Arm/SysIdState", state.toString())),
+            (state) -> Logger.recordOutput("Arm/SysIdState", 
+            state.toString())),
 
         new SysIdRoutine.Mechanism(
             (voltage) -> io.setShoulderVoltage(voltage.in(Volts)),
@@ -84,25 +91,29 @@ public class ArmSubsystem extends SubsystemBase {
     return shoulderRoutine.dynamic(direction);
   }
 
-  @Override
   /**
    * This method will be called once per scheduler run
    */
+  @Override
   public void periodic() {
 
     io.updateInputs(inputs);
 
     // Calculate arm angles using setpoint
     switch (Constants.currentMode) {
+      // Use real encoder math for real robot
       case REAL:
-        targetAngles[0] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget, ArmConstants.activeEncoders)[0];
-        targetAngles[1] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget, ArmConstants.activeEncoders)[1];
+        targetAngles[0] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget,
+            ArmConstants.activeEncoders)[0];
+        targetAngles[1] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget,
+            ArmConstants.activeEncoders)[1];
         break;
       case SIM:
+        // Use absolute encoder math for simulation
         targetAngles[0] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget, ArmEncoders.ABSOLUTE)[0];
         targetAngles[1] = armKinematics.getArmAngles(setpoint.xTarget, setpoint.yTarget, ArmEncoders.ABSOLUTE)[1];
       case REPLAY:
-      break;
+        break;
       default:
         break;
     }
@@ -122,14 +133,25 @@ public class ArmSubsystem extends SubsystemBase {
     armKinematics.currentArmAngles[1] = inputs.elbowPosition;
 
     // Update visualizers
-    setpointVisualizer.update(shoulderSetPoint.getDegrees() - 90, elbowSetPoint.getDegrees(),
+    setpointVisualizer.update(
+        shoulderSetPoint.getDegrees() - 90,
+        elbowSetPoint.getDegrees(),
         wristSetPoint.getDegrees());
-    currentVisualizer.update(inputs.shoulderPosition.getDegrees() - 90, inputs.elbowPosition.getDegrees(),
+
+    currentVisualizer.update(
+        inputs.shoulderPosition.getDegrees() - 90,
+        inputs.elbowPosition.getDegrees(),
         inputs.wristPosition.getDegrees());
+
     Logger.recordOutput("Arm/Mechanism2d/Setpoint", setpointVisualizer.arm);
     Logger.recordOutput("Arm/Mechanism2d/Current", currentVisualizer.arm);
 
-    RobotState.getInstance().updateArmState(inputs.shoulderPosition, inputs.elbowPosition, inputs.wristPosition);
+    RobotState.getInstance().updateArmState(
+        inputs.shoulderPosition,
+        inputs.elbowPosition,
+        inputs.wristPosition,
+        armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[0],
+        armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[1]);
 
     SmartDashboard.putNumber("Shoulder Setpoint", shoulderSetPoint.getDegrees());
 
@@ -142,8 +164,9 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   /**
+   * Gets the current state of the robot using forward kinematics
    * 
-   * @return The current state of the arm
+   * @return an ArmPose representing the current state
    */
   @AutoLogOutput(key = "Arm/Current")
   public ArmPose getState() {
@@ -155,7 +178,9 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   /**
-   * @return the current setpoint
+   * Gets the current setpoint
+   * 
+   * @return An ArmPose representing the setpoint
    */
   @AutoLogOutput(key = "Arm/Setpoint")
   public ArmPose getSetPoint() {
@@ -165,7 +190,7 @@ public class ArmSubsystem extends SubsystemBase {
   /**
    * Updates the setpoint to a new ArmPose
    * 
-   * @param pose The pose to update to
+   * @param pose An ArmState to update the setpoint to
    */
   public void updateSetpoint(ArmPose pose) {
     setpoint = pose;
