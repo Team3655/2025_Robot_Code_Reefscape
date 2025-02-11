@@ -132,11 +132,14 @@ public class VisionSubsystem extends SubsystemBase {
 
         // Add the measurement to the poseEstimator
         RobotState.getInstance()
-            .addVisionMeasurement(new VisionMeasurement(observation.timestamp(), observation.pose().toPose2d(),
-                VecBuilder.fill(linearstdDev, linearstdDev, angularstdDev)));
+            .addVisionMeasurement(
+                new VisionMeasurement(
+                    observation.timestamp(),
+                    observation.pose().toPose2d(),
+                    VecBuilder.fill(linearstdDev, linearstdDev, angularstdDev)));
       }
 
-      // Log individial camera data
+      // Log individual camera data
       Logger.recordOutput(
           "Vision/Camera" + Integer.toString(i) + "/TagPoses",
           tagPoses.toArray(new Pose3d[tagPoses.size()]));
@@ -149,7 +152,7 @@ public class VisionSubsystem extends SubsystemBase {
       Logger.recordOutput(
           "Vision/Camera" + Integer.toString(i) + "/RobotPosesRejected",
           robotPosesRejected.toArray(new Pose3d[robotPosesRejected.size()]));
-          
+
       // Add poses to total data
       allTagPoses.addAll(tagPoses);
       allRobotPoses.addAll(robotPoses);

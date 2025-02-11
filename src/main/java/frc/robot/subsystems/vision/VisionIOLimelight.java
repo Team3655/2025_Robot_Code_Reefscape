@@ -92,8 +92,13 @@ public class VisionIOLimelight implements VisionIO {
     }
 
     poseObservations
-    .add(new PoseObservation(estimatedPose.timestampSeconds, new Pose3d(estimatedPose.pose), lowestAmbiguity,
-        tagIds.size(), totalTagDistance / tagIds.size()));
+        .add(
+            new PoseObservation(
+                estimatedPose.timestampSeconds,
+                new Pose3d(estimatedPose.pose),
+                lowestAmbiguity,
+                tagIds.size(),
+                totalTagDistance / tagIds.size()));
 
     // Save pose observations to inputs object
     inputs.poseObservations = new PoseObservation[poseObservations.size()];
@@ -109,9 +114,9 @@ public class VisionIOLimelight implements VisionIO {
     }
   }
 
-  public boolean isLimelightConnected() {
+  // methods within IO layer should be declared private
+  private boolean isLimelightConnected() {
     double tv = tvEntry.getDouble(0); // Try to read the "tv" value
     return !Double.isNaN(tv) || tv != 0; // Check if the value is valid
-
   }
 }
