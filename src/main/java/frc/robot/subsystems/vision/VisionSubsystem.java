@@ -4,114 +4,170 @@
 
 package frc.robot.subsystems.vision;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionMeasurement;
 
 public class VisionSubsystem extends SubsystemBase {
 
-  private final VisionIO[] limelights;
-  private final VisionIOInputsAutoLogged[] llInputs;
+  private final VisionIOInputsAutoLogged[] inputs;
+  private final VisionIO[] io;
+  private final Alert[] disconnectedAlerts;
+  private AprilTagFieldLayout tagLayout;
 
-  private ArrayList<Pose2d> acceptedPoses = new ArrayList<>();
-  private ArrayList<Pose2d> rejectedPoses = new ArrayList<>();
+  public VisionSubsystem(VisionIO... io) {
+    this.io = io;
+    this.inputs = new VisionIOInputsAutoLogged[io.length];
 
-  /** Creates a new VisionSubsystem. */
-  public VisionSubsystem(VisionIO... limelights) {
-    this.limelights = limelights;
-    // create and fill a list of autologged inputs;
-    llInputs = new VisionIOInputsAutoLogged[limelights.length];
-    for (int i = 0; i < limelights.length; i++) {
-      llInputs[i] = new VisionIOInputsAutoLogged();
+    // Loading from a file may not work
+    try {
+      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
+    } catch (IOException e) {
+      DriverStation.reportError("Failed to load april tags :3", null);
     }
+
+    // Create inputs
+    for (int i = 0; i < inputs.length; i++) {
+      inputs[i] = new VisionIOInputsAutoLogged();
+    }
+
+    // Initialize disconnected alerts
+    this.disconnectedAlerts = new Alert[io.length];
+    for (int i = 0; i < disconnectedAlerts.length; i++) {
+      disconnectedAlerts[i] = new Alert("Limelight" + Integer.toString(i) + " is disconnected", AlertType.kWarning);
+    }
+
   }
 
   @Override
   public void periodic() {
-    rejectedPoses.clear();
-    acceptedPoses.clear();
 
-    for (int i = 0; i < limelights.length; i++) {
+    // Update inputs
+    for (int i = 0; i < inputs.length; i++) {
+      io[i].updateInputs(inputs[i]);
+      Logger.processInputs("Inputs/Vision/Camera" + Integer.toString(i), inputs[i]);
+    }
 
-      limelights[i].updateInputs(llInputs[i], RobotState.getInstance().getEstimatedPose());
-      Logger.processInputs("Vision/" + limelights[i].getName(), llInputs[i]);
+    // Initialize logging data
+    List<Pose3d> allTagPoses = new LinkedList<>();
+    List<Pose3d> allRobotPoses = new LinkedList<>();
+    List<Pose3d> allRobotPosesAccepted = new LinkedList<>();
+    List<Pose3d> allRobotPosesRejected = new LinkedList<>();
 
-      for (int j = 0; j < llInputs[i].robotPose.length; j++) {
+    for (int i = 0; i < io.length; i++) {
+      // Check if camera is disconnected and alert if so
+      disconnectedAlerts[i].set(!inputs[i].connected);
 
-        // basic checks to avoid errors
-        if (!llInputs[i].isNew
-            || !llInputs[i].hasValidTarget
-            || llInputs[i].robotPose[j] == null
-            || llInputs[i].targetPoses.length < 1) {
-          continue;
+      // Logging data
+      List<Pose3d> tagPoses = new LinkedList<>();
+      List<Pose3d> robotPoses = new LinkedList<>();
+      List<Pose3d> robotPosesAccepted = new LinkedList<>();
+      List<Pose3d> robotPosesRejected = new LinkedList<>();
+
+      // Get positions of every tag that is seen
+      for (int tagId : inputs[i].tagIds) {
+        var tagPose = tagLayout.getTagPose(tagId);
+        if (tagPose != null) {
+          tagPoses.add(tagPose.get());
         }
-
-        // calculate the average distance to the target
-        double avgDist = 0.0;
-        for (double d : llInputs[i].toTagDistances) {
-          avgDist += d;
-        }
-        avgDist /= llInputs[i].targetPoses.length;
-
-        // if the camera to target distance is too great reject the measurement,
-        // depending on the number of tags in view use a different maximum
-        if (avgDist >= (llInputs[i].targetPoses.length > 1
-            ? VisionConstants.MULTI_TAG_MAXIMUM
-            : VisionConstants.SINGLE_TAG_MAXIMUM)
-            // reject measure if outside of field
-            || !isInField(llInputs[i].robotPose[j])) {
-          // add pose to rejected poses for logging
-          rejectedPoses.add(llInputs[i].robotPose[j]);
-          continue;
-        }
-
-        // calculate the standard deviations for the robots x and y position
-        double xyStdDev = Math.pow(avgDist, 1.6
-            * VisionConstants.TRANSLATION_COEFFICIENT
-            / (double) llInputs[i].targetPoses.length);
-
-        // calculate the standard deviations for the robots rotation
-        double thetaStdDev = Math.pow(avgDist, 1.6)
-            * VisionConstants.ROTATION_COEFFICIENT
-            / (double) llInputs[i].targetPoses.length;
-
-        // add pose to the accepted poses for logging
-        acceptedPoses.add(llInputs[i].robotPose[j]);
-
-        // offer a new measurement to the RobotState
-        RobotState.getInstance().addVisionMeasurement(
-            new VisionMeasurement(
-                llInputs[i].timestamp,
-                llInputs[i].robotPose[j],
-                VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
       }
+
+      // Go through pose observations and add them to our estimated pose
+      for (var observation : inputs[i].poseObservations) {
+
+        // Check if pose should be rejected
+        boolean rejectPose = observation.tagCount() > 1 ?
+
+        // Multiple tags in observation
+            observation.tagCount() == 0 // Must have at least one tag
+                || observation.ambiguity() > 0.3 // Must be a trustworthy pose
+                || Math.abs(observation.pose().getZ()) > 0.75 // Must have a realistic z coordinate
+                || observation.averageTagDistance() > VisionConstants.MULTI_TAG_MAXIMUM // Must not be too far away
+                // Must be within the field
+                || observation.pose().getX() < 0.0
+                || observation.pose().getX() > tagLayout.getFieldLength()
+                || observation.pose().getY() < 0.0
+                || observation.pose().getY() > tagLayout.getFieldWidth()
+
+            // Single tag in observation
+            : observation.tagCount() == 0 // Must have at least one tag
+                || observation.ambiguity() > 0.3 // Must be a trustworthy pose
+                || Math.abs(observation.pose().getZ()) > 0.75 // Must have a realistic z coordinate
+                || observation.averageTagDistance() > VisionConstants.SINGLE_TAG_MAXIMUM // Must not be too far away
+                // Must be within the field
+                || observation.pose().getX() < 0.0
+                || observation.pose().getX() > tagLayout.getFieldLength()
+                || observation.pose().getY() < 0.0
+                || observation.pose().getY() > tagLayout.getFieldWidth();
+
+        // Add pose to list of all poses
+        robotPoses.add(observation.pose());
+
+        // Add it to its respective list and skip calculation if pose was rejected
+        if (rejectPose) {
+          robotPosesRejected.add(observation.pose());
+          continue;
+        } else {
+          robotPosesAccepted.add(observation.pose());
+        }
+
+        // Calculate standard deviations
+        double stdDevFactor = Math.pow(observation.averageTagDistance(), 2) / observation.tagCount();
+
+        double linearstdDev = 0.02 * stdDevFactor;
+        double angularstdDev = 0.06 * stdDevFactor;
+
+        // Add the measurement to the poseEstimator
+        RobotState.getInstance()
+            .addVisionMeasurement(new VisionMeasurement(observation.timestamp(), observation.pose().toPose2d(),
+                VecBuilder.fill(linearstdDev, linearstdDev, angularstdDev)));
+      }
+
+      // Log individial camera data
+      Logger.recordOutput(
+          "Vision/Camera" + Integer.toString(i) + "/TagPoses",
+          tagPoses.toArray(new Pose3d[tagPoses.size()]));
+      Logger.recordOutput(
+          "Vision/Camera" + Integer.toString(i) + "/RobotPoses",
+          robotPoses.toArray(new Pose3d[robotPoses.size()]));
+      Logger.recordOutput(
+          "Vision/Camera" + Integer.toString(i) + "/RobotPosesAccepted",
+          robotPosesAccepted.toArray(new Pose3d[robotPosesAccepted.size()]));
+      Logger.recordOutput(
+          "Vision/Camera" + Integer.toString(i) + "/RobotPosesRejected",
+          robotPosesRejected.toArray(new Pose3d[robotPosesRejected.size()]));
+          
+      // Add poses to total data
+      allTagPoses.addAll(tagPoses);
+      allRobotPoses.addAll(robotPoses);
+      allRobotPosesAccepted.addAll(robotPosesAccepted);
+      allRobotPosesRejected.addAll(robotPosesRejected);
     }
 
-    Logger.recordOutput("Vision/acceptedPoses", acceptedPoses.toArray(Pose2d[]::new));
-    Logger.recordOutput("Vision/rejectedPoses", rejectedPoses.toArray(Pose2d[]::new));
-  }
+    // Log all camera data
+    Logger.recordOutput(
+        "Vision/Summary/TagPoses", allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
+    Logger.recordOutput(
+        "Vision/Summary/RobotPoses", allRobotPoses.toArray(new Pose3d[allRobotPoses.size()]));
+    Logger.recordOutput(
+        "Vision/Summary/RobotPosesAccepted",
+        allRobotPosesAccepted.toArray(new Pose3d[allRobotPosesAccepted.size()]));
+    Logger.recordOutput(
+        "Vision/Summary/RobotPosesRejected",
+        allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
 
-  /**
-   * Checks if the provided pose is within the playing field
-   * 
-   * @param pose the pose to check
-   * @return true: if the pose is within the field
-   */
-  private static boolean isInField(Pose2d pose) {
-    if (pose.getX() >= 0
-        && pose.getX() <= Units.feetToMeters(54 + (3.0 / 12.0))
-        && pose.getY() >= 0
-        && pose.getY() <= Units.feetToMeters(26 + (3.0 / 12.0))) {
-      return true;
-    }
-    return false;
   }
-
 }
