@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.vision;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
