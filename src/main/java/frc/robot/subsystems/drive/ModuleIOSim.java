@@ -18,6 +18,8 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants;
+import frc.robot.Constants.RobotType;
 
 /**
  * Physics sim implementation of module IO. The sim models are configured using a set of module
@@ -51,10 +53,13 @@ public class ModuleIOSim implements ModuleIO {
 
   public ModuleIOSim() {
     // Create drive and turn sim models
+        final double DRIVE_GEAR_RATIO = (Constants.currentRobot == RobotType.COMPBOT)
+        ? DriveConstants.COMPBOT_DRIVE_GEAR_RATIO
+        : DriveConstants.PROTOBOT_DRIVE_GEAR_RATIO;
     driveSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-                DRIVE_GEARBOX, DRIVE_INERTIA, DriveConstants.DRIVE_GEAR_RATIO),
+                DRIVE_GEARBOX, DRIVE_INERTIA, DRIVE_GEAR_RATIO),
             DRIVE_GEARBOX);
     turnSim =
         new DCMotorSim(
