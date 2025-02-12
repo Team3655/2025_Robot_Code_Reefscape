@@ -1,134 +1,186 @@
 package frc.robot.subsystems.vision;
 
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
+import java.util.Set;
 
-import edu.wpi.first.apriltag.AprilTag;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.RobotState;
+import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
+import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
 
-/**
- * VisionIOSim
- * 
- * Simulates the outputs of a Vision IO based off of the robots current assumed
- * position. The class returns
- * the current position of the robot if any tags are in view.
- * 
- * @author quinnhaywood
- */
 public class VisionIOSim implements VisionIO {
 
-  /**
-   * Mimics the effects of poor quality messy data, aka real world data. This is
-   * good for testing your
-   * vision system against the horrors of reality.
-   */
-  private static final boolean USE_RANDOM = true;
+  private final VisionSystemSim visionSystem;
+  private final SimCameraProperties cameraProperties;
+  private final PhotonCamera camera;
+  private final PhotonCameraSim cameraSim;
+  private final PhotonPoseEstimator poseEstimator;
 
-  private Transform3d cameraTransform;
-  private Rotation2d verticalFOV;
-  private Rotation2d horizontalFOV;
-
-  private Random random = new Random();
-
-  // load the tag layout for the current year
-  private static final List<AprilTag> TAGS = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape).getTags();
+  private AprilTagFieldLayout tagLayout;
 
   /**
-   * Simulates the outputs of a Vision IO based off of the robots current assumed
-   * position. The class returns
-   * the current position of the robot if any tags are in view.
+   * Uses PhotonLib to simulate vision calculations.
    * 
-   * @param pose          A transform representing the relative position of the
-   *                      camera to the center of the robot.
-   * @param HorizontalFOV The field of view of the camera horizontally represent
-   *                      as a Rotation2d
-   * @param VerticalFOV   The field of view of the camera Vertically represent as
-   *                      a Rotation2d
+   * @param name          The name of the camera
+   * @param robotToCamera A Transform3d representing the relative position of the
+   *                      camera compared to the robot
    */
-  public VisionIOSim(Transform3d pose, Rotation2d HorizontalFOV, Rotation2d VerticalFOV) {
-    this.cameraTransform = pose;
-    this.verticalFOV = VerticalFOV;
-    this.horizontalFOV = HorizontalFOV;
+  public VisionIOSim(String name, Transform3d robotToCamera) {
+
+    // Initalize April Tag layout
+    try {
+      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
+    } catch (IOException e) {
+      DriverStation.reportError("Failed to load april tags :3", null);
+    }
+
+    // Simulates a camera and a coprocessor running PhotonLib
+    visionSystem = new VisionSystemSim("system" + name);
+
+    cameraProperties = new SimCameraProperties();
+
+    cameraProperties.setCalibError(0.25, 0.08);
+    cameraProperties.setRandomSeed((long) 0.011);
+
+    // Create a real camera to get simulated data from
+    camera = new PhotonCamera(name);
+    cameraSim = new PhotonCameraSim(camera, cameraProperties);
+
+    // Enable the raw and processed streams for the cameras
+    // Access processed stream with localhost:1182
+    // Access raw stream with localhost:1181
+    cameraSim.enableProcessedStream(true);
+    cameraSim.enableRawStream(true);
+
+    // Enable drawing a wireframe visualization of the field to the camera
+    // This is extremely resource-intensive and is disabled by default.
+    cameraSim.enableDrawWireframe(true);
+
+    // Add the april tags as vision targets
+    visionSystem.addAprilTags(tagLayout);
+
+    // Add the camera to the system
+    visionSystem.addCamera(cameraSim, robotToCamera);
+
+    // Create PoseEstimator
+    poseEstimator = new PhotonPoseEstimator(tagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCamera);
   }
 
   @Override
-  public void updateInputs(VisionIOInputs inputs, Pose2d robotPose) {
+  public void updateInputs(VisionIOInputs inputs) {
+    inputs.connected = camera.isConnected();
 
-    // transform the robot pose by the camera transform to get the cameras pose on
-    // the field
-    Pose3d cameraPose = new Pose3d(robotPose).transformBy(cameraTransform);
+    // Update the systems position
+    visionSystem.update(RobotState.getInstance().getOdometryPose());
 
-    LinkedList<Pose3d> targetPoses = new LinkedList<>();
-    LinkedList<Double> toTagDistances = new LinkedList<>();
+    Set<Short> tagIds = new HashSet<>();
+    List<PoseObservation> poseObservations = new LinkedList<>();
 
-    // set to true if there were any valid targets in view
-    boolean hasValid = false;
+    // Get all unread vision measurements.
+    for (var result : camera.getAllUnreadResults()) {
 
-    for (int i = 0; i < TAGS.size(); i++) {
-
-      Pose3d tagPose = TAGS.get(i).pose;
-
-      // get the transform from the camera to the target
-      Pose3d targetRelative = tagPose.relativeTo(cameraPose);
-
-      // use atan2 because it respects the sign of the input
-      double xyAngle = Math.atan2(targetRelative.getY(), targetRelative.getX());
-      double xzAngle = Math.atan2(targetRelative.getZ(), targetRelative.getX());
-
-      boolean isCurrentValid =
-          // check to see if the target is within the cameras fov
-          (Math.abs(xyAngle) < horizontalFOV.getRadians() / 2.0) &&
-              (Math.abs(xzAngle) < verticalFOV.getRadians() / 2.0) &&
-              // assume the camera cannot see targets further than 10 meters
-              targetRelative.getTranslation().getNorm() < 10.0 &&
-              // if using randomness introduce the chance that the tag is not spotted based
-              // off of
-              // the degree of the targets angle relative to the fov
-              (USE_RANDOM ? 1 >= Math.abs(random.nextGaussian() * ((xyAngle / horizontalFOV.getRadians() * 2))) : true);
-
-      // if the current tag is valid add data to lists
-      if (isCurrentValid) {
-        toTagDistances.add(targetRelative.getTranslation().getNorm());
-        targetPoses.add(tagPose);
+      if (result.hasTargets()) {
+        // Update latest observation tx and ty, can later be used for other mechanisms if desired.
+        inputs.latestObservation = new TargetObservation(
+            Rotation2d.fromDegrees(result.getBestTarget().getYaw()),
+            Rotation2d.fromDegrees(result.getBestTarget().getPitch()));
       } else {
-        toTagDistances.add(0.0);
+        inputs.latestObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
+        continue;
       }
 
-      // set has valid to be true if any tags are valid
-      hasValid = hasValid || isCurrentValid;
-    }
+      // More than one april tag
+      if (result.multitagResult.isPresent()) {
 
-    // update inputs
-    if (hasValid) {
-      inputs.hasValidTarget = false;
-      if (USE_RANDOM) {
-        robotPose = robotPose.plus(
-            new Transform2d(
-                new Translation2d(
-                    random.nextGaussian() * (0.5 / (targetPoses.size() * 3)),
-                    Rotation2d.fromRadians(Math.random() * (2 * Math.PI))),
-                Rotation2d.fromDegrees(random.nextGaussian() * (8 / (targetPoses.size() * 3)))));
+        var multiTagResult = result.multitagResult.get();
+
+        // Calculate total distance to tags
+        double totalTagDistance = 0.0;
+        for (var target : result.targets) {
+          totalTagDistance += target.bestCameraToTarget.getTranslation().getNorm();
+        }
+
+        // Add tag ids to a list
+        tagIds.addAll(multiTagResult.fiducialIDsUsed);
+
+        // Get pose estimation
+        var estimation = getEstimatedGlobalPose(RobotState.getInstance().getEstimatedPose(), result);
+
+        if (estimation.isPresent()) {
+
+          // Add pose estimation to observations
+          poseObservations.add(new PoseObservation(
+              estimation.get().timestampSeconds,
+              estimation.get().estimatedPose,
+              multiTagResult.estimatedPose.ambiguity,
+              multiTagResult.fiducialIDsUsed.size(),
+              totalTagDistance / result.targets.size()));
+        }
+
+      } else if (!result.targets.isEmpty()) { // Single tag result
+        var target = result.targets.get(0);
+        var tagPose = tagLayout.getTagPose(target.fiducialId);
+
+        if (tagPose.isPresent()) {
+          Transform3d cameraToTarget = target.bestCameraToTarget;
+          tagIds.add((short) target.fiducialId);
+
+          // Get pose estimation
+          var estimation = getEstimatedGlobalPose(RobotState.getInstance().getEstimatedPose(), result);
+          // Use PhotonLib's built in PoseEstimator.
+          if (estimation.isPresent()) {
+            poseObservations.add(new PoseObservation(
+                estimation.get().timestampSeconds,
+                estimation.get().estimatedPose,
+                target.poseAmbiguity,
+                1,
+                cameraToTarget.getTranslation().getNorm()));
+          }
+        }
       }
-      inputs.robotPose = new Pose2d[] { robotPose };
-      inputs.isNew = true;
-    } else {
-      inputs.hasValidTarget = false;
-      inputs.robotPose = new Pose2d[] {};
-      inputs.isNew = false;
     }
 
-    inputs.targetPoses = targetPoses.toArray(Pose3d[]::new);
-    inputs.toTagDistances = toTagDistances.stream().mapToDouble(d -> d).toArray();
-    inputs.timestamp = MathSharedStore.getTimestamp();
+    // Save pose observations to inputs object
+    inputs.poseObservations = new PoseObservation[poseObservations.size()];
+    for (int i = 0; i < poseObservations.size(); i++) {
+      inputs.poseObservations[i] = poseObservations.get(i);
+    }
+
+    // Save tag IDs to inputs objects
+    inputs.tagIds = new int[tagIds.size()];
+    int i = 0;
+    for (int id : tagIds) {
+      inputs.tagIds[i++] = id;
+    }
   }
 
+  /**
+   * Gets an estimated pose from PhotonLib's pose estimator
+   * 
+   * @param previousPose The pose where the robot used to be.
+   * @param result       The result to calculate pose with
+   * @return An optional representing the estimated pose
+   */
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d previousPose, PhotonPipelineResult result) {
+    poseEstimator.setReferencePose(previousPose);
+    return poseEstimator.update(result);
+  }
 }

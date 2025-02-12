@@ -4,129 +4,103 @@
 
 package frc.robot.subsystems.vision;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
+import java.util.Set;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.MathSharedStore;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.vision.VisionConstants.VisionMode;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.RobotState;
+import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
+import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
 import frc.robot.util.LimelightHelpers;
-import frc.robot.util.LimelightHelpers.LimelightResults;
-import frc.robot.util.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.util.LimelightHelpers.RawFiducial;
 
-/** Add your docs here. */
+/** Uses a Limelight camera to do vision calculations. */
 public class VisionIOLimelight implements VisionIO {
-
-  private static final AprilTagFieldLayout TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
-  private final Map<VisionMode, Integer> pipelines = new HashMap<>();
 
   private final String name;
 
-  private Pose2d lastPose;
+  private NetworkTable limelightTable;
+  private NetworkTableEntry tvEntry;
 
   public VisionIOLimelight(String name) {
+
     this.name = name;
-    lastPose = new Pose2d();
+
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    limelightTable = inst.getTable("limelight"); // Access the "limelight" table
+    tvEntry = limelightTable.getEntry("tv"); // Get the "tv" entry
   }
 
   @Override
-  public void updateInputs(VisionIOInputs inputs, Pose2d robotPose) {
+  public void updateInputs(VisionIOInputs inputs) {
 
-    LimelightResults llresult = LimelightHelpers.getLatestResults(name);
+    inputs.connected = isLimelightConnected();
 
-    Pose2d visionPose = llresult.getBotPose2d_wpiBlue();
-    inputs.isNew = !visionPose.equals(lastPose);
+    // Get raw AprilTag/Fiducial data
+    RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(name);
 
-    int numTargets = (int) llresult.botpose_tagcount;
+    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    var estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
-    if (llresult.valid && numTargets > 0) {
-      inputs.hasValidTarget = true;
+    double totalAmbiguity = 0;
+    double totalTagDistance = 0.0;
 
-      inputs.targetErrorRads = Units.degreesToRadians(LimelightHelpers.getTX(name));
+    Set<Short> tagIds = new HashSet<>();
+    Set<Short> ambiguities = new HashSet<>();
+    List<PoseObservation> poseObservations = new LinkedList<>();
 
-      // region: pose estimation
-      inputs.robotPose = new Pose2d[] { visionPose };
-      // find the targets poses on the field
-      inputs.targetPoses = new Pose3d[numTargets];
-      for (int i = 0; i < numTargets; i++) {
-        Optional<Pose3d> targetPose = TAG_LAYOUT.getTagPose((int) llresult.targets_Fiducials[i].fiducialID);
-        inputs.targetPoses[i] = targetPose.orElse(new Pose3d());
-      }
+    for (RawFiducial fiducial : fiducials) {
+      int id = fiducial.id; // Tag ID
+      double distToCamera = fiducial.distToCamera; // Distance to camera
+      double ambiguity = fiducial.ambiguity; // Tag pose ambiguity
 
-      LinkedList<Double> toTagDistances = new LinkedList<>();
-      for (LimelightTarget_Fiducial target : llresult.targets_Fiducials) {
-        toTagDistances.add(target.getCameraPose_TargetSpace().getTranslation().getNorm());
-      }
-      inputs.toTagDistances = toTagDistances.stream().mapToDouble(d -> d).toArray();
-      // endregion
+      totalTagDistance += distToCamera;
 
+      tagIds.add((short) id);
+
+      totalAmbiguity += ambiguity;
+      ambiguities.add((short) ambiguity);
+    }
+
+    if (estimatedPose != null) {
+      poseObservations
+          .add(
+              new PoseObservation(
+                  estimatedPose.timestampSeconds,
+                  new Pose3d(estimatedPose.pose),
+                  totalAmbiguity / ambiguities.size(),
+                  tagIds.size(),
+                  totalTagDistance / tagIds.size()));
     } else {
-      inputs.hasValidTarget = false;
-      inputs.robotPose = new Pose2d[] {};
-      inputs.targetPoses = new Pose3d[] {};
-      inputs.toTagDistances = new double[] {};
+      poseObservations.add(new PoseObservation(0, new Pose3d(), 0, 0, 0));
     }
 
-    // log latency
-    inputs.captureLatencySec = Units.millisecondsToSeconds(llresult.latency_capture);
-    inputs.pipelineLatencySec = Units.millisecondsToSeconds(llresult.latency_pipeline);
-    inputs.jsonParseLatencySec = Units.millisecondsToSeconds(llresult.latency_jsonParse);
+    inputs.latestObservation = new TargetObservation(Rotation2d.fromDegrees(LimelightHelpers.getTX(name)),
+        Rotation2d.fromDegrees(LimelightHelpers.getTY(name)));
 
-    // record latency compensated timestamp
-    inputs.timestamp = MathSharedStore.getTimestamp()
-        - Units.millisecondsToSeconds(
-            llresult.latency_capture
-                + llresult.latency_pipeline
-                + llresult.latency_jsonParse);
-
-    lastPose = visionPose;
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public void setMode(VisionMode mode) {
-    if (!pipelines.containsKey(mode)) {
-      System.out.println(
-          "WARNING, COULD NOT SET MODE! NO VALID PIPELINE FOUND FOR " + name.toUpperCase());
-      return;
+    // Save pose observations to inputs object
+    inputs.poseObservations = new PoseObservation[poseObservations.size()];
+    for (int i = 0; i < poseObservations.size(); i++) {
+      inputs.poseObservations[i] = poseObservations.get(i);
     }
-    LimelightHelpers.setPipelineIndex(name, pipelines.get(mode));
+
+    // Save tag IDs to inputs objects
+    inputs.tagIds = new int[tagIds.size()];
+    int i = 0;
+    for (int id : tagIds) {
+      inputs.tagIds[i++] = id;
+    }
   }
 
-  /**
-   * Adds a new association to VisionIOLimelight's pipeline and returns itself for
-   * method-chaining and easier use.
-   *
-   * <p>
-   * The map cannot contain duplicate keys or indexes. if duplicates are entered a
-   * warning will
-   * be printed.
-   *
-   * @param mode     A VisionMode to associate with and index
-   * @param pipeline The index of the associate pipeline
-   * @return
-   */
-  public VisionIOLimelight withPipeline(VisionMode mode, int pipeline) {
-    if (pipelines.containsKey(mode)) {
-      System.out.println(
-          "WARNING, CANNOT ASSIGN PIPELINE FOR " + name.toUpperCase() + ": invalid key!");
-    } else if (pipelines.containsValue(pipeline)) {
-      System.out.println(
-          "WARNING, CANNOT ASSIGN PIPELINE FOR " + name.toUpperCase() + ": invalid pipeline ID!");
-    } else {
-      this.pipelines.put(mode, pipeline);
-    }
-    return this;
+  // methods within IO layer should be declared private
+  private boolean isLimelightConnected() {
+    double tv = tvEntry.getDouble(0); // Try to read the "tv" value
+    return !Double.isNaN(tv) || tv != 0; // Check if the value is valid
   }
 }
