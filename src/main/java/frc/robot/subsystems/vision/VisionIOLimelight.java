@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.vision;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.RobotState;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
 import frc.robot.util.LimelightHelpers;
@@ -44,61 +47,44 @@ public class VisionIOLimelight implements VisionIO {
     // Get raw AprilTag/Fiducial data
     RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(name);
 
-    var estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    var estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
-    double lowestAmbiguity = 1;
-    double closestTargetDistance = 100;
+    double totalAmbiguity = 0;
     double totalTagDistance = 0.0;
 
     Set<Short> tagIds = new HashSet<>();
+    Set<Short> ambiguities = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
 
-    // Check if there is more than one tag found
-    if (fiducials.length > 1) {
-      for (RawFiducial fiducial : fiducials) {
-        int id = fiducial.id; // Tag ID
-        double txnc = fiducial.txnc; // X offset (no crosshair)
-        double tync = fiducial.tync; // Y offset (no crosshair)
-        double distToCamera = fiducial.distToCamera; // Distance to camera
-        double ambiguity = fiducial.ambiguity; // Tag pose ambiguity
+    for (RawFiducial fiducial : fiducials) {
+      int id = fiducial.id; // Tag ID
+      double distToCamera = fiducial.distToCamera; // Distance to camera
+      double ambiguity = fiducial.ambiguity; // Tag pose ambiguity
 
-        totalTagDistance += distToCamera;
-
-        tagIds.add((short) id);
-
-        // Check for best target.
-        if (ambiguity < lowestAmbiguity && distToCamera < closestTargetDistance) {
-          inputs.latestObservation = new TargetObservation(Rotation2d.fromDegrees(txnc), Rotation2d.fromDegrees(tync));
-          lowestAmbiguity = ambiguity;
-          closestTargetDistance = distToCamera;
-        }
-      }
-
-    } else if (fiducials.length == 1) {
-
-      int id = fiducials[0].id;
-      double txnc = fiducials[0].txnc;
-      double tync = fiducials[0].tync;
-      double distToCamera = fiducials[0].distToCamera;
-      double ambiguity = fiducials[0].ambiguity;
-
-      totalTagDistance = distToCamera;
-
-      lowestAmbiguity = ambiguity;
+      totalTagDistance += distToCamera;
 
       tagIds.add((short) id);
 
-      inputs.latestObservation = new TargetObservation(Rotation2d.fromDegrees(txnc), Rotation2d.fromDegrees(tync));
+      totalAmbiguity += ambiguity;
+      ambiguities.add((short) ambiguity);
     }
 
-    poseObservations
-        .add(
-            new PoseObservation(
-                estimatedPose.timestampSeconds,
-                new Pose3d(estimatedPose.pose),
-                lowestAmbiguity,
-                tagIds.size(),
-                totalTagDistance / tagIds.size()));
+    if (estimatedPose != null) {
+      poseObservations
+          .add(
+              new PoseObservation(
+                  estimatedPose.timestampSeconds,
+                  new Pose3d(estimatedPose.pose),
+                  totalAmbiguity / ambiguities.size(),
+                  tagIds.size(),
+                  totalTagDistance / tagIds.size()));
+    } else {
+      poseObservations.add(new PoseObservation(0, new Pose3d(), 0, 0, 0));
+    }
+
+    inputs.latestObservation = new TargetObservation(Rotation2d.fromDegrees(LimelightHelpers.getTX(name)),
+        Rotation2d.fromDegrees(LimelightHelpers.getTY(name)));
 
     // Save pose observations to inputs object
     inputs.poseObservations = new PoseObservation[poseObservations.size()];
