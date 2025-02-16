@@ -47,13 +47,20 @@ public final class Constants {
     REPLAY
   }
 
-  public static final Driver currentDriver = Driver.MACBOOK;
+  public static final Driver currentDriver = Driver.PROGRAMMING;
 
   public static enum Driver {
     MATT,
     ETHAN,
     PROGRAMMING,
     MACBOOK,
+  }
+
+  public static final RobotType currentRobot = RobotType.COMPBOT;
+
+  public static enum RobotType{
+    COMPBOT,
+    PROTOBOT
   }
 
 }
