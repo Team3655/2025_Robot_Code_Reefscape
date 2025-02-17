@@ -234,7 +234,7 @@ public class RobotContainer {
         programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
         programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-        programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
+        programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
         programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
         programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
