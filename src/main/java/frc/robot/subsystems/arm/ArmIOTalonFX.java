@@ -19,6 +19,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -48,8 +49,6 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFXConfiguration elbowConfiguration;
   private final TalonFXConfiguration wristConfiguration;
 
-  private final DutyCycleEncoder shoulderRevEncoder;
-
   public ArmIOTalonFX() {
     shoulderLeaderTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_ID, Constants.CANIVORE_NAME);
     shoulderFollowerTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_FOLLOWER_ID, Constants.CANIVORE_NAME);
@@ -60,8 +59,6 @@ public class ArmIOTalonFX implements ArmIO {
     shoulderLeaderConfig = new TalonFXConfiguration();
     elbowConfiguration = new TalonFXConfiguration();
     wristConfiguration = new TalonFXConfiguration();
-
-    shoulderRevEncoder = new DutyCycleEncoder(0);
 
     switch (ArmConstants.activeEncoders) {
       case ABSOLUTE:
@@ -125,10 +122,10 @@ public class ArmIOTalonFX implements ArmIO {
         wristConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         // Set soft limts and enable them
-        shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.SHOULDER_MAX_ANGLE_RADS.getDegrees();
-        shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.SHOULDER_MIN_ANGLE_RADS.getDegrees();
-        shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        // shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.SHOULDER_MAX_ANGLE_RADS.getDegrees();
+        // shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.SHOULDER_MIN_ANGLE_RADS.getDegrees();
+        // shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        // shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
 
         break;
@@ -209,10 +206,9 @@ public class ArmIOTalonFX implements ArmIO {
 
     switch (ArmConstants.activeEncoders) {
       case RELATIVE:
-        //TODO: These arm numbers change if the construction changes
         // Arm MUST be in correct position when deploying code or booting robot
-        elbowLeaderTalon.setPosition(Units.degreesToRotations(105));
-        shoulderLeaderTalon.setPosition(Units.degreesToRotations(-65));
+        elbowLeaderTalon.setPosition(Units.degreesToRotations(90));
+        shoulderLeaderTalon.setPosition(Units.degreesToRotations(-66));
         wristTalon.setPosition(Units.degreesToRotations(0));
         break;
       case ABSOLUTE:
@@ -253,7 +249,6 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.shoulderCurrentAmps = new double[] { shoulderCurrent.getValueAsDouble() };
     inputs.shoulderPosition = Rotation2d.fromRotations(shoulderPosition.getValueAsDouble());
     inputs.shoulderVelocityRadPerSec = shoulderVelocity.getValueAsDouble();
-    inputs.shoulderAbsolutePosition = shoulderRevEncoder.get();
 
     inputs.elbowAppliedVolts = elbowAppliedVolts.getValueAsDouble();
     inputs.elbowCurrentAmps = new double[] { elbowCurrent.getValueAsDouble() };
@@ -276,8 +271,9 @@ public class ArmIOTalonFX implements ArmIO {
     // create a Motion Magic request, voltage output
     final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
-    // set target position to 100 rotations
     shoulderLeaderTalon.setControl(m_request.withPosition(position.getRotations()));
+    SmartDashboard.putNumber("BRUH", position.getDegrees());
+
   }
 
   /**

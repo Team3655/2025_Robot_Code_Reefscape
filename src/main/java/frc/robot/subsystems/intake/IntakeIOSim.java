@@ -59,7 +59,7 @@ public class IntakeIOSim implements IntakeIO {
     inputs.intakeCurrentAmps = new double[] { intakeMotor.getCurrentDrawAmps() };
     inputs.intakeVelocityRadPerSec = intakeMotor.getAngularVelocityRadPerSec();
     
-    inputs.vacuumAppliedVolts = vacuumMotor.getInputVoltage();
+    // inputs.vacuumAppliedVolts = vacuumMotor.getInputVoltage();
     
     Logger.recordOutput("Intake/VelocityRadPerSec", intakeMotor.getAngularVelocityRadPerSec());
     Logger.recordOutput("Intake/AppliedVolts", intakeMotor.getInputVoltage());

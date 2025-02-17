@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ArmCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -38,6 +39,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -66,7 +71,7 @@ public class RobotContainer {
 
   // private final ClimberSubsystem climber;
   private final ArmSubsystem arm;
-  // private final IntakeSubsystem intake;
+  private final IntakeSubsystem intake;
 
   // Controller
   // programming controller
@@ -105,7 +110,7 @@ public class RobotContainer {
 
         arm = new ArmSubsystem(new ArmIOTalonFX());
         // climber = new ClimberSubsystem(new ClimberIOTalonFX());
-        // intake = new IntakeSubsystem(new IntakeIOTalonFX());
+        intake = new IntakeSubsystem(new IntakeIOTalonFX());
         break;
 
       case SIM:
@@ -125,7 +130,7 @@ public class RobotContainer {
         arm = new ArmSubsystem(new ArmIOSim());
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
-        // intake = new IntakeSubsystem(new IntakeIOSim() {});
+        intake = new IntakeSubsystem(new IntakeIOSim() {});
 
         break;
 
@@ -151,8 +156,7 @@ public class RobotContainer {
 
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
-        // intake = new IntakeSubsystem(new IntakeIO() {
-        // });
+        intake = new IntakeSubsystem(new IntakeIO() {});
         break;
     }
 
@@ -225,12 +229,18 @@ public class RobotContainer {
 
         // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
         programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
+
         programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
-        programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
         programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
         programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
+        programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
+        programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
+          .onFalse(IntakeCommands.stopIntake(intake));
+
+        programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
+          .onFalse(IntakeCommands.stopIntake(intake));
         // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
         // programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
         break;

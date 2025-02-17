@@ -125,7 +125,7 @@ public class ArmSubsystem extends SubsystemBase {
     // Updates arm position
     io.setShoulderPosition(shoulderSetPoint);
     io.setElbowPosition(elbowSetPoint);
-    //io.setWristPosition(setpoint.wristAngle);
+    io.setWristPosition(wristSetPoint);
 
     // Updates the current arm angles in ArmKinematics
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
@@ -152,15 +152,17 @@ public class ArmSubsystem extends SubsystemBase {
         armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[0],
         armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[1]);
 
-    SmartDashboard.putNumber("Shoulder Setpoint", shoulderSetPoint.getDegrees());
+    SmartDashboard.putNumber("ShoulderSetpoint", shoulderSetPoint.getDegrees());
 
-    SmartDashboard.putNumber("Elbow Setpoint", elbowSetPoint.getDegrees());
+    SmartDashboard.putNumber("ElbowSetpoint", elbowSetPoint.getDegrees());
 
-    SmartDashboard.putNumber("Wrist Setpoint", inputs.wristPosition.getDegrees());
+    SmartDashboard.putNumber("WristSetpoint", wristSetPoint.getDegrees());
 
     SmartDashboard.putNumber("ShoulderDeg", inputs.shoulderPosition.getDegrees());
 
-    SmartDashboard.putNumber("REV Abs", inputs.shoulderAbsolutePosition);
+    SmartDashboard.putNumber("ElbowDeg", inputs.elbowPosition.getDegrees());
+
+    SmartDashboard.putNumber("WristDeg", inputs.wristPosition.getDegrees());
 
   }
 
