@@ -16,8 +16,8 @@ public class DriveConstants {
   public static final double MAX_LINEAR_SPEED = Units.feetToMeters(17.7);
 
   // TODO: get real bumper width
-  public static final double BUMPER_WIDTH_X = Units.inchesToMeters(32.5);
-  public static final double BUMPER_WIDTH_Y = Units.inchesToMeters(32.5);
+  public static final double BUMPER_WIDTH_X = Units.inchesToMeters(36.0);
+  public static final double BUMPER_WIDTH_Y = Units.inchesToMeters(36.0);
   public static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
   public static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
   public static final double DRIVE_BASE_RADIUS = Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
@@ -40,11 +40,12 @@ public class DriveConstants {
   
   public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
-  public static final double BATTERY_MASS_KG = Units.lbsToKilograms(13.95);
-  public static final double BUMPER_MASS_KG = Units.lbsToKilograms(13.00);
+  // TODO: get real mass
+  public static final double BATTERY_MASS_KG = Units.lbsToKilograms(12.85);
+  public static final double BUMPER_MASS_KG = Units.lbsToKilograms(10);
 
-  // TODO: Update chassis mass as compbot is built
-  public static final double COMPBOT_CHASSIS_MASS_KG = Units.lbsToKilograms(46.60);
+
+  public static final double COMPBOT_CHASSIS_MASS_KG = Units.lbsToKilograms(100);
   public static final double COMPBOT_MASS_KG = COMPBOT_CHASSIS_MASS_KG + BUMPER_MASS_KG + BATTERY_MASS_KG;
   public static final double COMPBOT_MOI = PhysicsUtil.estimateRobotMOI(
     COMPBOT_MASS_KG, 
