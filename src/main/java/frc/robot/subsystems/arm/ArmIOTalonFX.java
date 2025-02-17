@@ -26,8 +26,7 @@ public class ArmIOTalonFX implements ArmIO {
 
   private final TalonFX shoulderLeaderTalon;
   private final TalonFX shoulderFollowerTalon;
-  private final TalonFX elbowLeaderTalon;
-  private final TalonFX elbowFollowerTalon;
+  private final TalonFX elbowTalon;
   private final TalonFX wristTalon;
 
   private final StatusSignal<Angle> shoulderPosition;
@@ -52,8 +51,7 @@ public class ArmIOTalonFX implements ArmIO {
   public ArmIOTalonFX() {
     shoulderLeaderTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_ID, Constants.CANIVORE_NAME);
     shoulderFollowerTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_FOLLOWER_ID, Constants.CANIVORE_NAME);
-    elbowLeaderTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_ID, Constants.CANIVORE_NAME);
-    elbowFollowerTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_FOLLOWER_ID, Constants.CANIVORE_NAME);
+    elbowTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_ID, Constants.CANIVORE_NAME);
     wristTalon = new TalonFX(ArmConstants.WRIST_MOTOR_ID, Constants.CANIVORE_NAME);
 
     shoulderLeaderConfig = new TalonFXConfiguration();
@@ -197,12 +195,11 @@ public class ArmIOTalonFX implements ArmIO {
 
     // Apply configurations to the motors
     shoulderLeaderTalon.getConfigurator().apply(shoulderLeaderConfig);
-    elbowLeaderTalon.getConfigurator().apply(elbowConfiguration);
+    elbowTalon.getConfigurator().apply(elbowConfiguration);
     wristTalon.getConfigurator().apply(wristConfiguration);
 
-    // Set follower control mode
+    // Set follower control mode for shoulderFollowerTalon
     shoulderFollowerTalon.setControl(new Follower(shoulderLeaderTalon.getDeviceID(), false));
-    elbowFollowerTalon.setControl(new Follower(elbowLeaderTalon.getDeviceID(), false));
 
     switch (ArmConstants.activeEncoders) {
       case RELATIVE:
@@ -221,10 +218,10 @@ public class ArmIOTalonFX implements ArmIO {
     shoulderAppliedVolts = shoulderLeaderTalon.getMotorVoltage();
     shoulderCurrent = shoulderLeaderTalon.getSupplyCurrent();
 
-    elbowPosition = elbowLeaderTalon.getPosition();
-    elbowAppliedVolts = elbowLeaderTalon.getMotorVoltage();
-    elbowVelocity = elbowLeaderTalon.getVelocity();
-    elbowCurrent = elbowLeaderTalon.getSupplyCurrent();
+    elbowPosition = elbowTalon.getPosition();
+    elbowAppliedVolts = elbowTalon.getMotorVoltage();
+    elbowVelocity = elbowTalon.getVelocity();
+    elbowCurrent = elbowTalon.getSupplyCurrent();
 
     wristPosition = wristTalon.getPosition();
     wristVelocity = wristTalon.getVelocity();
@@ -287,7 +284,7 @@ public class ArmIOTalonFX implements ArmIO {
     final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
     // set target position to 100 rotations
-    elbowLeaderTalon.setControl(m_request.withPosition(position.getRotations()));
+    elbowTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 
   /**
@@ -321,7 +318,7 @@ public class ArmIOTalonFX implements ArmIO {
    */
   @Override
   public void setElbowVoltage(double volts) {
-    elbowLeaderTalon.setControl(new VoltageOut(volts));
+    elbowTalon.setControl(new VoltageOut(volts));
   }
 
   /**

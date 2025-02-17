@@ -49,8 +49,7 @@ public class ArmConstants {
         public static final double SHOULDER_MAX_JERK_RPS3 = 60.0;
 
         public static final int ELBOW_MOTOR_ID = 33;
-        public static final int ELBOW_MOTOR_FOLLOWER_ID = 34;
-        public static final int ELBOW_CANCODER_ID = 35;
+        public static final int ELBOW_CANCODER_ID = 34;
         public static final Rotation2d ELBOW_ENCODER_OFFSET = Rotation2d.fromRotations(0);
         public static final double ELBOW_LENGTH_METERS = Units.inchesToMeters(24.75);
         public static final double ELBOW_MASS_KG = 1;
@@ -58,7 +57,7 @@ public class ArmConstants {
         public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(180);
         public static final double ELBOW_REDUCTION = 7500000 / 117600;
         public static final double KG_ELBOW = 0.0; // KG_ELBOW should remain 0.0 based on the arm's design
-        public static final double KS_ELBOW = 0.7;
+        public static final double KS_ELBOW = 0.5;
         public static final double KV_ELBOW = 0.0;
         public static final double KA_ELBOW = 0.0;
         public static final double KP_ELBOW = 25.0;
@@ -68,8 +67,8 @@ public class ArmConstants {
         public static final double ELBOW_MAX_ACCELERATION_RPS2 = 8.0;
         public static final double ELBOW_MAX_JERK_RPS3 = 60.0;
 
-        public static final int WRIST_MOTOR_ID = 36;
-        public static final int WRIST_CANCODER_ID = 37;
+        public static final int WRIST_MOTOR_ID = 35;
+        public static final int WRIST_CANCODER_ID = 36;
         public static final Rotation2d WRIST_ENCODER_OFFSET = Rotation2d.fromRotations(0);
         public static final double WRIST_LENGTH_METERS = Units.inchesToMeters(8);
         public static final Rotation2d ARM_DEFAULT_SETPOINT = Rotation2d.fromDegrees(75);
