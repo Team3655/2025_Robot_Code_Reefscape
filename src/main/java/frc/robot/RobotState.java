@@ -134,6 +134,10 @@ public class RobotState {
         new Rotation2d()));
   }
 
+  public Rotation2d getYaw(){
+    return rawGyroRotation;
+  }
+
   public Rotation2d getRotation() {
     return getOdometryPose().getRotation();
   }
