@@ -29,6 +29,7 @@ import frc.robot.commands.ArmCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -209,6 +210,15 @@ public class RobotContainer {
 
         mattRotation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
+        tractorController.button(1).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
+        tractorController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+        tractorController.button(3).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+        tractorController.button(4).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+        tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
+
+        tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
+        tractorController.button(7).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+
         break;
       case ETHAN:
         drive.setDefaultCommand(
@@ -231,7 +241,7 @@ public class RobotContainer {
         programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
 
         programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
-        programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+        // programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
         programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
         programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
@@ -242,6 +252,7 @@ public class RobotContainer {
 
         programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
           .onFalse(IntakeCommands.stopIntake(intake));
+
         // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
         // programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
         break;
