@@ -93,7 +93,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         // Multiple tags in observation
             observation.tagCount() == 0 // Must have at least one tag
-                || observation.ambiguity() > 0.3 // Must be a trustworthy pose
+                || observation.ambiguity() > VisionConstants.MAX_AMBIGUITY // Must be a trustworthy pose
                 || Math.abs(observation.pose().getZ()) > 0.75 // Must have a realistic z coordinate
                 || observation.averageTagDistance() > VisionConstants.MULTI_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
@@ -104,7 +104,7 @@ public class VisionSubsystem extends SubsystemBase {
 
             // Single tag in observation
             : observation.tagCount() == 0 // Must have at least one tag
-                || observation.ambiguity() > 0.3 // Must be a trustworthy pose
+                || observation.ambiguity() > VisionConstants.MAX_AMBIGUITY // Must be a trustworthy pose
                 || Math.abs(observation.pose().getZ()) > 0.75 // Must have a realistic z coordinate
                 || observation.averageTagDistance() > VisionConstants.SINGLE_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
@@ -125,10 +125,8 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
         // Calculate standard deviations
-        double stdDevFactor = Math.pow(observation.averageTagDistance(), 2) / observation.tagCount();
-
-        double linearstdDev = 0.02 * stdDevFactor;
-        double angularstdDev = 0.06 * stdDevFactor;
+        double linearStdDev = VisionConstants.LINEAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2) / observation.tagCount();
+        double angularStdDev = VisionConstants.ANGULAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2) / observation.tagCount();
 
         // Add the measurement to the poseEstimator
         RobotState.getInstance()
@@ -136,7 +134,7 @@ public class VisionSubsystem extends SubsystemBase {
                 new VisionMeasurement(
                     observation.timestamp(),
                     observation.pose().toPose2d(),
-                    VecBuilder.fill(linearstdDev, linearstdDev, angularstdDev)));
+                    VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev)));
       }
 
       // Log individual camera data

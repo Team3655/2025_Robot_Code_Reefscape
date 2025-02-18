@@ -13,9 +13,14 @@ import edu.wpi.first.math.geometry.Translation3d;
 /** Static values for the Vision subsystem */
 public class VisionConstants {
 
-  // // the maximum distance a measurement will be accepted in meters
+  // the maximum distance a measurement will be accepted in meters
   public static final double SINGLE_TAG_MAXIMUM = 4.5;
   public static final double MULTI_TAG_MAXIMUM = 7.5;
+
+  public static final double MAX_AMBIGUITY = 0.8;
+
+  public static final double LINEAR_STD_DEV_FACTOR = 0.4;
+  public static final double ANGULAR_STD_DEV_FACTOR = 0.3;
 
   public static final Translation3d LEFT_ROBOT_TO_CAMERA_TRANSLATION = new Translation3d(0, 0, 0);
   public static final Rotation3d LEFT_ROBOT_TO_CAMERA_ROTATION = new Rotation3d(0, 0, 0);
