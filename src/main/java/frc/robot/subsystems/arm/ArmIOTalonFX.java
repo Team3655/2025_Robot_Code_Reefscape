@@ -1,5 +1,6 @@
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -117,9 +118,9 @@ public class ArmIOTalonFX implements ArmIO {
         elbowConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.ELBOW_REDUCTION;
         wristConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.WRIST_REDUCTION;
 
-        shoulderLeaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        wristConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        shoulderLeaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        wristConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         // Set soft limts and enable them
         // shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.SHOULDER_MAX_ANGLE_RADS.getDegrees();
@@ -272,8 +273,6 @@ public class ArmIOTalonFX implements ArmIO {
     final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
     shoulderLeaderTalon.setControl(m_request.withPosition(position.getRotations()));
-    SmartDashboard.putNumber("BRUH", position.getDegrees());
-
   }
 
   /**

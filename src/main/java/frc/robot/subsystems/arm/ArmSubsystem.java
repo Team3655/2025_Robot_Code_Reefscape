@@ -11,6 +11,8 @@ import static edu.wpi.first.units.Units.Volts;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -123,9 +125,9 @@ public class ArmSubsystem extends SubsystemBase {
     Rotation2d wristSetPoint = setpoint.wristAngle;
 
     // Updates arm position
-    io.setShoulderPosition(shoulderSetPoint);
+    io.setShoulderPosition(shoulderSetPoint); 
     io.setElbowPosition(elbowSetPoint);
-    io.setWristPosition(wristSetPoint);
+    // io.setWristPosition(wristSetPoint);
 
     // Updates the current arm angles in ArmKinematics
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
