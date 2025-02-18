@@ -323,8 +323,4 @@ public class DriveSubsystem extends SubsystemBase {
     return output;
   }
 
-  public void setGyroRotation(Rotation2d rotation){
-    gyroIO.setRotation(rotation);
-  }
-
 }

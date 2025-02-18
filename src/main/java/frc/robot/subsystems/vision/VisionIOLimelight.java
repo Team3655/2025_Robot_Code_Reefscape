@@ -11,8 +11,6 @@ import java.util.Set;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.RobotState;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
 import frc.robot.util.LimelightHelpers;
@@ -39,15 +37,8 @@ public class VisionIOLimelight implements VisionIO {
     // Get raw AprilTag/Fiducial data
     RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(name);
     LimelightHelpers.PoseEstimate estimatedPose;
-    
-    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getPose().getRotation().getDegrees(), 0, 0, 0,
-        0, 0);
 
-    if (DriverStation.isDisabled()) {
-      estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-    } else {
-      estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-    }
+    estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
 
     double totalAmbiguity = 0;
     double totalTagDistance = 0.0;

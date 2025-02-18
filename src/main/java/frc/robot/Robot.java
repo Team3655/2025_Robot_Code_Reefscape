@@ -134,8 +134,6 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
     }
-
-    robotContainer.resetGyroHeading();
   }
 
   /** This function is called periodically during autonomous. */
@@ -153,8 +151,6 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-
-    robotContainer.resetGyroHeading();
   }
 
   /** This function is called periodically during operator control. */

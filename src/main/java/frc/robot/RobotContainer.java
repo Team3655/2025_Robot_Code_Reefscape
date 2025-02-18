@@ -18,7 +18,6 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -302,9 +301,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }
-
-  public void resetGyroHeading() {
-    drive.setGyroRotation(RobotState.getInstance().getEstimatedPose().getRotation());
-    DriverStation.reportError("*****GYRO WAS RESET*****", false);
-  }
 }
+ 
