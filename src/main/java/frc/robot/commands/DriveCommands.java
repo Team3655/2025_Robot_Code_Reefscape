@@ -248,4 +248,9 @@ public class DriveCommands {
     double wheelRadius = 0.0;
     double wheelDelta = 0.0;
   }
+
+  public static Command setGyroRotation(Rotation2d rotation, DriveSubsystem drive){
+    return Commands.runOnce(() -> {drive.setGyroRotation(rotation);
+      DriverStation.reportError("*****GYRO WAS RESET*****", false);});
+  }
 }

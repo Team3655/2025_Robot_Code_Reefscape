@@ -11,9 +11,7 @@ import java.util.Set;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotState;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
@@ -24,29 +22,32 @@ import frc.robot.util.LimelightHelpers.RawFiducial;
 public class VisionIOLimelight implements VisionIO {
 
   private final String name;
-
-  private NetworkTable limelightTable;
-  private NetworkTableEntry tvEntry;
+  double lastTx;
 
   public VisionIOLimelight(String name) {
 
     this.name = name;
 
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    limelightTable = inst.getTable("limelight"); // Access the "limelight" table
-    tvEntry = limelightTable.getEntry("tv"); // Get the "tv" entry
   }
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
 
-    inputs.connected = isLimelightConnected();
+    inputs.connected = true;
 
+    LimelightHelpers.SetIMUMode(name, 0);
     // Get raw AprilTag/Fiducial data
     RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(name);
+    LimelightHelpers.PoseEstimate estimatedPose;
+    
+    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getPose().getRotation().getDegrees(), 0, 0, 0,
+        0, 0);
 
-    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    var estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+    if (DriverStation.isDisabled()) {
+      estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+    } else {
+      estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+    }
 
     double totalAmbiguity = 0;
     double totalTagDistance = 0.0;
@@ -96,11 +97,5 @@ public class VisionIOLimelight implements VisionIO {
     for (int id : tagIds) {
       inputs.tagIds[i++] = id;
     }
-  }
-
-  // methods within IO layer should be declared private
-  private boolean isLimelightConnected() {
-    double tv = tvEntry.getDouble(0); // Try to read the "tv" value
-    return !Double.isNaN(tv) || tv != 0; // Check if the value is valid
   }
 }

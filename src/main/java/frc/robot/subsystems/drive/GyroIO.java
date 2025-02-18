@@ -31,4 +31,7 @@ public interface GyroIO {
 
   public default void resetGyro() {
   }
+
+  public default void setRotation(Rotation2d angle){
+  }
 }
