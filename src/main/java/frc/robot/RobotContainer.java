@@ -18,6 +18,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -180,6 +181,7 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -188,8 +190,8 @@ public class RobotContainer {
    * Use this method to define your button -> command mappings. Buttons can be
    * created by
    * instantiating a {@link GenericHID} or one of its subclasses
-   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}),
-   * and then passing it to a
+   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}) and then
+   * passing it to a
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -280,16 +282,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     return autoChooser.get();
-    //     try{
-    //     // Load the path you want to follow using its name in the GUI
-    //     PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
+  }
 
-    //     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    //     return AutoBuilder.followPath(path);
-
-    // } catch (Exception e) {
-    //     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-    //     return Commands.none();
-    // }
+  public void resetGyroHeading() {
+    drive.setGyroRotation(RobotState.getInstance().getEstimatedPose().getRotation());
+    DriverStation.reportError("*****GYRO WAS RESET*****", false);
   }
 }
