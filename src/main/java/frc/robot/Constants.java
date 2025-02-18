@@ -55,8 +55,8 @@ public final class Constants {
     PROGRAMMING,
     MACBOOK,
   }
-
   public static final RobotType currentRobot = RobotType.COMPBOT;
+
 
   public static enum RobotType{
     COMPBOT,
