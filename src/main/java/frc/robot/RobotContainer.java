@@ -29,7 +29,6 @@ import frc.robot.commands.ArmCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
-import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -87,7 +86,6 @@ public class RobotContainer {
   private final CommandNXT ethanRotation = new CommandNXT(3);
 
   // Operator controller
-  @SuppressWarnings("unused")
   private final CommandGenericHID tractorController = new CommandGenericHID(4);
 
   // Dashboard inputs
@@ -300,18 +298,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
     return autoChooser.get();
-    //     try{
-    //     // Load the path you want to follow using its name in the GUI
-    //     PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
-
-    //     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    //     return AutoBuilder.followPath(path);
-
-    // } catch (Exception e) {
-    //     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-    //     return Commands.none();
-    // }
   }
 }
