@@ -148,4 +148,9 @@ public class ArmIOSim implements ArmIO {
     wristController.setSetpoint(position.getRadians());
   }
 
+  @Override
+  public boolean getElbowSwitchState() {
+    return false;
+  }
+
 }

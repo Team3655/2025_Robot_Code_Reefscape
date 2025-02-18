@@ -240,7 +240,7 @@ public class RobotContainer {
         programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
 
         programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
-        // programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+        programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
         programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
         programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));

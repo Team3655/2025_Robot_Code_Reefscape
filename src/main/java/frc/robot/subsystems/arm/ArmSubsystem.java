@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.arm;
 
+import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -125,7 +126,7 @@ public class ArmSubsystem extends SubsystemBase {
     // Updates arm position
     io.setShoulderPosition(shoulderSetPoint); 
     io.setElbowPosition(elbowSetPoint);
-    // io.setWristPosition(wristSetPoint);
+    io.setWristPosition(wristSetPoint);
 
     // Updates the current arm angles in ArmKinematics
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
@@ -152,6 +153,21 @@ public class ArmSubsystem extends SubsystemBase {
         armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[0],
         armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[1]);
 
+    if(inputs.elbowSwitchState){
+      // io.resetShoulderPosition(
+      //   armKinematics.getArmAngles(ArmConstants.ArmStates.START.xTarget, 
+      //   ArmConstants.ArmStates.START.yTarget, 
+      //   ArmConstants.activeEncoders)[0]);
+
+      // io.resetElbowPosition(
+      //   armKinematics.getArmAngles(ArmConstants.ArmStates.START.xTarget, 
+      //   ArmConstants.ArmStates.START.yTarget, 
+      //   ArmConstants.activeEncoders)[1]);
+
+      // io.resetShoulderPosition(Rotation2d.fromDegrees(-63));
+      // io.resetElbowPosition(Rotation2d.fromDegrees(97));
+    }
+
     SmartDashboard.putNumber("ShoulderSetpoint", shoulderSetPoint.getDegrees());
 
     SmartDashboard.putNumber("ElbowSetpoint", elbowSetPoint.getDegrees());
@@ -163,6 +179,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ElbowDeg", inputs.elbowPosition.getDegrees());
 
     SmartDashboard.putNumber("WristDeg", inputs.wristPosition.getDegrees());
+
+    SmartDashboard.putBoolean("LimitSwitch", inputs.elbowSwitchState);
 
   }
 

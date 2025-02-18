@@ -44,7 +44,7 @@ public class ArmConstants {
         public static final double KP_SHOULDER = 70.0;
         public static final double KI_SHOULDER = 0.0;
         public static final double KD_SHOULDER = 0.0;
-        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.4;
+        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.3;
         public static final double SHOULDER_MAX_ACCELERATION_RPS2 = 0.4;
         public static final double SHOULDER_MAX_JERK_RPS3 = 60.0;
 
@@ -57,7 +57,7 @@ public class ArmConstants {
         public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(0);
         public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(180);
         public static final double ELBOW_REDUCTION = 7500000 / 117600;
-        public static final double KG_ELBOW = 0.4; 
+        public static final double KG_ELBOW = 0.6; 
         public static final double KS_ELBOW = 0.45;
         public static final double KV_ELBOW = 0.0;
         public static final double KA_ELBOW = 0.0;
@@ -78,10 +78,10 @@ public class ArmConstants {
         public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(360);
         public static final double WRIST_REDUCTION = 56.842; // (9 / 1) * (4 / 1) * (93 / 57) * (90 / 93)
         public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm
-        public static final double KS_WRIST = 0.0;
+        public static final double KS_WRIST = 0.75;
         public static final double KV_WRIST = 0.0;
         public static final double KA_WRIST = 0.0;
-        public static final double KP_WRIST = 0.0;
+        public static final double KP_WRIST = 100.0;
         public static final double KI_WRIST = 0.0;
         public static final double KD_WRIST = 0.0;
         public static final double WRIST_MAX_VELOCITY_RPS = 0.5;
@@ -92,29 +92,31 @@ public class ArmConstants {
         public static final double D_ARM_HORIZONTAL_OFFSET_METERS = Units.inchesToMeters(9.25);
         public static final double TOWER_CHASSIS_HEIGHT_METERS = Units.inchesToMeters(31.25 - 3.875);
 
+        public static final int LIMIT_SWITCH_ID = 8;
+
         /**
          * A class that stores all the states the arm could be at.
          * <br></br> <code> ArmStates.STATE; </code>
          */
         public class ArmStates {
                 public static final ArmPose START = new ArmPose(
-                                Units.inchesToMeters(18.5),
-                                Units.inchesToMeters(35.2),
-                                Rotation2d.fromDegrees(0));
+                                Units.inchesToMeters(16.56),
+                                Units.inchesToMeters(35.545),
+                                Rotation2d.fromDegrees(90));
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
-                                Units.inchesToMeters(18.5),
-                                Units.inchesToMeters(35.2),
+                                Units.inchesToMeters(16.56),
+                                Units.inchesToMeters(35.545),
                                 Rotation2d.fromDegrees(50));
 
                 public static final ArmPose FRONT_L1_REEF = new ArmPose(
-                                Units.inchesToMeters(18.5),
-                                Units.inchesToMeters(35.2),
+                                Units.inchesToMeters(16.56),
+                                Units.inchesToMeters(35.545),
                                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FRONT_L2_REEF = new ArmPose(
-                                Units.inchesToMeters(18.5),
-                                Units.inchesToMeters(35.2),
+                                Units.inchesToMeters(16.56),
+                                Units.inchesToMeters(35.545),
                                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FRONT_L3_REEF = new ArmPose(
