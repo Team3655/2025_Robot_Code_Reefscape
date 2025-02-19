@@ -203,20 +203,22 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> -mattTranslation.StickYAxis(),
-                () -> -mattTranslation.StickXAxis(),
-                () -> mattRotation.StickXAxis()));
+                () -> mattTranslation.StickYAxis(),
+                () -> mattTranslation.StickXAxis(),
+                () -> -mattRotation.StickXAxis()));
 
-        mattRotation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
+        mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        tractorController.button(1).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
-        tractorController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
-        tractorController.button(3).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
-        tractorController.button(4).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-        tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
+        mattTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake, 6)).onFalse(IntakeCommands.stopIntake(intake));
+        mattTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, -4.5)).onFalse(IntakeCommands.stopIntake(intake));
 
-        tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
-        tractorController.button(7).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+        tractorController.button(9).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
+        tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+        tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+        tractorController.button(1).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+        //tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
+        tractorController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
+        tractorController.button(3).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
         break;
       case ETHAN:
