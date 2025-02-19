@@ -105,7 +105,8 @@ public class RobotContainer {
             new ModuleIOTalonFX(2),
             new ModuleIOTalonFX(3));
 
-        vision = new VisionSubsystem(new VisionIOLimelight("limelight-back"));
+        vision = new VisionSubsystem(new VisionIOLimelight("limelight-back"), new VisionIOLimelight("limelight-left"),
+            new VisionIOLimelight("limelight-right"));
 
         arm = new ArmSubsystem(new ArmIOTalonFX());
         // climber = new ClimberSubsystem(new ClimberIOTalonFX());
@@ -129,7 +130,8 @@ public class RobotContainer {
         arm = new ArmSubsystem(new ArmIOSim());
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
-        intake = new IntakeSubsystem(new IntakeIOSim() {});
+        intake = new IntakeSubsystem(new IntakeIOSim() {
+        });
 
         break;
 
@@ -155,7 +157,8 @@ public class RobotContainer {
 
         // climber = new ClimberSubsystem(new ClimberIO() {
         // });
-        intake = new IntakeSubsystem(new IntakeIO() {});
+        intake = new IntakeSubsystem(new IntakeIO() {
+        });
         break;
     }
 
@@ -209,15 +212,24 @@ public class RobotContainer {
 
         mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        mattTranslation.fireStage1().onTrue(IntakeCommands.runIntake(intake, 6)).onFalse(IntakeCommands.stopIntake(intake));
-        mattTranslation.firePaddleUp().onTrue(IntakeCommands.runIntake(intake, -4.5)).onFalse(IntakeCommands.stopIntake(intake));
+        tractorController.button(4).onTrue(IntakeCommands.runIntake(intake, -4.5))
+            .onFalse(IntakeCommands.stopIntake(intake));
 
-        tractorController.button(9).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
-        tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+        tractorController.button(10).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START).alongWith(IntakeCommands.stopIntake(intake)));
+        tractorController.button(5)
+            .onTrue(Commands
+                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),IntakeCommands.runIntake(intake, 6)))
+            .onFalse(Commands
+                .sequence(IntakeCommands.stopIntake(intake), ArmCommands.updateSetpoint(arm, ArmStates.START)));
         tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
-        tractorController.button(1).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-        //tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
-        tractorController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
+        tractorController.button(1)
+            .onTrue(Commands
+                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, 2)));
+        // tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm,
+        // ArmStates.FRONT_L3_REEF));
+        tractorController.button(2)
+            .onTrue(Commands
+                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF), IntakeCommands.runIntake(intake, 2)));
         tractorController.button(3).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
         break;
@@ -249,10 +261,10 @@ public class RobotContainer {
         programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
         programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
-          .onFalse(IntakeCommands.stopIntake(intake));
+            .onFalse(IntakeCommands.stopIntake(intake));
 
         programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
-          .onFalse(IntakeCommands.stopIntake(intake));
+            .onFalse(IntakeCommands.stopIntake(intake));
 
         // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
         // programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
@@ -304,4 +316,3 @@ public class RobotContainer {
     return autoChooser.get();
   }
 }
- 

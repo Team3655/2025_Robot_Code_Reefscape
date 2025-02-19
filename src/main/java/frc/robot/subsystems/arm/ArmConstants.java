@@ -110,9 +110,9 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(20));
 
                 public static final ArmPose FRONT_L1_REEF = new ArmPose(
+                                Units.inchesToMeters(39.25),
                                 Units.inchesToMeters(26),
-                                Units.inchesToMeters(36),
-                                Rotation2d.fromDegrees(0));
+                                Rotation2d.fromDegrees(-15));
 
                 public static final ArmPose FRONT_L2_REEF = new ArmPose(
                                 Units.inchesToMeters(24),
@@ -132,7 +132,7 @@ public class ArmConstants {
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
                                 Units.inchesToMeters(12),
                                 Units.inchesToMeters(78),
-                                Rotation2d.fromDegrees(215));
+                                Rotation2d.fromDegrees(210));
 
         }
 }
