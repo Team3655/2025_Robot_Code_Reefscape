@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +21,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotState;
 import frc.robot.subsystems.vision.VisionConstants.ObservationType;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
@@ -45,7 +47,11 @@ public class VisionIOSim implements VisionIO {
   public VisionIOSim(String name, Transform3d robotToCamera) {
 
     // Initialize April Tag layout
-      tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    try {
+      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
+    } catch (IOException e) {
+      DriverStation.reportError("Failed to load april tags :3 !!", null);
+    }
 
     // Simulates a camera and a coprocessor running PhotonLib
     visionSystem = new VisionSystemSim("system" + name);
@@ -93,7 +99,8 @@ public class VisionIOSim implements VisionIO {
     for (var result : camera.getAllUnreadResults()) {
 
       if (result.hasTargets()) {
-        // Update latest observation tx and ty, can later be used for other mechanisms if desired.
+        // Update latest observation tx and ty, can later be used for other mechanisms
+        // if desired.
         inputs.latestObservation = new TargetObservation(
             Rotation2d.fromDegrees(result.getBestTarget().getYaw()),
             Rotation2d.fromDegrees(result.getBestTarget().getPitch()));

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.vision;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
@@ -32,8 +34,11 @@ public class VisionSubsystem extends SubsystemBase {
     this.io = io;
     this.inputs = new VisionIOInputsAutoLogged[io.length];
 
-    //Get field tag layout
-    tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    try {
+      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
+    } catch (IOException e) {
+      DriverStation.reportError("Failed to load april tags :3 !!", null);
+    }
 
     // Create inputs
     for (int i = 0; i < inputs.length; i++) {
@@ -149,13 +154,13 @@ public class VisionSubsystem extends SubsystemBase {
           tagPoses.toArray(new Pose3d[tagPoses.size()]));
       Logger.recordOutput(
           "Vision/Camera" + Integer.toString(i) + "/RobotPoses",
-          robotPoses.toArray(new Pose3d[robotPoses.size()]));
+          robotPoses.toArray(new Pose2d[robotPoses.size()]));
       Logger.recordOutput(
           "Vision/Camera" + Integer.toString(i) + "/RobotPosesAccepted",
-          robotPosesAccepted.toArray(new Pose3d[robotPosesAccepted.size()]));
+          robotPosesAccepted.toArray(new Pose2d[robotPosesAccepted.size()]));
       Logger.recordOutput(
           "Vision/Camera" + Integer.toString(i) + "/RobotPosesRejected",
-          robotPosesRejected.toArray(new Pose3d[robotPosesRejected.size()]));
+          robotPosesRejected.toArray(new Pose2d[robotPosesRejected.size()]));
 
       // Add poses to total data
       allTagPoses.addAll(tagPoses);
@@ -168,13 +173,13 @@ public class VisionSubsystem extends SubsystemBase {
     Logger.recordOutput(
         "Vision/Summary/TagPoses", allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
     Logger.recordOutput(
-        "Vision/Summary/RobotPoses", allRobotPoses.toArray(new Pose3d[allRobotPoses.size()]));
+        "Vision/Summary/RobotPoses", allRobotPoses.toArray(new Pose2d[allRobotPoses.size()]));
     Logger.recordOutput(
         "Vision/Summary/RobotPosesAccepted",
-        allRobotPosesAccepted.toArray(new Pose3d[allRobotPosesAccepted.size()]));
+        allRobotPosesAccepted.toArray(new Pose2d[allRobotPosesAccepted.size()]));
     Logger.recordOutput(
         "Vision/Summary/RobotPosesRejected",
-        allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
+        allRobotPosesRejected.toArray(new Pose2d[allRobotPosesRejected.size()]));
 
   }
 }
