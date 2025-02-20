@@ -58,7 +58,7 @@ public class ArmConstants {
         public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(180);
         public static final double ELBOW_REDUCTION = 63.7755;
         public static final double KG_ELBOW = 0.8; 
-        public static final double KS_ELBOW = 1.6;
+        public static final double KS_ELBOW = 1.8;
         public static final double KV_ELBOW = 0.0;
         public static final double KA_ELBOW = 0.0;
         public static final double KP_ELBOW = 100;
@@ -78,7 +78,7 @@ public class ArmConstants {
         public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(360);
         public static final double WRIST_REDUCTION = 56.842; // (9 / 1) * (4 / 1) * (93 / 57) * (90 / 93)
         public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm
-        public static final double KS_WRIST = 2.0;
+        public static final double KS_WRIST = 2.5;
         public static final double KV_WRIST = 0.0;
         public static final double KA_WRIST = 0.0;
         public static final double KP_WRIST = 100.0;
@@ -126,13 +126,13 @@ public class ArmConstants {
 
                 public static final ArmPose REAR_L3_REEF = new ArmPose(
                                 Units.inchesToMeters(6),
-                                Units.inchesToMeters(54),
+                                Units.inchesToMeters(55),
                                 Rotation2d.fromDegrees(200));
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
-                                Units.inchesToMeters(12),
+                                Units.inchesToMeters(10),
                                 Units.inchesToMeters(78),
-                                Rotation2d.fromDegrees(210));
+                                Rotation2d.fromDegrees(213));
 
         }
 }
