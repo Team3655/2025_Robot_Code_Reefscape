@@ -164,9 +164,10 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
     NamedCommands.registerCommand("ArmState_Intake", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
-    NamedCommands.registerCommand("ArmState_Low", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
-    NamedCommands.registerCommand("ArmState_Mid", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-    NamedCommands.registerCommand("ArmState_High", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
+    NamedCommands.registerCommand("ArmState_L1", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+    NamedCommands.registerCommand("ArmState_L2", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+    NamedCommands.registerCommand("ArmState_L3", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
+    NamedCommands.registerCommand("ArmState_L4", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -212,7 +213,7 @@ public class RobotContainer {
 
         mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        tractorController.button(4).onTrue(IntakeCommands.runIntake(intake, -4.5))
+        tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, -4.5))
             .onFalse(IntakeCommands.stopIntake(intake));
 
         tractorController.button(10).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START).alongWith(IntakeCommands.stopIntake(intake)));
@@ -230,7 +231,9 @@ public class RobotContainer {
         tractorController.button(2)
             .onTrue(Commands
                 .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF), IntakeCommands.runIntake(intake, 2)));
-        tractorController.button(3).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+        tractorController.button(3)
+            .onTrue(Commands
+                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake, 3)));
 
         break;
       case ETHAN:
@@ -285,7 +288,7 @@ public class RobotContainer {
         programmingController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
         programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-        programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L3_REEF));
+        programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
 
         // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake,
         // 12)).onFalse(IntakeCommands.stopIntake(intake));

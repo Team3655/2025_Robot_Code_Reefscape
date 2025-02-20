@@ -78,7 +78,7 @@ public class ArmConstants {
         public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(360);
         public static final double WRIST_REDUCTION = 56.842; // (9 / 1) * (4 / 1) * (93 / 57) * (90 / 93)
         public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm
-        public static final double KS_WRIST = 1.0;
+        public static final double KS_WRIST = 2.0;
         public static final double KV_WRIST = 0.0;
         public static final double KA_WRIST = 0.0;
         public static final double KP_WRIST = 100.0;
@@ -107,7 +107,7 @@ public class ArmConstants {
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
                                 Units.inchesToMeters(20),
                                 Units.inchesToMeters(39),
-                                Rotation2d.fromDegrees(20));
+                                Rotation2d.fromDegrees(15));
 
                 public static final ArmPose FRONT_L1_REEF = new ArmPose(
                                 Units.inchesToMeters(39.25),
@@ -117,17 +117,17 @@ public class ArmConstants {
                 public static final ArmPose FRONT_L2_REEF = new ArmPose(
                                 Units.inchesToMeters(24),
                                 Units.inchesToMeters(37),
-                                Rotation2d.fromDegrees(-20));
+                                Rotation2d.fromDegrees(-15));
 
-                public static final ArmPose FRONT_L3_REEF = new ArmPose(
-                                Units.inchesToMeters(24),
-                                Units.inchesToMeters(57),
-                                Rotation2d.fromDegrees(-20));
+                //public static final ArmPose FRONT_L3_REEF = new ArmPose(
+                                //Units.inchesToMeters(24),
+                                //Units.inchesToMeters(57),
+                                //Rotation2d.fromDegrees(-20));
 
                 public static final ArmPose REAR_L3_REEF = new ArmPose(
                                 Units.inchesToMeters(6),
-                                Units.inchesToMeters(53),
-                                Rotation2d.fromDegrees(205));
+                                Units.inchesToMeters(54),
+                                Rotation2d.fromDegrees(200));
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
                                 Units.inchesToMeters(12),
