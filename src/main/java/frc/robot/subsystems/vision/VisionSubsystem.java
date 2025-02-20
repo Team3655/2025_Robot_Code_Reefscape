@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.vision;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,13 +12,14 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionMeasurement;
+import frc.robot.subsystems.vision.VisionConstants.ObservationType;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -32,12 +32,8 @@ public class VisionSubsystem extends SubsystemBase {
     this.io = io;
     this.inputs = new VisionIOInputsAutoLogged[io.length];
 
-    // Loading from a file may not work
-    try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
-    } catch (IOException e) {
-      DriverStation.reportError("Failed to load april tags :3", null);
-    }
+    //Get field tag layout
+    tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     // Create inputs
     for (int i = 0; i < inputs.length; i++) {
@@ -63,9 +59,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Initialize logging data
     List<Pose3d> allTagPoses = new LinkedList<>();
-    List<Pose3d> allRobotPoses = new LinkedList<>();
-    List<Pose3d> allRobotPosesAccepted = new LinkedList<>();
-    List<Pose3d> allRobotPosesRejected = new LinkedList<>();
+    List<Pose2d> allRobotPoses = new LinkedList<>();
+    List<Pose2d> allRobotPosesAccepted = new LinkedList<>();
+    List<Pose2d> allRobotPosesRejected = new LinkedList<>();
 
     for (int i = 0; i < io.length; i++) {
       // Check if camera is disconnected and alert if so
@@ -73,9 +69,9 @@ public class VisionSubsystem extends SubsystemBase {
 
       // Logging data
       List<Pose3d> tagPoses = new LinkedList<>();
-      List<Pose3d> robotPoses = new LinkedList<>();
-      List<Pose3d> robotPosesAccepted = new LinkedList<>();
-      List<Pose3d> robotPosesRejected = new LinkedList<>();
+      List<Pose2d> robotPoses = new LinkedList<>();
+      List<Pose2d> robotPosesAccepted = new LinkedList<>();
+      List<Pose2d> robotPosesRejected = new LinkedList<>();
 
       // Get positions of every tag that is seen
       for (int tagId : inputs[i].tagIds) {
@@ -94,7 +90,6 @@ public class VisionSubsystem extends SubsystemBase {
         // Multiple tags in observation
             observation.tagCount() == 0 // Must have at least one tag
                 || observation.ambiguity() > VisionConstants.MAX_AMBIGUITY // Must be a trustworthy pose
-                || Math.abs(observation.pose().getZ()) > 0.75 // Must have a realistic z coordinate
                 || observation.averageTagDistance() > VisionConstants.MULTI_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
                 || observation.pose().getX() < 0.0
@@ -105,7 +100,6 @@ public class VisionSubsystem extends SubsystemBase {
             // Single tag in observation
             : observation.tagCount() == 0 // Must have at least one tag
                 || observation.ambiguity() > VisionConstants.MAX_AMBIGUITY // Must be a trustworthy pose
-                || Math.abs(observation.pose().getZ()) > 0.75 // Must have a realistic z coordinate
                 || observation.averageTagDistance() > VisionConstants.SINGLE_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
                 || observation.pose().getX() < 0.0
@@ -124,16 +118,28 @@ public class VisionSubsystem extends SubsystemBase {
           robotPosesAccepted.add(observation.pose());
         }
 
+        double linearStdDev;
+        double angularStdDev;
+
         // Calculate standard deviations
-        double linearStdDev = VisionConstants.LINEAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2) / observation.tagCount();
-        double angularStdDev = VisionConstants.ANGULAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2) / observation.tagCount();
+        linearStdDev = VisionConstants.LINEAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2)
+            / observation.tagCount();
+        angularStdDev = VisionConstants.ANGULAR_STD_DEV_FACTOR * Math.pow(observation.averageTagDistance(), 2)
+            / observation.tagCount();
+
+        if (observation.type() == ObservationType.MEGATAG_2) {
+          linearStdDev = VisionConstants.MEGATAG2_LINEAR_FACTOR * Math.pow(observation.averageTagDistance(), 2)
+              / observation.tagCount();
+          angularStdDev = VisionConstants.MEGATAG2_ANGULAR_FACTOR * Math.pow(observation.averageTagDistance(), 2)
+              / observation.tagCount();
+        }
 
         // Add the measurement to the poseEstimator
         RobotState.getInstance()
             .addVisionMeasurement(
                 new VisionMeasurement(
                     observation.timestamp(),
-                    observation.pose().toPose2d(),
+                    observation.pose(),
                     VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev)));
       }
 

@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -22,6 +22,9 @@ public class VisionConstants {
   public static final double LINEAR_STD_DEV_FACTOR = 0.4;
   public static final double ANGULAR_STD_DEV_FACTOR = 0.3;
 
+  public static final double MEGATAG2_LINEAR_FACTOR = 0.2;
+  public static final double MEGATAG2_ANGULAR_FACTOR = 0.2;
+
   public static final Translation3d LEFT_ROBOT_TO_CAMERA_TRANSLATION = new Translation3d(0, 0, 0);
   public static final Rotation3d LEFT_ROBOT_TO_CAMERA_ROTATION = new Rotation3d(0, 0, 0);
   public static final Transform3d LEFT_ROBOT_TO_CAMERA = new Transform3d(LEFT_ROBOT_TO_CAMERA_TRANSLATION,
@@ -33,8 +36,7 @@ public class VisionConstants {
    * @param tx The angle from the target on the x axis.
    * @param ty The angle from the target on the y axis.
    */
-  public static record TargetObservation(Rotation2d tx, Rotation2d ty) {
-  }
+  public static record TargetObservation(Rotation2d tx, Rotation2d ty) {}
 
   /**
    * A Record to store data about the robots pose calculated from vision
@@ -50,8 +52,21 @@ public class VisionConstants {
    *                           pose
    * @param averageTagDistance The average distance between tags used to calculate
    *                           this pose
+   * 
+   * @param type               The way the pose was calculated, used to calculate
+   *                           standard deviations
    */
-  public static record PoseObservation(double timestamp, Pose3d pose, double ambiguity, int tagCount,
-      double averageTagDistance) {
+  public static record PoseObservation(
+      double timestamp,
+      Pose2d pose,
+      double ambiguity,
+      int tagCount,
+      double averageTagDistance,
+      ObservationType type) {}
+
+  public enum ObservationType {
+    MEGATAG_1,
+    MEGATAG_2,
+    PHOTON
   }
 }

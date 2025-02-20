@@ -56,5 +56,14 @@
     "edu.wpi.first.math.proto.*",
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
+  ],
+  "cSpell.words": [
+    "fiducials",
+    "MEGATAG",
+    "odometry",
+    "Quasistatic",
+    "rawll",
+    "Reefscape",
+    "setpoint"
   ]
 }

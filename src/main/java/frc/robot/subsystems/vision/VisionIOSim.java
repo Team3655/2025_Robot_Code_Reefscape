@@ -1,6 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,8 +20,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotState;
+import frc.robot.subsystems.vision.VisionConstants.ObservationType;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
 
@@ -45,12 +44,8 @@ public class VisionIOSim implements VisionIO {
    */
   public VisionIOSim(String name, Transform3d robotToCamera) {
 
-    // Initalize April Tag layout
-    try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
-    } catch (IOException e) {
-      DriverStation.reportError("Failed to load april tags :3", null);
-    }
+    // Initialize April Tag layout
+      tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     // Simulates a camera and a coprocessor running PhotonLib
     visionSystem = new VisionSystemSim("system" + name);
@@ -129,10 +124,10 @@ public class VisionIOSim implements VisionIO {
           // Add pose estimation to observations
           poseObservations.add(new PoseObservation(
               estimation.get().timestampSeconds,
-              estimation.get().estimatedPose,
+              estimation.get().estimatedPose.toPose2d(),
               multiTagResult.estimatedPose.ambiguity,
               multiTagResult.fiducialIDsUsed.size(),
-              totalTagDistance / result.targets.size()));
+              totalTagDistance / result.targets.size(), ObservationType.PHOTON));
         }
 
       } else if (!result.targets.isEmpty()) { // Single tag result
@@ -149,10 +144,10 @@ public class VisionIOSim implements VisionIO {
           if (estimation.isPresent()) {
             poseObservations.add(new PoseObservation(
                 estimation.get().timestampSeconds,
-                estimation.get().estimatedPose,
+                estimation.get().estimatedPose.toPose2d(),
                 target.poseAmbiguity,
                 1,
-                cameraToTarget.getTranslation().getNorm()));
+                cameraToTarget.getTranslation().getNorm(), ObservationType.PHOTON));
           }
         }
       }

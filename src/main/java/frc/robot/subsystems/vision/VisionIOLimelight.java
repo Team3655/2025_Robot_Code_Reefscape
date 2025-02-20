@@ -4,76 +4,92 @@
 
 package frc.robot.subsystems.vision;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.RobotState;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
+import frc.robot.subsystems.vision.VisionConstants.ObservationType;
 import frc.robot.util.LimelightHelpers;
-import frc.robot.util.LimelightHelpers.RawFiducial;
 
 /** Uses a Limelight camera to do vision calculations. */
 public class VisionIOLimelight implements VisionIO {
 
   private final String name;
-  double lastTx;
+  private final NetworkTable table;
+  private final DoubleSubscriber latencySubscriber;
 
   public VisionIOLimelight(String name) {
-
     this.name = name;
-
+    table = NetworkTableInstance.getDefault().getTable(name);
+    latencySubscriber = table.getDoubleTopic("t1").subscribe(0.0);
   }
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
 
-    inputs.connected = true;
+    inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
 
-    LimelightHelpers.SetIMUMode(name, 0);
-    // Get raw AprilTag/Fiducial data
-    RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(name);
-    LimelightHelpers.PoseEstimate estimatedPose;
+    if (DriverStation.isDisabled()) {
+      LimelightHelpers.SetIMUMode(name, 1);
+    } else if (DriverStation.isEnabled()) {
+      LimelightHelpers.SetIMUMode(name, 2);
+    }
 
-    estimatedPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),0, 0, 0, 0, 0);
+    NetworkTableInstance.getDefault().flush();
 
-    double totalAmbiguity = 0;
+    var rawFiducials = LimelightHelpers.getRawFiducials(name);
+    var estimatedPoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+    var estimatedPoseMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+
+    Set<Integer> tagIds = new HashSet<>();
+    List<Double> tagAmbiguities = new ArrayList<>();
     double totalTagDistance = 0.0;
+    double totalPoseAmbiguity = 0.0;
 
-    Set<Short> tagIds = new HashSet<>();
-    Set<Short> ambiguities = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
+    for (var tag : rawFiducials) {
+      tagIds.add(tag.id);
+      tagAmbiguities.add(tag.ambiguity);
 
-    for (RawFiducial fiducial : fiducials) {
-      int id = fiducial.id; // Tag ID
-      double distToCamera = fiducial.distToCamera; // Distance to camera
-      double ambiguity = fiducial.ambiguity; // Tag pose ambiguity
-
-      totalTagDistance += distToCamera;
-
-      tagIds.add((short) id);
-
-      totalAmbiguity += ambiguity;
-      ambiguities.add((short) ambiguity);
+      totalTagDistance += tag.distToRobot;
+      totalPoseAmbiguity += tag.ambiguity;
     }
 
-    if (estimatedPose != null) {
-      poseObservations
-          .add(
-              new PoseObservation(
-                  estimatedPose.timestampSeconds,
-                  new Pose3d(estimatedPose.pose),
-                  totalAmbiguity / ambiguities.size(),
-                  tagIds.size(),
-                  totalTagDistance / tagIds.size()));
-    } else {
-      poseObservations.add(new PoseObservation(0, new Pose3d(), 0, 0, 0));
+    if (estimatedPoseMT1 != null) {
+
+      poseObservations.add(new PoseObservation(
+          estimatedPoseMT1.timestampSeconds,
+          estimatedPoseMT1.pose,
+          totalPoseAmbiguity / tagAmbiguities.size(),
+          tagIds.size(),
+          totalTagDistance / tagIds.size(),
+          ObservationType.MEGATAG_1));
     }
 
-    inputs.latestObservation = new TargetObservation(Rotation2d.fromDegrees(LimelightHelpers.getTX(name)),
+    if (estimatedPoseMT2 != null) {
+      poseObservations.add(new PoseObservation(
+          estimatedPoseMT2.timestampSeconds,
+          estimatedPoseMT2.pose,
+          0.0,
+          tagIds.size(),
+          totalTagDistance / tagIds.size(),
+          ObservationType.MEGATAG_2));
+    }
+
+    inputs.latestObservation = new TargetObservation(
+        Rotation2d.fromDegrees(LimelightHelpers.getTX(name)),
         Rotation2d.fromDegrees(LimelightHelpers.getTY(name)));
 
     // Save pose observations to inputs object
