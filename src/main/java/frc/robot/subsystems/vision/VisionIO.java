@@ -15,6 +15,7 @@ public interface VisionIO {
 
   @AutoLog
   public class VisionIOInputs {
+    public String name;
     public boolean connected = false;
     public TargetObservation latestObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
     public PoseObservation[] poseObservations = new PoseObservation[0];
@@ -25,6 +26,5 @@ public interface VisionIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(VisionIOInputs inputs) {
   }
-  public default String getName(){return new String();}
 
 }

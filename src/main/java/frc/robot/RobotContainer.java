@@ -105,7 +105,9 @@ public class RobotContainer {
             new ModuleIOTalonFX(2),
             new ModuleIOTalonFX(3));
 
-        vision = new VisionSubsystem(new VisionIOLimelight("limelight-back"), new VisionIOLimelight("limelight-left"),
+        vision = new VisionSubsystem(
+            new VisionIOLimelight("limelight-back"),
+            new VisionIOLimelight("limelight-left"),
             new VisionIOLimelight("limelight-right"));
 
         arm = new ArmSubsystem(new ArmIOTalonFX());

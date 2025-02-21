@@ -38,6 +38,8 @@ public class VisionIOLimelight implements VisionIO {
   @Override
   public void updateInputs(VisionIOInputs inputs) {
 
+    inputs.name = name;
+
     inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
 
     if (DriverStation.isDisabled()) {
@@ -106,8 +108,4 @@ public class VisionIOLimelight implements VisionIO {
     }
   }
 
-  @Override
-  public String getName(){
-    return name;
-  }
 }

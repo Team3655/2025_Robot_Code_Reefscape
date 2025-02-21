@@ -89,6 +89,9 @@ public class VisionIOSim implements VisionIO {
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
+
+    inputs.name = name;
+
     inputs.connected = camera.isConnected();
 
     // Update the systems position
@@ -176,11 +179,6 @@ public class VisionIOSim implements VisionIO {
     }
   }
 
-  @Override
-  public String getName(){
-    return name;
-  }
-
   /**
    * Gets an estimated pose from PhotonLib's pose estimator
    * 
@@ -188,7 +186,7 @@ public class VisionIOSim implements VisionIO {
    * @param result       The result to calculate pose with
    * @return An optional representing the estimated pose
    */
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d previousPose, PhotonPipelineResult result) {
+  private Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d previousPose, PhotonPipelineResult result) {
     poseEstimator.setReferencePose(previousPose);
     return poseEstimator.update(result);
   }
