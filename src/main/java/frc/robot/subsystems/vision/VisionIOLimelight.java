@@ -48,7 +48,7 @@ public class VisionIOLimelight implements VisionIO {
       LimelightHelpers.SetIMUMode(name, 2);
     }
 
-    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),0, 0, 0, 0, 0);
+    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     NetworkTableInstance.getDefault().flush();
 
     var rawFiducials = LimelightHelpers.getRawFiducials(name);
