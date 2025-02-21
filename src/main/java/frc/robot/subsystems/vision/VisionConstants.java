@@ -25,10 +25,13 @@ public class VisionConstants {
   public static final double MEGATAG2_LINEAR_FACTOR = 0.2;
   public static final double MEGATAG2_ANGULAR_FACTOR = 0.2;
 
-  public static final Translation3d LEFT_ROBOT_TO_CAMERA_TRANSLATION = new Translation3d(0, 0, 0);
-  public static final Rotation3d LEFT_ROBOT_TO_CAMERA_ROTATION = new Rotation3d(0, 0, 0);
-  public static final Transform3d LEFT_ROBOT_TO_CAMERA = new Transform3d(LEFT_ROBOT_TO_CAMERA_TRANSLATION,
-      LEFT_ROBOT_TO_CAMERA_ROTATION);
+  public static final Translation3d LEFT_ROBOT_TO_CAMERA_TRANSLATION = new Translation3d(-0.147, 0.166, 0.255);
+  public static final Rotation3d LEFT_ROBOT_TO_CAMERA_ROTATION = new Rotation3d(180,25, -25);
+  public static final Transform3d LEFT_ROBOT_TO_CAMERA = new Transform3d(LEFT_ROBOT_TO_CAMERA_TRANSLATION, LEFT_ROBOT_TO_CAMERA_ROTATION);
+
+  public static final Translation3d RIGHT_ROBOT_TO_CAMERA_TRANSLATION = new Translation3d(0.147, 0.166, 0.255);
+  public static final Rotation3d RIGHT_ROBOT_TO_CAMERA_ROTATION = new Rotation3d(180,25, 25);
+  public static final Transform3d RIGHT_ROBOT_TO_CAMERA = new Transform3d(RIGHT_ROBOT_TO_CAMERA_TRANSLATION, RIGHT_ROBOT_TO_CAMERA_ROTATION);
 
   /**
    * A record to store position data for an observation.

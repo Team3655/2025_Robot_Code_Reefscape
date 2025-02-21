@@ -150,16 +150,16 @@ public class VisionSubsystem extends SubsystemBase {
 
       // Log individual camera data
       Logger.recordOutput(
-          "Vision/Camera" + Integer.toString(i) + "/TagPoses",
+          "Vision/Camera " + io[i].getName() + "/TagPoses",
           tagPoses.toArray(new Pose3d[tagPoses.size()]));
       Logger.recordOutput(
-          "Vision/Camera" + Integer.toString(i) + "/RobotPoses",
+          "Vision/Camera " + io[i].getName() + "/RobotPoses",
           robotPoses.toArray(new Pose2d[robotPoses.size()]));
       Logger.recordOutput(
-          "Vision/Camera" + Integer.toString(i) + "/RobotPosesAccepted",
+          "Vision/Camera " + io[i].getName() + "/RobotPosesAccepted",
           robotPosesAccepted.toArray(new Pose2d[robotPosesAccepted.size()]));
       Logger.recordOutput(
-          "Vision/Camera" + Integer.toString(i) + "/RobotPosesRejected",
+          "Vision/Camera " + io[i].getName() + "/RobotPosesRejected",
           robotPosesRejected.toArray(new Pose2d[robotPosesRejected.size()]));
 
       // Add poses to total data

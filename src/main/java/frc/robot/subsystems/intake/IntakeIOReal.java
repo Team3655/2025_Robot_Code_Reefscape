@@ -4,15 +4,19 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 
-public class IntakeIOTalonFX implements IntakeIO {
+public class IntakeIOReal implements IntakeIO {
 
-  //private final TalonFX vacMotor = new TalonFX(IntakeConstants.VAC_MOTOR_PORT, IntakeConstants.BUS);
+  private final SparkMax vacMotor = new SparkMax(IntakeConstants.VAC_MOTOR_PORT, MotorType.kBrushless);
+
   private final TalonFX intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_PORT, IntakeConstants.BUS);
   //private final CANrange canRange = new CANrange(IntakeConstants.CANRANGE_PORT, IntakeConstants.BUS);
 
@@ -23,17 +27,17 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final StatusSignal<Current> intakeCurrent;
   private final StatusSignal<Temperature> intakeTemp;
 
-  // private final StatusSignal<Voltage> vacuumAppliedVolts;
-  // private final StatusSignal<Temperature> vacuumTemp;
+  private final double vacuumAppliedVolts;
+  private final double vacuumTemp;
 
-  public IntakeIOTalonFX() {
+  public IntakeIOReal() {
     intakeVelocity = intakeMotor.getVelocity();
     intakeAppliedVolts = intakeMotor.getMotorVoltage();
     intakeCurrent = intakeMotor.getSupplyCurrent();
     intakeTemp = intakeMotor.getDeviceTemp();
 
-    // vacuumAppliedVolts = vacMotor.getMotorVoltage();
-    // vacuumTemp = vacMotor.getDeviceTemp();
+    vacuumAppliedVolts = vacMotor.getAppliedOutput();
+    vacuumTemp = vacMotor.getMotorTemperature();
 
     canRangeConfig = new CANrangeConfiguration();
     canRangeConfig.ProximityParams.ProximityThreshold = IntakeConstants.CANRANGE_DETECTION_RANGE;
@@ -47,8 +51,8 @@ public class IntakeIOTalonFX implements IntakeIO {
     inputs.intakeCurrentAmps = new double[] { intakeCurrent.getValueAsDouble() };
     inputs.intakeTemp = intakeTemp.getValueAsDouble();
 
-    // inputs.vacuumAppliedVolts = vacuumAppliedVolts.getValueAsDouble();
-    // inputs.vacuumTemp = vacuumTemp.getValueAsDouble();
+    inputs.vacuumAppliedVolts = vacuumAppliedVolts;
+    inputs.vacuumTemp = vacuumTemp;
 
     //inputs.hasCoral = canRange.getIsDetected().getValue();
   }
@@ -60,6 +64,6 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public void setVacuumVoltage(double voltage) {
-    //vacMotor.setControl(new VoltageOut(voltage));
+    vacMotor.setVoltage(MathUtil.clamp(voltage, -12, 12));
   }
 }
