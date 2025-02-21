@@ -25,7 +25,7 @@ import frc.robot.util.LimelightHelpers;
 /** Uses a Limelight camera to do vision calculations. */
 public class VisionIOLimelight implements VisionIO {
 
-  private final String name;
+  public final String name;
   private final NetworkTable table;
   private final DoubleSubscriber latencySubscriber;
 
@@ -104,5 +104,10 @@ public class VisionIOLimelight implements VisionIO {
     for (int id : tagIds) {
       inputs.tagIds[i++] = id;
     }
+  }
+
+  @Override
+  public String getName(){
+    return name;
   }
 }

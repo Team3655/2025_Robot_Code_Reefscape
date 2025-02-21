@@ -35,6 +35,7 @@ public class VisionIOSim implements VisionIO {
   private final PhotonCameraSim cameraSim;
   private final PhotonPoseEstimator poseEstimator;
 
+  public final String name;
   private AprilTagFieldLayout tagLayout;
 
   /**
@@ -46,6 +47,7 @@ public class VisionIOSim implements VisionIO {
    */
   public VisionIOSim(String name, Transform3d robotToCamera) {
 
+    this.name = name;
     // Initialize April Tag layout
     try {
       tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
@@ -172,6 +174,11 @@ public class VisionIOSim implements VisionIO {
     for (int id : tagIds) {
       inputs.tagIds[i++] = id;
     }
+  }
+
+  @Override
+  public String getName(){
+    return name;
   }
 
   /**
