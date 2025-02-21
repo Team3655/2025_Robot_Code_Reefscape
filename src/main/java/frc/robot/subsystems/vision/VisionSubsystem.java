@@ -59,7 +59,7 @@ public class VisionSubsystem extends SubsystemBase {
     // Update inputs
     for (int i = 0; i < inputs.length; i++) {
       io[i].updateInputs(inputs[i]);
-      Logger.processInputs("Inputs/Vision/Camera" + Integer.toString(i), inputs[i]);
+      Logger.processInputs("Inputs/Vision/Camera " + inputs[i].name, inputs[i]);
     }
 
     // Initialize logging data

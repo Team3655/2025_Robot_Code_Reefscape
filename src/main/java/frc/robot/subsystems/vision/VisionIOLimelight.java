@@ -42,13 +42,14 @@ public class VisionIOLimelight implements VisionIO {
 
     inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
 
+  
     if (DriverStation.isDisabled()) {
       LimelightHelpers.SetIMUMode(name, 1);
-    } else if (DriverStation.isEnabled()) {
+    } else if (DriverStation.isEnabled() && name.equals("limelight-back")) {
       LimelightHelpers.SetIMUMode(name, 2);
     }
 
-    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),0, 0, 0, 0, 0);
     NetworkTableInstance.getDefault().flush();
 
     var rawFiducials = LimelightHelpers.getRawFiducials(name);
@@ -70,7 +71,6 @@ public class VisionIOLimelight implements VisionIO {
     }
 
     if (estimatedPoseMT1 != null) {
-
       poseObservations.add(new PoseObservation(
           estimatedPoseMT1.timestampSeconds,
           estimatedPoseMT1.pose,
@@ -107,5 +107,4 @@ public class VisionIOLimelight implements VisionIO {
       inputs.tagIds[i++] = id;
     }
   }
-
 }
