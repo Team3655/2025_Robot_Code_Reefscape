@@ -1,5 +1,7 @@
 package frc.robot.subsystems.arm;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
@@ -91,6 +93,10 @@ public class ArmConstants {
         public static final double H_TOWER_GROUND_HEIGHT_METERS = Units.inchesToMeters(31.25);
         public static final double D_ARM_HORIZONTAL_OFFSET_METERS = Units.inchesToMeters(9.25);
         public static final double TOWER_CHASSIS_HEIGHT_METERS = Units.inchesToMeters(31.25 - 3.875);
+
+        public static final Rotation2d SHOULDER_STARTING_OFFSET = Rotation2d.fromDegrees(-67);
+        public static final Rotation2d ELBOW_STARTING_OFFSET = Rotation2d.fromDegrees(91);
+        public static final Rotation2d WRIST_STARTING_OFFSET = Rotation2d.fromDegrees(90);
 
         public static final int LIMIT_SWITCH_ID = 8;
 
