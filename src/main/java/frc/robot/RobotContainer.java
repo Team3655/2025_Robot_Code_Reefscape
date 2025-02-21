@@ -41,7 +41,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -110,7 +110,7 @@ public class RobotContainer {
 
         arm = new ArmSubsystem(new ArmIOTalonFX());
         // climber = new ClimberSubsystem(new ClimberIOTalonFX());
-        intake = new IntakeSubsystem(new IntakeIOTalonFX());
+        intake = new IntakeSubsystem(new IntakeIOReal());
         break;
 
       case SIM:
