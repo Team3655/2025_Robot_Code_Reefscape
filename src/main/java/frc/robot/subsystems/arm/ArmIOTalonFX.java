@@ -212,8 +212,8 @@ public class ArmIOTalonFX implements ArmIO {
       case RELATIVE:
         // Arm MUST be in correct position when deploying code or booting robot
 
-        shoulderLeaderTalon.setPosition(Units.degreesToRotations(-65));
-        elbowLeaderTalon.setPosition(Units.degreesToRotations(90));
+        shoulderLeaderTalon.setPosition(Units.degreesToRotations(-67));
+        elbowLeaderTalon.setPosition(Units.degreesToRotations(91));
         wristTalon.setPosition(Units.degreesToRotations(90));
         break;
       case ABSOLUTE:
