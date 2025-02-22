@@ -11,21 +11,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ArmState_Start"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Reef Bounce 2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ArmState_Intake"
           }
         },
         {
@@ -35,33 +23,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ArmState_Low"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Reef Bounce 4"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ArmState_Mid"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Reef Bounce 5"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ArmState_High"
           }
         },
         {

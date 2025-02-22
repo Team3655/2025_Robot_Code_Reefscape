@@ -120,13 +120,13 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     AutoBuilder.configure(
-        RobotState.getInstance()::getPose, // Robot pose supplier
+        RobotState.getInstance()::getEstimatedPose, // Robot pose supplier
         RobotState.getInstance()::resetPose, // Method to reset odometry
         this::getChassisSpeeds, // ChassisSpeeds supplier
         this::runVelocity, // Runs robot given chassis speeds
         new PPHolonomicDriveController(
-            new PIDConstants(6.75, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            new PIDConstants(4.25, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(3.0, 0.0, 0.0) // Rotation PID constants
         ),
         config,
         () -> {

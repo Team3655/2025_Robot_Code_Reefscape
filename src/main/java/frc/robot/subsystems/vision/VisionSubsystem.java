@@ -81,8 +81,10 @@ public class VisionSubsystem extends SubsystemBase {
       // Get positions of every tag that is seen
       for (int tagId : inputs[i].tagIds) {
         var tagPose = tagLayout.getTagPose(tagId);
-        if (tagPose != null) {
+        if (tagPose.isPresent()) {
           tagPoses.add(tagPose.get());
+        } else {
+          continue;
         }
       }
 

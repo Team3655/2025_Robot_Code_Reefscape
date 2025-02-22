@@ -19,14 +19,14 @@ public class VisionConstants {
 
   public static final double MAX_AMBIGUITY = 0.8;
 
-  public static final double LINEAR_STD_DEV_FACTOR = 0.55;
-  public static final double ANGULAR_STD_DEV_FACTOR = 2;
+  public static final double LINEAR_STD_DEV_FACTOR = 0.47;
+  public static final double ANGULAR_STD_DEV_FACTOR = 2.15;
 
-  public static final double MEGATAG2_LINEAR_FACTOR = 0.35;
-  public static final double MEGATAG2_ANGULAR_FACTOR = 1.7;
+  public static final double MEGATAG2_LINEAR_FACTOR = 0.25;
+  public static final double MEGATAG2_ANGULAR_FACTOR = 1.1;
 
   public static final Translation3d LEFT_ROBOT_TO_CAMERA_TRANSLATION = new Translation3d(-0.147, 0.166, 0.255);
-  public static final Rotation3d LEFT_ROBOT_TO_CAMERA_ROTATION = new Rotation3d(180,25, -25);
+  public static final Rotation3d LEFT_ROBOT_TO_CAMERA_ROTATION = new Rotation3d(180,25, 25);
   public static final Transform3d LEFT_ROBOT_TO_CAMERA = new Transform3d(LEFT_ROBOT_TO_CAMERA_TRANSLATION, LEFT_ROBOT_TO_CAMERA_ROTATION);
 
   public static final Translation3d RIGHT_ROBOT_TO_CAMERA_TRANSLATION = new Translation3d(0.147, 0.166, 0.255);

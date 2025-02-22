@@ -29,6 +29,7 @@ import frc.robot.commands.ArmCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -165,11 +166,13 @@ public class RobotContainer {
     }
 
     NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
-    NamedCommands.registerCommand("ArmState_Intake", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+    NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, 6)));
     NamedCommands.registerCommand("ArmState_L1", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
     NamedCommands.registerCommand("ArmState_L2", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
     NamedCommands.registerCommand("ArmState_L3", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
     NamedCommands.registerCommand("ArmState_L4", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+    NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, -6));
+    NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
