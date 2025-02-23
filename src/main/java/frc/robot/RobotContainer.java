@@ -29,7 +29,6 @@ import frc.robot.commands.ArmCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
-import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
