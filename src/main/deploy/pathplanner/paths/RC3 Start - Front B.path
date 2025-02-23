@@ -1,0 +1,86 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.02,
+        "y": 0.8
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.331999985229033,
+        "y": 0.7977545211762679
+      },
+      "isLocked": false,
+      "linkedName": "RC3 Start"
+    },
+    {
+      "anchor": {
+        "x": 3.8707500000000006,
+        "y": 0.9439999999999997
+      },
+      "prevControl": {
+        "x": 4.375366889004631,
+        "y": 0.7977682652149878
+      },
+      "nextControl": {
+        "x": 2.9954442290468033,
+        "y": 1.1976527891610929
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.1547500000000004,
+        "y": 2.474749999999999
+      },
+      "prevControl": {
+        "x": 2.172412656437593,
+        "y": 1.2736893622437004
+      },
+      "nextControl": {
+        "x": 2.13525,
+        "y": 3.80075
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.1785,
+        "y": 3.8397499999999996
+      },
+      "prevControl": {
+        "x": 2.7202500000000005,
+        "y": 3.83
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "B Front"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Bottom Side Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

@@ -166,12 +166,12 @@ public class RobotContainer {
     }
 
     NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
-    NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, 6)));
+    NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, -6)));
     NamedCommands.registerCommand("ArmState_L1", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
     NamedCommands.registerCommand("ArmState_L2", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
     NamedCommands.registerCommand("ArmState_L3", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
     NamedCommands.registerCommand("ArmState_L4", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
-    NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, -6));
+    NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 6));
     NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
 
     // Set up auto routines
@@ -218,27 +218,27 @@ public class RobotContainer {
 
         mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, -4.5))
+        tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
             .onFalse(IntakeCommands.stopIntake(intake));
 
         tractorController.button(10).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START).alongWith(IntakeCommands.stopIntake(intake)));
         tractorController.button(5)
             .onTrue(Commands
-                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),IntakeCommands.runIntake(intake, 6)))
+                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),IntakeCommands.runIntake(intake, -6)))
             .onFalse(Commands
                 .sequence(IntakeCommands.stopIntake(intake), ArmCommands.updateSetpoint(arm, ArmStates.START)));
         tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         tractorController.button(1)
             .onTrue(Commands
-                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, 2)));
+                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, -2)));
         // tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm,
         // ArmStates.FRONT_L3_REEF));
         tractorController.button(2)
             .onTrue(Commands
-                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF), IntakeCommands.runIntake(intake, 2)));
+                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF), IntakeCommands.runIntake(intake, -2)));
         tractorController.button(3)
             .onTrue(Commands
-                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake, 3)));
+                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake,-2)));
 
         break;
       case ETHAN:
@@ -268,10 +268,10 @@ public class RobotContainer {
         programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
         programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
-        programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
+        programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
             .onFalse(IntakeCommands.stopIntake(intake));
 
-        programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
+        programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
             .onFalse(IntakeCommands.stopIntake(intake));
 
         // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));

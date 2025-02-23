@@ -3,11 +3,14 @@
   "robotLength": 0.812,
   "holonomicMode": true,
   "pathFolders": [
-    "Top Side Paths",
-    "Reef Bounce Test"
+    "Bottom Side Paths",
+    "Top Side Paths"
   ],
-  "autoFolders": [],
-  "defaultMaxVel": 5.0,
+  "autoFolders": [
+    "Bottom Side Autos",
+    "Top Side Autos"
+  ],
+  "defaultMaxVel": 4.0,
   "defaultMaxAccel": 2.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,

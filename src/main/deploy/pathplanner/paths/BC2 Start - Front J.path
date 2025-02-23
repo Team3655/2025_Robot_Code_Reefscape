@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 8.02,
-        "y": 5.05
+        "y": 6.15
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.5520000000000005,
-        "y": 5.302249999999999
+        "y": 6.4022499999999996
       },
       "isLocked": false,
-      "linkedName": "BC3 Start"
+      "linkedName": "BC2 Start"
     },
     {
       "anchor": {

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.02,
-        "y": 5.05
+        "x": 4.9822500000000005,
+        "y": 2.815999999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.5520000000000005,
-        "y": 5.302249999999999
+        "x": 3.870750000000001,
+        "y": 1.520499999999998
       },
       "isLocked": false,
-      "linkedName": "BC3 Start"
+      "linkedName": "E Front"
     },
     {
       "anchor": {
-        "x": 5.29425,
-        "y": 5.05
+        "x": 1.56,
+        "y": 0.7294999999999994
       },
       "prevControl": {
-        "x": 5.537999999999999,
-        "y": 5.57525
+        "x": 2.1555660146708173,
+        "y": 1.5485375272812365
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "I Front"
+      "linkedName": "Intake Slot 4"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.12247019679205
+    "rotation": -125.00000000000001
   },
   "reversed": false,
-  "folder": "Top Side Paths",
+  "folder": "Bottom Side Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 119.99999999999999
   },
   "useDefaultConstraints": true
 }

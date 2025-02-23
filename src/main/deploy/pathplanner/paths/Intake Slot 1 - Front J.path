@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.60875,
-        "y": 7.3985
+        "x": 1.6185000000000003,
+        "y": 7.3595
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.527470203253574,
-        "y": 5.82833607104928
+        "x": 2.6617499999999996,
+        "y": 6.287
       },
       "isLocked": false,
       "linkedName": "Intake Slot 1"
@@ -20,8 +20,8 @@
         "y": 5.22425
       },
       "prevControl": {
-        "x": 4.10475,
-        "y": 6.150499999999999
+        "x": 5.343,
+        "y": 5.7995
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,

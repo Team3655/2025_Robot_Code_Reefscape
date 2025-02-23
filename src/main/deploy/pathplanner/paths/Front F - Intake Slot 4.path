@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.75,
-        "y": 5.005
+        "x": 5.2845,
+        "y": 3.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2500000000000004,
-        "y": 5.871025403784438
+        "x": 4.173000000000001,
+        "y": 1.704499999999999
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "F Front"
     },
     {
       "anchor": {
-        "x": 3.3,
-        "y": 3.9
+        "x": 1.56,
+        "y": 0.7294999999999994
       },
       "prevControl": {
-        "x": 2.3000000000000007,
-        "y": 3.9
+        "x": 2.1555660146708173,
+        "y": 1.5485375272812365
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Intake Slot 4"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -125.00000000000001
   },
   "reversed": false,
-  "folder": "Reef Bounce Test",
+  "folder": "Bottom Side Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 119.99999999999999
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
