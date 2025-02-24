@@ -138,15 +138,35 @@ public class ArmConstants {
                                 Units.inchesToMeters(78.5),
                                 Rotation2d.fromDegrees(205));
 
-                 public static final ArmPose Algie_Store = new ArmPose(
+                 public static final ArmPose ALGIE_STORE = new ArmPose(
                                 Units.inchesToMeters(19.75),
                                 Units.inchesToMeters(34.5),
-                                Rotation2d.fromDegrees(135));
+                                Rotation2d.fromDegrees(185));
 
-                public static final ArmPose FRONT_L1_Algie = new ArmPose(
+                public static final ArmPose FRONT_L1_ALGIE = new ArmPose(
                                 Units.inchesToMeters(34),
-                                Units.inchesToMeters(36),
-                                Rotation2d.fromDegrees(120));
+                                Units.inchesToMeters(40),
+                                Rotation2d.fromDegrees(90));
+
+                public static final ArmPose FRONT_L2_ALGIE = new ArmPose(
+                                Units.inchesToMeters(34),
+                                Units.inchesToMeters(59),
+                                Rotation2d.fromDegrees(90));
+                
+                public static final ArmPose FRONT_L2_ALGIE_ROTATED = new ArmPose(
+                                Units.inchesToMeters(34),
+                                Units.inchesToMeters(59),
+                                Rotation2d.fromDegrees(185));
+
+                public static final ArmPose FRONT_BARGE = new ArmPose(
+                                Units.inchesToMeters(11),
+                                Units.inchesToMeters(78.5),
+                                Rotation2d.fromDegrees(185));
+
+                public static final ArmPose FRONT_BARGE_ROTATED = new ArmPose(
+                                Units.inchesToMeters(11),
+                                Units.inchesToMeters(78.5),
+                                Rotation2d.fromDegrees(240));
 
         }
 }
