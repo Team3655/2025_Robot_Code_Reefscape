@@ -221,6 +221,7 @@ public class RobotContainer {
                   .onFalse(IntakeCommands.stopIntake(intake));
       
               tractorController.button(10).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START).alongWith(IntakeCommands.stopIntake(intake)));
+
               tractorController.button(5)
                   .onTrue(Commands
                       .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),IntakeCommands.runIntake(intake, -6)))

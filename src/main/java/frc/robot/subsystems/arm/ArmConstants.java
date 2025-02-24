@@ -149,14 +149,14 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(90));
 
                 public static final ArmPose FRONT_L2_ALGIE = new ArmPose(
-                                Units.inchesToMeters(34),
-                                Units.inchesToMeters(59),
-                                Rotation2d.fromDegrees(90));
+                                Units.inchesToMeters(34), //34
+                                Units.inchesToMeters(53), //59
+                                Rotation2d.fromDegrees(120)); //90
                 
                 public static final ArmPose FRONT_L2_ALGIE_ROTATED = new ArmPose(
-                                Units.inchesToMeters(34),
-                                Units.inchesToMeters(59),
-                                Rotation2d.fromDegrees(185));
+                                Units.inchesToMeters(22), //34
+                                Units.inchesToMeters(57), //59
+                                Rotation2d.fromDegrees(120)); //185
 
                 public static final ArmPose FRONT_BARGE = new ArmPose(
                                 Units.inchesToMeters(11),
@@ -166,7 +166,7 @@ public class ArmConstants {
                 public static final ArmPose FRONT_BARGE_ROTATED = new ArmPose(
                                 Units.inchesToMeters(11),
                                 Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(240));
+                                Rotation2d.fromDegrees(220));
 
         }
 }
