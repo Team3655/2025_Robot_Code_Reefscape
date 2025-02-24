@@ -13,21 +13,13 @@
 
 package frc.robot.commands;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
-import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPoint;
-import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -59,6 +51,7 @@ public class DriveCommands {
     // Apply deadband
     double linearMagnitude = MathUtil.applyDeadband(Math.hypot(x, y), DEADBAND);
     Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
+
 
     // Square magnitude for more precise control
     linearMagnitude = JoystickUtils.curveInput(linearMagnitude, DEADBAND);
@@ -93,14 +86,16 @@ public class DriveCommands {
           Logger.recordOutput("Drive/Commands/linear magnitude", linearVelocity.getNorm());
 
           // Convert to field relative speeds & send command
-          ChassisSpeeds speeds = new ChassisSpeeds(
-              linearVelocity.getX() * DriveConstants.MAX_LINEAR_SPEED,
-              linearVelocity.getY() * DriveConstants.MAX_LINEAR_SPEED,
-              omega * DriveConstants.MAX_ANGULAR_SPEED);
+          ChassisSpeeds speeds =
+              new ChassisSpeeds(
+                  linearVelocity.getX() * DriveConstants.MAX_LINEAR_SPEED,
+                  linearVelocity.getY() * DriveConstants.MAX_LINEAR_SPEED,
+                  omega * DriveConstants.MAX_ANGULAR_SPEED);
 
-          boolean isFlipped = DriverStation.getAlliance().isPresent()
-              && DriverStation.getAlliance().get() == Alliance.Red;
-
+          boolean isFlipped =
+              DriverStation.getAlliance().isPresent()
+                  && DriverStation.getAlliance().get() == Alliance.Red;
+                  
           drive.runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   speeds,
@@ -211,20 +206,21 @@ public class DriveCommands {
 
             // Update gyro delta
             Commands.run(
-                () -> {
-                  var rotation = RobotState.getInstance().getRotation();
-                  state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
-                  state.lastAngle = rotation;
+                    () -> {
+                      var rotation = RobotState.getInstance().getRotation();
+                      state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
+                      state.lastAngle = rotation;
 
-                  double[] positions = drive.getWheelRadiusCharacterizationPositions();
-                  state.wheelDelta = 0.0;
-                  for (int i = 0; i < 4; i++) {
-                    state.wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
-                  }
-                  state.wheelRadius = (state.gyroDelta * DriveConstants.DRIVE_BASE_RADIUS) / state.wheelDelta;
-
-                  Logger.recordOutput("DriveCommands/WheelRadius/Wheel Radius", state.wheelRadius);
-                })
+                      double[] positions = drive.getWheelRadiusCharacterizationPositions();
+                      state.wheelDelta = 0.0;
+                      for (int i = 0; i < 4; i++) {
+                        state.wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
+                      }
+                      state.wheelRadius =
+                          (state.gyroDelta * DriveConstants.DRIVE_BASE_RADIUS) / state.wheelDelta;
+                      
+                      Logger.recordOutput("DriveCommands/WheelRadius/Wheel Radius", state.wheelRadius);
+                    })
 
                 // When cancelled, calculate and print results
                 .finallyDo(
@@ -243,57 +239,6 @@ public class DriveCommands {
                               + formatter.format(Units.metersToInches(state.wheelRadius))
                               + " inches");
                     })));
-  }
-
-  public final Command alignToReefLeft() {
-    Pose2d targetPose = getClosestPathPointPose(RobotState.getInstance().getEstimatedPose(), "LeftReefAlignment");
-    PathConstraints constraints = getPathConstraints("LeftReefAlignment");
-
-    return AutoBuilder.pathfindToPose(targetPose, constraints);
-  }
-
-  public final Command alignToReefRight() {
-    Pose2d targetPose = getClosestPathPointPose(RobotState.getInstance().getEstimatedPose(), "RightReefAlignment");
-    PathConstraints constraints = getPathConstraints("RightReefAlignment");
-
-    return AutoBuilder.pathfindToPose(targetPose, constraints);
-  }
-
-  private static Pose2d getClosestPathPointPose(Pose2d robotPose, String pathName) {
-    double lastDistance = 0.0;
-    PathPoint closestPoint = new PathPoint(new Translation2d());
-    List<PathPoint> pathpoints;
-    try {
-      pathpoints = PathPlannerPath.fromPathFile(pathName).getAllPathPoints();
-      for (var point : pathpoints) {
-
-        if (point.position.getDistance(robotPose.getTranslation()) < lastDistance || lastDistance == 0.0) {
-          closestPoint = point;
-          lastDistance = point.position.getDistance(robotPose.getTranslation());
-        }
-      }
-    } catch (FileVersionException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      DriverStation.reportError("Cant load pathplanner path :3 !!", true);
-    } catch (ParseException e) {
-      DriverStation.reportError("Failed to parse path.json :3 !!", true);
-    }
-    return new Pose2d(closestPoint.position, closestPoint.rotationTarget.rotation());
-  }
-
-  public static PathConstraints getPathConstraints(String pathName) {
-    try {
-      return PathPlannerPath.fromPathFile(pathName).getGlobalConstraints();
-    } catch (FileVersionException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      DriverStation.reportError("Cant load pathplanner path :3 !!", true);
-    } catch (ParseException e) {
-      DriverStation.reportError("Failed to parse path.json :3 !!", true);
-    }
-
-    return PathConstraints.unlimitedConstraints(12);
   }
 
   private static class WheelRadiusCharacterizationState {
