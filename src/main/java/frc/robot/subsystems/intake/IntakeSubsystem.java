@@ -51,4 +51,13 @@ public class IntakeSubsystem extends SubsystemBase {
     return (inputs.intakeCurrentAmps[inputs.intakeCurrentAmps.length - 1] > threshold);
   }
 
+  public void toggleVacuumSolenoid(boolean state) {
+    intakeIO.setVacuumSolenoid(state);
+  }
+
+  public void toggleVacuum(boolean state, double volts) {
+    intakeIO.setVacuumSolenoid(state);
+    intakeIO.setVacuumVoltage(volts);
+  }
+
 }

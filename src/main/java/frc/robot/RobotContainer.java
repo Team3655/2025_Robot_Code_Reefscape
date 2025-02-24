@@ -207,71 +207,84 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     switch (Constants.currentDriver) {
-      case MATT:
-        drive.setDefaultCommand(
-            DriveCommands.joystickDrive(
-                drive,
-                () -> mattTranslation.StickYAxis(),
-                () -> mattTranslation.StickXAxis(),
-                () -> -mattRotation.StickXAxis()));
+            case MATT:
+              drive.setDefaultCommand(
+                  DriveCommands.joystickDrive(
+                      drive,
+                      () -> mattTranslation.StickYAxis(),
+                      () -> mattTranslation.StickXAxis(),
+                      () -> -mattRotation.StickXAxis()));
+      
+              mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
+      
+              tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
+                  .onFalse(IntakeCommands.stopIntake(intake));
+      
+              tractorController.button(10).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START).alongWith(IntakeCommands.stopIntake(intake)));
+              tractorController.button(5)
+                  .onTrue(Commands
+                      .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),IntakeCommands.runIntake(intake, -6)))
+                  .onFalse(Commands
+                      .sequence(IntakeCommands.stopIntake(intake), ArmCommands.updateSetpoint(arm, ArmStates.START)));
+              tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+              tractorController.button(1)
+                  .onTrue(Commands
+                      .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, -2)));
+              // tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm,
+              // ArmStates.FRONT_L3_REEF));
+              tractorController.button(2)
+                  .onTrue(Commands
+                      .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF), IntakeCommands.runIntake(intake, -2)));
+              tractorController.button(3)
+                  .onTrue(Commands
+                      .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake,-2)));
+      
+              break;
+            case ETHAN:
+              drive.setDefaultCommand(
+                  DriveCommands.joystickDrive(
+                      drive,
+                      () -> -ethanTranslation.StickYAxis(),
+                      () -> -ethanTranslation.StickXAxis(),
+                      () -> -ethanRotation.StickXAxis()));
+      
+              break;
+            case PROGRAMMING:
+              drive.setDefaultCommand(
+                  DriveCommands.joystickDrive(
+                      drive,
+                      () -> -programmingController.getLeftY(),
+                      () -> -programmingController.getLeftX(),
+                      () -> -programmingController.getRightX()));
+      
+              // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+              programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
+      
+              // programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
+              // programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+              // programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+              // programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+              // programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
+              // programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+      
+              programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
+                  .onFalse(IntakeCommands.stopIntake(intake));
+      
+              programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
+                  .onFalse(IntakeCommands.stopIntake(intake));
 
-        mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
+              // Close valve and create vacuum pressure
+              programmingController.a()
+                  .onTrue(IntakeCommands.toggleVacuum(intake, false, 12));
 
-        tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
-            .onFalse(IntakeCommands.stopIntake(intake));
+              // Open valve and create positive pressure
+              // Turn off vacuum when released
+              programmingController.b()
+                  .onTrue(IntakeCommands.toggleVacuum(intake, true, -12))
+                  .onFalse(IntakeCommands.toggleVacuum(intake, false, 0));
+            
 
-        tractorController.button(10).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START).alongWith(IntakeCommands.stopIntake(intake)));
-        tractorController.button(5)
-            .onTrue(Commands
-                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),IntakeCommands.runIntake(intake, -6)))
-            .onFalse(Commands
-                .sequence(IntakeCommands.stopIntake(intake), ArmCommands.updateSetpoint(arm, ArmStates.START)));
-        tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
-        tractorController.button(1)
-            .onTrue(Commands
-                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, -2)));
-        // tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm,
-        // ArmStates.FRONT_L3_REEF));
-        tractorController.button(2)
-            .onTrue(Commands
-                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF), IntakeCommands.runIntake(intake, -2)));
-        tractorController.button(3)
-            .onTrue(Commands
-                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake,-2)));
 
-        break;
-      case ETHAN:
-        drive.setDefaultCommand(
-            DriveCommands.joystickDrive(
-                drive,
-                () -> -ethanTranslation.StickYAxis(),
-                () -> -ethanTranslation.StickXAxis(),
-                () -> -ethanRotation.StickXAxis()));
-
-        break;
-      case PROGRAMMING:
-        drive.setDefaultCommand(
-            DriveCommands.joystickDrive(
-                drive,
-                () -> -programmingController.getLeftY(),
-                () -> -programmingController.getLeftX(),
-                () -> -programmingController.getRightX()));
-
-        // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
-
-        programmingController.a().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
-        programmingController.b().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
-        programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
-        programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-        programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
-        programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
-
-        programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
-            .onFalse(IntakeCommands.stopIntake(intake));
-
-        programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
-            .onFalse(IntakeCommands.stopIntake(intake));
 
         // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
         // programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));

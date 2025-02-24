@@ -32,4 +32,7 @@ public interface IntakeIO {
 
   public default void setVacuumVoltage(double voltage) {
   }
+
+  public default void setVacuumSolenoid(boolean state) {
+  }
 }

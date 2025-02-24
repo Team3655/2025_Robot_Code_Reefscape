@@ -75,4 +75,10 @@ public class IntakeIOSim implements IntakeIO {
   public void setVacuumVoltage(double volts){
     vacuumMotor.setInputVoltage(MathUtil.clamp(volts, -12, 12));
   }
+
+  @Override
+  public void setVacuumSolenoid(boolean state){
+    // Do nothing
+    // TODO: SIM this
+  }
 }

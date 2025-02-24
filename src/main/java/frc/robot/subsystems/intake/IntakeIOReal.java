@@ -12,6 +12,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class IntakeIOReal implements IntakeIO {
 
@@ -19,6 +21,8 @@ public class IntakeIOReal implements IntakeIO {
 
   private final TalonFX intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_PORT, IntakeConstants.BUS);
   //private final CANrange canRange = new CANrange(IntakeConstants.CANRANGE_PORT, IntakeConstants.BUS);
+
+  private final Solenoid vacuumSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 7);
 
   private final CANrangeConfiguration canRangeConfig;
 
@@ -65,5 +69,10 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void setVacuumVoltage(double voltage) {
     vacMotor.setVoltage(MathUtil.clamp(voltage, -12, 12));
+  }
+
+  @Override
+  public void setVacuumSolenoid(boolean state) {
+    vacuumSolenoid.set(state);
   }
 }
