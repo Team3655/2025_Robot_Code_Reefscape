@@ -41,7 +41,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -105,12 +105,14 @@ public class RobotContainer {
             new ModuleIOTalonFX(2),
             new ModuleIOTalonFX(3));
 
-        vision = new VisionSubsystem(new VisionIOLimelight("limelight-back"), new VisionIOLimelight("limelight-left"),
+        vision = new VisionSubsystem(
+            new VisionIOLimelight("limelight-back"),
+            new VisionIOLimelight("limelight-left"),
             new VisionIOLimelight("limelight-right"));
 
         arm = new ArmSubsystem(new ArmIOTalonFX());
         // climber = new ClimberSubsystem(new ClimberIOTalonFX());
-        intake = new IntakeSubsystem(new IntakeIOTalonFX());
+        intake = new IntakeSubsystem(new IntakeIOReal());
         break;
 
       case SIM:
@@ -124,8 +126,8 @@ public class RobotContainer {
             new ModuleIOSim());
 
         vision = new VisionSubsystem(
-            new VisionIOSim(
-                "left", VisionConstants.LEFT_ROBOT_TO_CAMERA));
+            new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
+            new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
 
         arm = new ArmSubsystem(new ArmIOSim());
         // climber = new ClimberSubsystem(new ClimberIO() {
@@ -163,11 +165,13 @@ public class RobotContainer {
     }
 
     NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
-    NamedCommands.registerCommand("ArmState_Intake", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+    NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, -6)));
     NamedCommands.registerCommand("ArmState_L1", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
     NamedCommands.registerCommand("ArmState_L2", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
     NamedCommands.registerCommand("ArmState_L3", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
     NamedCommands.registerCommand("ArmState_L4", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+    NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 6));
+    NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -213,27 +217,27 @@ public class RobotContainer {
 
         mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
-        tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, -4.5))
+        tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
             .onFalse(IntakeCommands.stopIntake(intake));
 
         tractorController.button(10).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START).alongWith(IntakeCommands.stopIntake(intake)));
         tractorController.button(5)
             .onTrue(Commands
-                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),IntakeCommands.runIntake(intake, 6)))
+                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),IntakeCommands.runIntake(intake, -6)))
             .onFalse(Commands
                 .sequence(IntakeCommands.stopIntake(intake), ArmCommands.updateSetpoint(arm, ArmStates.START)));
         tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         tractorController.button(1)
             .onTrue(Commands
-                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, 2)));
+                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, -2)));
         // tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm,
         // ArmStates.FRONT_L3_REEF));
         tractorController.button(2)
             .onTrue(Commands
-                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF), IntakeCommands.runIntake(intake, 2)));
+                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF), IntakeCommands.runIntake(intake, -2)));
         tractorController.button(3)
             .onTrue(Commands
-                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake, 3)));
+                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake,-2)));
 
         break;
       case ETHAN:
@@ -263,10 +267,10 @@ public class RobotContainer {
         programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
         programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
-        programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
+        programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
             .onFalse(IntakeCommands.stopIntake(intake));
 
-        programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
+        programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
             .onFalse(IntakeCommands.stopIntake(intake));
 
         // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
@@ -289,6 +293,7 @@ public class RobotContainer {
         programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
         programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
+        programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
         // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake,
         // 12)).onFalse(IntakeCommands.stopIntake(intake));

@@ -25,7 +25,7 @@ import frc.robot.util.LimelightHelpers;
 /** Uses a Limelight camera to do vision calculations. */
 public class VisionIOLimelight implements VisionIO {
 
-  private final String name;
+  public final String name;
   private final NetworkTable table;
   private final DoubleSubscriber latencySubscriber;
 
@@ -38,11 +38,14 @@ public class VisionIOLimelight implements VisionIO {
   @Override
   public void updateInputs(VisionIOInputs inputs) {
 
+    inputs.name = name;
+
     inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
 
+  
     if (DriverStation.isDisabled()) {
       LimelightHelpers.SetIMUMode(name, 1);
-    } else if (DriverStation.isEnabled()) {
+    } else if (DriverStation.isEnabled() && name.equals("limelight-back")) {
       LimelightHelpers.SetIMUMode(name, 2);
     }
 
@@ -68,7 +71,6 @@ public class VisionIOLimelight implements VisionIO {
     }
 
     if (estimatedPoseMT1 != null) {
-
       poseObservations.add(new PoseObservation(
           estimatedPoseMT1.timestampSeconds,
           estimatedPoseMT1.pose,

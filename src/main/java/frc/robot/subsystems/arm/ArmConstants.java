@@ -92,6 +92,10 @@ public class ArmConstants {
         public static final double D_ARM_HORIZONTAL_OFFSET_METERS = Units.inchesToMeters(9.25);
         public static final double TOWER_CHASSIS_HEIGHT_METERS = Units.inchesToMeters(31.25 - 3.875);
 
+        public static final Rotation2d SHOULDER_STARTING_OFFSET = Rotation2d.fromDegrees(-67);
+        public static final Rotation2d ELBOW_STARTING_OFFSET = Rotation2d.fromDegrees(91);
+        public static final Rotation2d WRIST_STARTING_OFFSET = Rotation2d.fromDegrees(90);
+
         public static final int LIMIT_SWITCH_ID = 8;
 
         /**
@@ -100,23 +104,23 @@ public class ArmConstants {
          */
         public class ArmStates {
                 public static final ArmPose START = new ArmPose(
-                                Units.inchesToMeters(18.865),
-                                Units.inchesToMeters(35.4),
+                                Units.inchesToMeters(19.75),
+                                Units.inchesToMeters(34.5),
                                 Rotation2d.fromDegrees(90));
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
-                                Units.inchesToMeters(20),
-                                Units.inchesToMeters(39),
+                                Units.inchesToMeters(24),
+                                Units.inchesToMeters(43),
                                 Rotation2d.fromDegrees(15));
 
                 public static final ArmPose FRONT_L1_REEF = new ArmPose(
                                 Units.inchesToMeters(39.25),
-                                Units.inchesToMeters(26),
-                                Rotation2d.fromDegrees(-15));
+                                Units.inchesToMeters(26.5),
+                                Rotation2d.fromDegrees(-20));
 
                 public static final ArmPose FRONT_L2_REEF = new ArmPose(
-                                Units.inchesToMeters(24),
-                                Units.inchesToMeters(37),
+                                Units.inchesToMeters(25),
+                                Units.inchesToMeters(36),
                                 Rotation2d.fromDegrees(-15));
 
                 //public static final ArmPose FRONT_L3_REEF = new ArmPose(
@@ -131,8 +135,8 @@ public class ArmConstants {
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
                                 Units.inchesToMeters(10),
-                                Units.inchesToMeters(78),
-                                Rotation2d.fromDegrees(213));
+                                Units.inchesToMeters(78.5),
+                                Rotation2d.fromDegrees(205));
 
         }
 }

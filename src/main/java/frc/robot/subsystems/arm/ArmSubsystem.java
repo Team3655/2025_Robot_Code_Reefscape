@@ -134,13 +134,13 @@ public class ArmSubsystem extends SubsystemBase {
     // Update visualizers
     setpointVisualizer.update(
         shoulderSetPoint.getDegrees() - 90,
-        elbowSetPoint.getDegrees() + shoulderSetPoint.getDegrees(),
-        wristSetPoint.getDegrees() + elbowSetPoint.getDegrees());
+        elbowSetPoint.getDegrees(),
+        wristSetPoint.getDegrees() - 90);
 
     currentVisualizer.update(
         inputs.shoulderPosition.getDegrees() - 90,
-        inputs.elbowPosition.getDegrees() + inputs.shoulderPosition.getDegrees(),
-        inputs.wristPosition.getDegrees() + inputs.elbowPosition.getDegrees());
+        inputs.elbowPosition.getDegrees(),
+        inputs.wristPosition.getDegrees() - 90);
 
     Logger.recordOutput("Arm/Mechanism2d/Setpoint", setpointVisualizer.arm);
     Logger.recordOutput("Arm/Mechanism2d/Current", currentVisualizer.arm);

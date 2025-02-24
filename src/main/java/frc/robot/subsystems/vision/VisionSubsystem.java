@@ -59,7 +59,7 @@ public class VisionSubsystem extends SubsystemBase {
     // Update inputs
     for (int i = 0; i < inputs.length; i++) {
       io[i].updateInputs(inputs[i]);
-      Logger.processInputs("Inputs/Vision/Camera" + Integer.toString(i), inputs[i]);
+      Logger.processInputs("Inputs/Vision/Camera " + inputs[i].name, inputs[i]);
     }
 
     // Initialize logging data
@@ -81,8 +81,10 @@ public class VisionSubsystem extends SubsystemBase {
       // Get positions of every tag that is seen
       for (int tagId : inputs[i].tagIds) {
         var tagPose = tagLayout.getTagPose(tagId);
-        if (tagPose != null) {
+        if (tagPose.isPresent()) {
           tagPoses.add(tagPose.get());
+        } else {
+          continue;
         }
       }
 
@@ -150,16 +152,16 @@ public class VisionSubsystem extends SubsystemBase {
 
       // Log individual camera data
       Logger.recordOutput(
-          "Vision/Camera" + Integer.toString(i) + "/TagPoses",
+          "Vision/Camera " + inputs[i].name + "/TagPoses",
           tagPoses.toArray(new Pose3d[tagPoses.size()]));
       Logger.recordOutput(
-          "Vision/Camera" + Integer.toString(i) + "/RobotPoses",
+          "Vision/Camera " + inputs[i].name + "/RobotPoses",
           robotPoses.toArray(new Pose2d[robotPoses.size()]));
       Logger.recordOutput(
-          "Vision/Camera" + Integer.toString(i) + "/RobotPosesAccepted",
+          "Vision/Camera " + inputs[i].name + "/RobotPosesAccepted",
           robotPosesAccepted.toArray(new Pose2d[robotPosesAccepted.size()]));
       Logger.recordOutput(
-          "Vision/Camera" + Integer.toString(i) + "/RobotPosesRejected",
+          "Vision/Camera " + inputs[i].name + "/RobotPosesRejected",
           robotPosesRejected.toArray(new Pose2d[robotPosesRejected.size()]));
 
       // Add poses to total data

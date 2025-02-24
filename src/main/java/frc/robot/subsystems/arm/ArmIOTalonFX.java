@@ -13,7 +13,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -212,9 +211,9 @@ public class ArmIOTalonFX implements ArmIO {
       case RELATIVE:
         // Arm MUST be in correct position when deploying code or booting robot
 
-        shoulderLeaderTalon.setPosition(Units.degreesToRotations(-67));
-        elbowLeaderTalon.setPosition(Units.degreesToRotations(91));
-        wristTalon.setPosition(Units.degreesToRotations(90));
+        shoulderLeaderTalon.setPosition(ArmConstants.SHOULDER_STARTING_OFFSET.getRotations());
+        elbowLeaderTalon.setPosition(ArmConstants.ELBOW_STARTING_OFFSET.getRotations());
+        wristTalon.setPosition(ArmConstants.WRIST_STARTING_OFFSET.getRotations());
         break;
       case ABSOLUTE:
         break;

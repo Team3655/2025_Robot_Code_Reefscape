@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.65625,
+        "y": 3.0012499999999993
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.3832499999999994,
+        "y": 2.06525
+      },
+      "isLocked": false,
+      "linkedName": "C Back"
+    },
+    {
+      "anchor": {
+        "x": 0.7019999999999998,
+        "y": 1.353499999999999
+      },
+      "prevControl": {
+        "x": 1.6867500000000004,
+        "y": 1.53875
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Intake Slot 3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -125.00000000000001
+  },
+  "reversed": false,
+  "folder": "Bottom Side Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

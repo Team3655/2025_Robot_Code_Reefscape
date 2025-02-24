@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Barge Center Start"
+            "pathName": "Straight Path"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Top Feeder"
+            "name": "ArmState_Intake"
           }
         }
       ]
