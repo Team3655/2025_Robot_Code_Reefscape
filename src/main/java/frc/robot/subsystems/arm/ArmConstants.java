@@ -138,5 +138,15 @@ public class ArmConstants {
                                 Units.inchesToMeters(78.5),
                                 Rotation2d.fromDegrees(205));
 
+                 public static final ArmPose Algie_Store = new ArmPose(
+                                Units.inchesToMeters(19.75),
+                                Units.inchesToMeters(34.5),
+                                Rotation2d.fromDegrees(135));
+
+                public static final ArmPose FRONT_L1_Algie = new ArmPose(
+                                Units.inchesToMeters(34),
+                                Units.inchesToMeters(36),
+                                Rotation2d.fromDegrees(120));
+
         }
 }

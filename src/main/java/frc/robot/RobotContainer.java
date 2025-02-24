@@ -238,6 +238,24 @@ public class RobotContainer {
               tractorController.button(3)
                   .onTrue(Commands
                       .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake,-2)));
+
+              // Close valve and create vacuum pressure
+              tractorController.button(11)
+                  .onTrue(Commands
+                      .parallel(IntakeCommands.toggleVacuum(intake, false, 12), 
+                                    ArmCommands.updateSetpoint(arm, ArmStates.Algie_Store)));
+              // Close valve and create vacuum pressure
+              tractorController.button(13)
+                  .onTrue(Commands
+                      .parallel(IntakeCommands.toggleVacuum(intake, false, 12), 
+                                ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_Algie)));
+              // Open valve and create positive pressure
+              // Turn off vacuum when released
+              tractorController.button(12)
+                  .onTrue(Commands
+                    .parallel(IntakeCommands.toggleVacuum(intake, true, -12), 
+                                ArmCommands.updateSetpoint(arm, ArmStates.START)))
+                  .onFalse(IntakeCommands.toggleVacuum(intake, false, 0));
       
               break;
             case ETHAN:

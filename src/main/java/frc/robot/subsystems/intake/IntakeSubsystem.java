@@ -57,7 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void toggleVacuum(boolean state, double volts) {
     intakeIO.setVacuumSolenoid(state);
-    intakeIO.setVacuumVoltage(volts);
+    vacuumVoltage = volts;
   }
 
 }
