@@ -22,6 +22,7 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotState;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.util.JoystickUtils;
 
 public class DriveCommands {
@@ -46,6 +48,8 @@ public class DriveCommands {
   private static final double FF_RAMP_RATE = 0.1; // volts/vec
   private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // rads/sec^2
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // rads/sec
+
+  private static final PIDController pid = new PIDController(0, 0, 0);
 
   private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
     // Apply deadband
@@ -102,8 +106,28 @@ public class DriveCommands {
                   isFlipped
                       ? RobotState.getInstance().getRotation().plus(new Rotation2d(Math.PI))
                       : RobotState.getInstance().getRotation()));
+
         },
         drive);
+  }
+
+  public static Command reefAlignment(DriveSubsystem drive, VisionSubsystem vision, DoubleSupplier setpoint) {
+
+      return Commands.run( () -> {
+          double tx = 0; //vision.getTx();
+
+          ChassisSpeeds speeds = 
+            new ChassisSpeeds(
+              pid.calculate(tx, setpoint.getAsDouble()) * DriveConstants.MAX_LINEAR_SPEED,
+              0,
+              0
+            );
+
+          drive.runVelocity(
+              ChassisSpeeds.fromRobotRelativeSpeeds(
+                  speeds, 
+                  RobotState.getInstance().getRotation()));
+      }, drive);
   }
 
   /**
