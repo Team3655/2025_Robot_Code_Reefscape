@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotState;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -56,7 +57,6 @@ public class DriveCommands {
     double linearMagnitude = MathUtil.applyDeadband(Math.hypot(x, y), DEADBAND);
     Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
 
-
     // Square magnitude for more precise control
     linearMagnitude = JoystickUtils.curveInput(linearMagnitude, DEADBAND);
 
@@ -76,12 +76,19 @@ public class DriveCommands {
       DriveSubsystem drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
+      DoubleSupplier omegaSupplier,
+      double multiplier,
+      Trigger fastButton) {
     return Commands.run(
         () -> {
-
-          Translation2d linearVelocity = getLinearVelocityFromJoysticks(xSupplier.getAsDouble(),
-              ySupplier.getAsDouble());
+          Translation2d linearVelocity;
+          if (fastButton.getAsBoolean()) {
+            linearVelocity = getLinearVelocityFromJoysticks(xSupplier.getAsDouble(),
+                ySupplier.getAsDouble());
+          } else {
+            linearVelocity = getLinearVelocityFromJoysticks(xSupplier.getAsDouble(),
+                ySupplier.getAsDouble()).times(multiplier);
+          }
 
           double omega = JoystickUtils.curveInput(omegaSupplier.getAsDouble(), DEADBAND);
 
@@ -90,16 +97,14 @@ public class DriveCommands {
           Logger.recordOutput("Drive/Commands/linear magnitude", linearVelocity.getNorm());
 
           // Convert to field relative speeds & send command
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  linearVelocity.getX() * DriveConstants.MAX_LINEAR_SPEED,
-                  linearVelocity.getY() * DriveConstants.MAX_LINEAR_SPEED,
-                  omega * DriveConstants.MAX_ANGULAR_SPEED);
+          ChassisSpeeds speeds = new ChassisSpeeds(
+              linearVelocity.getX() * DriveConstants.MAX_LINEAR_SPEED,
+              linearVelocity.getY() * DriveConstants.MAX_LINEAR_SPEED,
+              omega * DriveConstants.MAX_ANGULAR_SPEED);
 
-          boolean isFlipped =
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
-                  
+          boolean isFlipped = DriverStation.getAlliance().isPresent()
+              && DriverStation.getAlliance().get() == Alliance.Red;
+
           drive.runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   speeds,
@@ -133,7 +138,8 @@ public class DriveCommands {
   /**
    * Measures the velocity feedforward constants for the drive motors.
    *
-   * <p>This command should only be used in voltage control mode.
+   * <p>
+   * This command should only be used in voltage control mode.
    */
   public static Command feedforwardCharacterization(DriveSubsystem drive) {
     List<Double> velocitySamples = new LinkedList<>();
@@ -150,10 +156,10 @@ public class DriveCommands {
 
         // Allow modules to orient
         Commands.run(
-                () -> {
-                  drive.runCharacterization(0.0);
-                },
-                drive)
+            () -> {
+              drive.runCharacterization(0.0);
+            },
+            drive)
             .withTimeout(FF_START_DELAY),
 
         // Start timer
@@ -161,13 +167,13 @@ public class DriveCommands {
 
         // Accelerate and gather data
         Commands.run(
-                () -> {
-                  double voltage = timer.get() * FF_RAMP_RATE;
-                  drive.runCharacterization(voltage);
-                  velocitySamples.add(drive.getFFCharacterizationVelocity());
-                  voltageSamples.add(voltage);
-                },
-                drive)
+            () -> {
+              double voltage = timer.get() * FF_RAMP_RATE;
+              drive.runCharacterization(voltage);
+              velocitySamples.add(drive.getFFCharacterizationVelocity());
+              voltageSamples.add(voltage);
+            },
+            drive)
 
             // When cancelled, calculate and print results
             .finallyDo(
@@ -230,21 +236,20 @@ public class DriveCommands {
 
             // Update gyro delta
             Commands.run(
-                    () -> {
-                      var rotation = RobotState.getInstance().getRotation();
-                      state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
-                      state.lastAngle = rotation;
+                () -> {
+                  var rotation = RobotState.getInstance().getRotation();
+                  state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
+                  state.lastAngle = rotation;
 
-                      double[] positions = drive.getWheelRadiusCharacterizationPositions();
-                      state.wheelDelta = 0.0;
-                      for (int i = 0; i < 4; i++) {
-                        state.wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
-                      }
-                      state.wheelRadius =
-                          (state.gyroDelta * DriveConstants.DRIVE_BASE_RADIUS) / state.wheelDelta;
-                      
-                      Logger.recordOutput("DriveCommands/WheelRadius/Wheel Radius", state.wheelRadius);
-                    })
+                  double[] positions = drive.getWheelRadiusCharacterizationPositions();
+                  state.wheelDelta = 0.0;
+                  for (int i = 0; i < 4; i++) {
+                    state.wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
+                  }
+                  state.wheelRadius = (state.gyroDelta * DriveConstants.DRIVE_BASE_RADIUS) / state.wheelDelta;
+
+                  Logger.recordOutput("DriveCommands/WheelRadius/Wheel Radius", state.wheelRadius);
+                })
 
                 // When cancelled, calculate and print results
                 .finallyDo(
