@@ -15,6 +15,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionMeasurement;
 import frc.robot.subsystems.vision.VisionConstants.ObservationType;
+import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -51,6 +53,10 @@ public class VisionSubsystem extends SubsystemBase {
       disconnectedAlerts[i] = new Alert("Limelight" + Integer.toString(i) + " is disconnected", AlertType.kWarning);
     }
 
+  }
+
+  public TargetObservation getLatestTargetObservation(int cameraID) {
+    return new TargetObservation(inputs[cameraID].latestObservation.tx(), inputs[cameraID].latestObservation.ty());
   }
 
   @Override

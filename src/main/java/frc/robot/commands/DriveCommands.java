@@ -18,6 +18,7 @@ import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -40,6 +41,7 @@ import frc.robot.RobotState;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
 import frc.robot.util.JoystickUtils;
 
 public class DriveCommands {
@@ -50,7 +52,7 @@ public class DriveCommands {
   private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // rads/sec^2
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // rads/sec
 
-  private static final PIDController pid = new PIDController(0, 0, 0);
+  private static final PIDController reefAlignmentTranslationPID = new PIDController(3, 0, 0);
 
   private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
     // Apply deadband
@@ -116,23 +118,22 @@ public class DriveCommands {
         drive);
   }
 
-  public static Command reefAlignment(DriveSubsystem drive, VisionSubsystem vision, DoubleSupplier setpoint) {
+  public static Command reefAlignment(DriveSubsystem drive, VisionSubsystem vision, Supplier<Rotation2d> setpoint) {
 
-      return Commands.run( () -> {
-          double tx = 0; //vision.getTx();
+    return Commands.run(() -> {
+      TargetObservation currentOffsets = vision.getLatestTargetObservation(2); // Back camera observation
 
-          ChassisSpeeds speeds = 
-            new ChassisSpeeds(
-              pid.calculate(tx, setpoint.getAsDouble()) * DriveConstants.MAX_LINEAR_SPEED,
-              0,
-              0
-            );
+      ChassisSpeeds speeds = new ChassisSpeeds(
+          reefAlignmentTranslationPID.calculate(currentOffsets.tx().getDegrees(), setpoint.get().getDegrees())
+              * DriveConstants.MAX_LINEAR_SPEED,
+          0,
+          0);
 
-          drive.runVelocity(
-              ChassisSpeeds.fromRobotRelativeSpeeds(
-                  speeds, 
-                  RobotState.getInstance().getRotation()));
-      }, drive);
+      drive.runVelocity(
+          ChassisSpeeds.fromRobotRelativeSpeeds(
+              speeds,
+              RobotState.getInstance().getRotation()));
+            }, drive, vision);
   }
 
   /**
