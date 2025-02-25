@@ -26,6 +26,13 @@ public class IntakeCommands {
     }
 
     public static Command toggleVacuum(IntakeSubsystem intake, boolean solenoidState, double volts) {
-      return Commands.runOnce(() -> intake.toggleVacuum(solenoidState, volts), intake);
+        return Commands.runOnce(() -> intake.toggleVacuum(solenoidState, volts), intake);
+    }
+
+    public static Command stopAll(IntakeSubsystem intake) {
+        return Commands.runOnce(() -> {
+            intake.setIntakeVoltage(0);
+            intake.setVacuumVoltage(0);
+        }, intake);
     }
 }

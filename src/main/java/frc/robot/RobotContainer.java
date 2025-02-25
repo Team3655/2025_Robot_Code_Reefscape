@@ -212,22 +212,17 @@ public class RobotContainer {
                 drive.setDefaultCommand(
                         DriveCommands.joystickDrive(
                                 drive,
-                                () -> mattTranslation.StickYAxis() * slowFactor,
-                                () -> mattTranslation.StickXAxis() * slowFactor,
-                                () -> -mattRotation.StickXAxis() * slowFactor));
+                                () -> mattTranslation.StickYAxis(),
+                                () -> mattTranslation.StickXAxis(),
+                                () -> -mattRotation.StickXAxis() * 0.7));
 
-                if (mattTranslation.A2().getAsBoolean()) {
-                    slowFactor = 1;
-                } else {
-                    slowFactor = 0.8;
-                }
                 mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
                 tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
                         .onFalse(IntakeCommands.stopIntake(intake));
 
-                tractorController.button(10).onTrue(
-                        ArmCommands.updateSetpoint(arm, ArmStates.START).alongWith(IntakeCommands.stopIntake(intake)));
+                tractorController.button(10).onTrue(Commands.parallel(
+                        ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)));
 
                 tractorController.button(5)
                         .onTrue(Commands
@@ -273,13 +268,13 @@ public class RobotContainer {
                                 .parallel(IntakeCommands.toggleVacuum(intake, false, 12),
                                         ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_ALGIE_ROTATED)));
                 // Close valve and create vacuum pressure
-                tractorController.button(14)
+                tractorController.button(12)
                         .onTrue(Commands
                                 .parallel(IntakeCommands.toggleVacuum(intake, false, 12),
                                         ArmCommands.updateSetpoint(arm, ArmStates.FRONT_BARGE)));
                 // Open valve and create positive pressure
                 // Turn off vacuum when released
-                tractorController.button(12)
+                tractorController.button(14)
                         .onTrue(Commands
                                 .parallel(IntakeCommands.toggleVacuum(intake, true, -12),
                                         ArmCommands.updateSetpoint(arm, ArmStates.FRONT_BARGE_ROTATED)))

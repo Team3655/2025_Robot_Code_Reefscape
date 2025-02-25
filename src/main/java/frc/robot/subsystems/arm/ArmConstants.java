@@ -110,7 +110,7 @@ public class ArmConstants {
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
                                 Units.inchesToMeters(24),
-                                Units.inchesToMeters(43),
+                                Units.inchesToMeters(42),
                                 Rotation2d.fromDegrees(15));
 
                 public static final ArmPose FRONT_L1_REEF = new ArmPose(
@@ -141,7 +141,7 @@ public class ArmConstants {
                  public static final ArmPose ALGIE_STORE = new ArmPose(
                                 Units.inchesToMeters(19.75),
                                 Units.inchesToMeters(34.5),
-                                Rotation2d.fromDegrees(185));
+                                Rotation2d.fromDegrees(175));
 
                 public static final ArmPose FRONT_L1_ALGIE = new ArmPose(
                                 Units.inchesToMeters(34),
@@ -150,23 +150,23 @@ public class ArmConstants {
 
                 public static final ArmPose FRONT_L2_ALGIE = new ArmPose(
                                 Units.inchesToMeters(34), //34
-                                Units.inchesToMeters(53), //59
+                                Units.inchesToMeters(50), //59
                                 Rotation2d.fromDegrees(120)); //90
                 
                 public static final ArmPose FRONT_L2_ALGIE_ROTATED = new ArmPose(
                                 Units.inchesToMeters(22), //34
-                                Units.inchesToMeters(57), //59
+                                Units.inchesToMeters(54), //59
                                 Rotation2d.fromDegrees(120)); //185
 
                 public static final ArmPose FRONT_BARGE = new ArmPose(
                                 Units.inchesToMeters(11),
                                 Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(185));
+                                Rotation2d.fromDegrees(175));
 
                 public static final ArmPose FRONT_BARGE_ROTATED = new ArmPose(
                                 Units.inchesToMeters(11),
                                 Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(220));
+                                Rotation2d.fromDegrees(90));
 
         }
 }
