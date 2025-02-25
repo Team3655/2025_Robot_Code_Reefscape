@@ -90,7 +90,7 @@ public class RobotContainer {
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
-    private double slowFactor;
+    private double driveMultiplier = 0.6;
 
     /**
      * The container for the robot. Contains subsystems, IO devices, and commands.
@@ -214,7 +214,9 @@ public class RobotContainer {
                                 drive,
                                 () -> mattTranslation.StickYAxis(),
                                 () -> mattTranslation.StickXAxis(),
-                                () -> -mattRotation.StickXAxis() * 0.7));
+                                () -> -mattRotation.StickXAxis() * 0.7,
+                                driveMultiplier,
+                                mattTranslation.A2()));
 
                 mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
@@ -289,16 +291,20 @@ public class RobotContainer {
                                 drive,
                                 () -> -ethanTranslation.StickYAxis(),
                                 () -> -ethanTranslation.StickXAxis(),
-                                () -> -ethanRotation.StickXAxis()));
+                                () -> -ethanRotation.StickXAxis(),
+                                driveMultiplier,
+                                ethanTranslation.A2()));
 
                 break;
             case PROGRAMMING:
                 drive.setDefaultCommand(
                         DriveCommands.joystickDrive(
                                 drive,
-                                () -> -programmingController.getLeftY(),
-                                () -> -programmingController.getLeftX(),
-                                () -> -programmingController.getRightX()));
+                                () -> programmingController.getLeftY(),
+                                () -> programmingController.getLeftX(),
+                                () -> -programmingController.getRightX(),
+                                driveMultiplier,
+                                programmingController.leftTrigger()));
 
                 // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
                 programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
@@ -342,7 +348,9 @@ public class RobotContainer {
                                 drive,
                                 () -> programmingController.getRawAxis(1),
                                 () -> programmingController.getRawAxis(0),
-                                () -> -programmingController.getRawAxis(2)));
+                                () -> -programmingController.getRawAxis(2),
+                                driveMultiplier,
+                                programmingController.leftTrigger()));
 
                 programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
                 programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
