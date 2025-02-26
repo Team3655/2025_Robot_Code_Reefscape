@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.RobotState;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
@@ -32,6 +33,8 @@ public class VisionIOLimelight implements VisionIO {
     this.name = name;
     table = NetworkTableInstance.getDefault().getTable(name);
     latencySubscriber = table.getDoubleTopic("t1").subscribe(0.0);
+    
+    LimelightHelpers.SetIMUMode(name, 0);
   }
 
   @Override
@@ -40,9 +43,6 @@ public class VisionIOLimelight implements VisionIO {
     inputs.name = name;
 
     inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
-
-  
-    LimelightHelpers.SetIMUMode(name, 0);
 
     LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),0, 0, 0, 0, 0);
     NetworkTableInstance.getDefault().flush();
@@ -75,7 +75,8 @@ public class VisionIOLimelight implements VisionIO {
           ObservationType.MEGATAG_1));
     }
 
-    if (estimatedPoseMT2 != null) {
+    if (estimatedPoseMT2 != null && DriverStation.isEnabled()) {
+      
       poseObservations.add(new PoseObservation(
           estimatedPoseMT2.timestampSeconds,
           estimatedPoseMT2.pose,
