@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.RobotState;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
@@ -43,7 +42,7 @@ public class VisionIOLimelight implements VisionIO {
     inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
 
   
-    LimelightHelpers.SetIMUMode(name, 1);
+    LimelightHelpers.SetIMUMode(name, 0);
 
     LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),0, 0, 0, 0, 0);
     NetworkTableInstance.getDefault().flush();
