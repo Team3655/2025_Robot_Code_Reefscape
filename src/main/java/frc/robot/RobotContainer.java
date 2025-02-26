@@ -283,7 +283,7 @@ public class RobotContainer {
                 // Turn off vacuum when released
                 tractorController.button(14)
                         .onTrue(Commands
-                                .parallel(IntakeCommands.toggleVacuum(intake, true, -12),
+                                .parallel(IntakeCommands.toggleVacuum(intake, true, 0),
                                         ArmCommands.updateSetpoint(arm, ArmStates.FRONT_BARGE_ROTATED)))
                         .onFalse(IntakeCommands.toggleVacuum(intake, false, 0));
                 // Open valve and create positive pressure

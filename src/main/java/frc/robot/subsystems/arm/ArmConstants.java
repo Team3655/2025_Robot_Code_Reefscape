@@ -76,7 +76,7 @@ public class ArmConstants {
         public static final double WRIST_MASS_KG = 1;
         public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-360);
         public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(360);
-        public static final double WRIST_REDUCTION = 56.842; // (9 / 1) * (4 / 1) * (93 / 57) * (90 / 93)
+        public static final double WRIST_REDUCTION = 66.96; //56.842 = (36 / 1) * (93 / 50)
         public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm
         public static final double KS_WRIST = 2.5;
         public static final double KV_WRIST = 0.0;
@@ -94,7 +94,7 @@ public class ArmConstants {
 
         public static final Rotation2d SHOULDER_STARTING_OFFSET = Rotation2d.fromDegrees(-67);
         public static final Rotation2d ELBOW_STARTING_OFFSET = Rotation2d.fromDegrees(91);
-        public static final Rotation2d WRIST_STARTING_OFFSET = Rotation2d.fromDegrees(90);
+        public static final Rotation2d WRIST_STARTING_OFFSET = Rotation2d.fromDegrees(0);
 
         public static final int LIMIT_SWITCH_ID = 8;
 
@@ -104,9 +104,9 @@ public class ArmConstants {
          */
         public class ArmStates {
                 public static final ArmPose START = new ArmPose(
-                                Units.inchesToMeters(19.75),
+                                Units.inchesToMeters(19),
                                 Units.inchesToMeters(34.5),
-                                Rotation2d.fromDegrees(90));
+                                Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
                                 Units.inchesToMeters(24),
@@ -114,8 +114,8 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(15));
 
                 public static final ArmPose FRONT_L1_REEF = new ArmPose(
-                                Units.inchesToMeters(39.25),
-                                Units.inchesToMeters(26.5),
+                                Units.inchesToMeters(36),
+                                Units.inchesToMeters(29),
                                 Rotation2d.fromDegrees(-20));
 
                 public static final ArmPose FRONT_L2_REEF = new ArmPose(
@@ -131,17 +131,17 @@ public class ArmConstants {
                 public static final ArmPose REAR_L3_REEF = new ArmPose(
                                 Units.inchesToMeters(6),
                                 Units.inchesToMeters(55),
-                                Rotation2d.fromDegrees(200));
-
-                public static final ArmPose REAR_L4_REEF = new ArmPose(
-                                Units.inchesToMeters(10),
-                                Units.inchesToMeters(78.5),
                                 Rotation2d.fromDegrees(205));
 
+                public static final ArmPose REAR_L4_REEF = new ArmPose(
+                                Units.inchesToMeters(7),
+                                Units.inchesToMeters(78.5),
+                                Rotation2d.fromDegrees(210));
+
                  public static final ArmPose ALGIE_STORE = new ArmPose(
-                                Units.inchesToMeters(19.75),
+                                Units.inchesToMeters(19),
                                 Units.inchesToMeters(34.5),
-                                Rotation2d.fromDegrees(175));
+                                Rotation2d.fromDegrees(160));
 
                 public static final ArmPose FRONT_L1_ALGIE = new ArmPose(
                                 Units.inchesToMeters(34),
@@ -149,24 +149,24 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(90));
 
                 public static final ArmPose FRONT_L2_ALGIE = new ArmPose(
-                                Units.inchesToMeters(34), //34
-                                Units.inchesToMeters(50), //59
-                                Rotation2d.fromDegrees(120)); //90
+                                Units.inchesToMeters(30), //34
+                                Units.inchesToMeters(33), //59
+                                Rotation2d.fromDegrees(160)); //90
                 
                 public static final ArmPose FRONT_L2_ALGIE_ROTATED = new ArmPose(
                                 Units.inchesToMeters(22), //34
-                                Units.inchesToMeters(54), //59
-                                Rotation2d.fromDegrees(120)); //185
+                                Units.inchesToMeters(37), //59
+                                Rotation2d.fromDegrees(160)); //185
 
                 public static final ArmPose FRONT_BARGE = new ArmPose(
                                 Units.inchesToMeters(11),
                                 Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(175));
+                                Rotation2d.fromDegrees(160));
 
                 public static final ArmPose FRONT_BARGE_ROTATED = new ArmPose(
                                 Units.inchesToMeters(11),
                                 Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(90));
+                                Rotation2d.fromDegrees(220));
 
         }
 }

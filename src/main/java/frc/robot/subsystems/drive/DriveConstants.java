@@ -40,12 +40,11 @@ public class DriveConstants {
   
   public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
-  // TODO: get real mass
-  public static final double BATTERY_MASS_KG = Units.lbsToKilograms(12.85);
-  public static final double BUMPER_MASS_KG = Units.lbsToKilograms(10);
+  public static final double BATTERY_MASS_KG = Units.lbsToKilograms(14);
+  public static final double BUMPER_MASS_KG = Units.lbsToKilograms(16);
 
 
-  public static final double COMPBOT_CHASSIS_MASS_KG = Units.lbsToKilograms(100);
+  public static final double COMPBOT_CHASSIS_MASS_KG = Units.lbsToKilograms(108.1);
   public static final double COMPBOT_MASS_KG = COMPBOT_CHASSIS_MASS_KG + BUMPER_MASS_KG + BATTERY_MASS_KG;
   public static final double COMPBOT_MOI = PhysicsUtil.estimateRobotMOI(
     COMPBOT_MASS_KG, 
