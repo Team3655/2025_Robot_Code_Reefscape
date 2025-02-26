@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -175,7 +176,7 @@ public class RobotContainer {
                 ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, -6)));
         NamedCommands.registerCommand("ArmState_L1", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         NamedCommands.registerCommand("ArmState_L2", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-        NamedCommands.registerCommand("ArmState_L3", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
+        //NamedCommands.registerCommand("ArmState_L3", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
         NamedCommands.registerCommand("ArmState_L4", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
         NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 6));
         NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
@@ -238,24 +239,26 @@ public class RobotContainer {
                         .onFalse(Commands
                                 .sequence(IntakeCommands.stopIntake(intake),
                                         ArmCommands.updateSetpoint(arm, ArmStates.START)));
+
                 tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+                
                 tractorController.button(1)
                         .onTrue(Commands
                                 .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF),
                                         IntakeCommands.runIntake(intake, -2)));
-                // tractorController.button(5).onTrue(ArmCommands.updateSetpoint(arm,
-                // ArmStates.FRONT_L3_REEF));
+
                 tractorController.button(2)
                         .onTrue(Commands
                                 .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF),
                                         IntakeCommands.runIntake(intake, -2)));
+
                 tractorController.button(3)
                         .onTrue(Commands
                                 .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
                                         IntakeCommands.runIntake(intake, -2)));
 
                 // Close valve and create vacuum pressure
-                tractorController.button(11)
+                tractorController.button(14)
                         .onTrue(Commands
                                 .parallel(IntakeCommands.toggleVacuum(intake, false, 12),
                                         ArmCommands.updateSetpoint(arm, ArmStates.ALGIE_STORE)));
@@ -281,7 +284,7 @@ public class RobotContainer {
                                         ArmCommands.updateSetpoint(arm, ArmStates.FRONT_BARGE)));
                 // Open valve and create positive pressure
                 // Turn off vacuum when released
-                tractorController.button(14)
+                tractorController.button(11)
                         .onTrue(Commands
                                 .parallel(IntakeCommands.toggleVacuum(intake, true, 0),
                                         ArmCommands.updateSetpoint(arm, ArmStates.FRONT_BARGE_ROTATED)))

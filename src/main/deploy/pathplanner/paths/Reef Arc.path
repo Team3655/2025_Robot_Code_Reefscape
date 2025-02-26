@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.1882500000000005,
-        "y": 3.80075
+        "x": 3.7342500000000003,
+        "y": 2.66
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.91525,
-        "y": 2.8647500000000004
+        "x": 1.7342500000000012,
+        "y": 2.6600000000000006
       },
       "isLocked": false,
-      "linkedName": "B Front"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.7019999999999998,
-        "y": 1.353499999999999
+        "x": 3.7342500000000003,
+        "y": 5.38025
       },
       "prevControl": {
-        "x": 1.6184999999999996,
-        "y": 1.6167499999999995
+        "x": 1.7342500000000007,
+        "y": 5.38025
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Intake Slot 3"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -125.00000000000001
+    "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "Bottom Side Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -119.99999999999999
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
