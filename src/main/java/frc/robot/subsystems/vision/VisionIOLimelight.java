@@ -43,11 +43,7 @@ public class VisionIOLimelight implements VisionIO {
     inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
 
   
-    if (DriverStation.isDisabled()) {
-      LimelightHelpers.SetIMUMode(name, 1);
-    } else if (DriverStation.isEnabled() && name.equals("limelight-back")) {
-      LimelightHelpers.SetIMUMode(name, 2);
-    }
+    LimelightHelpers.SetIMUMode(name, 1);
 
     LimelightHelpers.SetRobotOrientation(name, RobotState.getInstance().getEstimatedPose().getRotation().getDegrees(),0, 0, 0, 0, 0);
     NetworkTableInstance.getDefault().flush();
