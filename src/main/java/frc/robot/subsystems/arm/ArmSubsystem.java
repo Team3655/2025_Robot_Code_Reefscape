@@ -229,14 +229,26 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void bumpXArm(double inches) {
-    setpoint = new ArmPose(setpoint.xTarget + Units.inchesToMeters(inches), 
+    ArmPose bumpSetpoint = new ArmPose(setpoint.xTarget + Units.inchesToMeters(inches), 
                             setpoint.yTarget, 
                             setpoint.wristAngle);
+
+    if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
+      setpoint = bumpSetpoint;
+    } else {
+      //TODO: Print out problem?
+    }
   }
 
   public void bumpYArm(double inches){
-    setpoint = new ArmPose(setpoint.xTarget,
-                          setpoint.yTarget + Units.inchesToMeters(inches),
-                          setpoint.wristAngle);
+    ArmPose bumpSetpoint = new ArmPose(setpoint.xTarget, 
+                            setpoint.yTarget + Units.inchesToMeters(inches), 
+                            setpoint.wristAngle);
+
+    if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
+      setpoint = bumpSetpoint;
+    } else {
+      //TODO: Print out problem?
+    }
   }
 }

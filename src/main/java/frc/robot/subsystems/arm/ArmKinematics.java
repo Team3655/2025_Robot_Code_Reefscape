@@ -21,6 +21,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
+import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 
 /**
  * Kinematics class for a two stage arm
@@ -239,5 +240,30 @@ public class ArmKinematics {
         public InvalidArmState(String m) {
             super(m);
         }
+    }
+
+
+    /**
+     * Validates that the requested bump is possible to achieve
+     * WARNING: THIS DOES NOT ACCOUNT FOR BUMPS THAT RUN INTO THE CHASSIS OR THE TOWER
+     * USE ONLY TO VALIDATE UPPER CIRCLE BUMPS
+     * @param xTarget The requested x position in meters
+     * @param yTarget The requested y position in meters
+     * @param encoderType
+     * @return
+     */
+    public boolean isValidBumpRequest(double xTarget, double yTarget) {
+      double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
+      double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
+      double r = ArmConstants.SHOULDER_LENGTH_METERS + ArmConstants.ELBOW_LENGTH_METERS;
+
+      /**
+       * Equation for a circle
+       * Center (h, k) is at the shoulder pivot point
+       * Radius, r, is defined by the length of the shoulder and elbow combined
+       */
+      boolean insideArmCircle = Math.pow(xTarget - h, 2) + Math.pow(yTarget - k, 2) <= Math.pow(r, 2);
+
+      return insideArmCircle;
     }
 }
