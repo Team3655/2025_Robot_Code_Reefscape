@@ -238,6 +238,8 @@ public class RobotContainer {
                                         IntakeCommands.runIntake(intake, -6)))
                         .onFalse(Commands
                                 .sequence(IntakeCommands.stopIntake(intake),
+                                        //ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                                        //new WaitCommand(0.5),
                                         ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
                 tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
@@ -245,17 +247,17 @@ public class RobotContainer {
                 tractorController.button(1)
                         .onTrue(Commands
                                 .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF),
-                                        IntakeCommands.runIntake(intake, -2)));
+                                        IntakeCommands.runIntake(intake, 0)));
 
                 tractorController.button(2)
                         .onTrue(Commands
                                 .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF),
-                                        IntakeCommands.runIntake(intake, -2)));
+                                        IntakeCommands.runIntake(intake, -3)));
 
                 tractorController.button(3)
                         .onTrue(Commands
                                 .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
-                                        IntakeCommands.runIntake(intake, -2)));
+                                        IntakeCommands.runIntake(intake, -3)));
 
                 // Close valve and create vacuum pressure
                 tractorController.button(14)
@@ -291,6 +293,13 @@ public class RobotContainer {
                         .onFalse(IntakeCommands.toggleVacuum(intake, false, 0));
                 // Open valve and create positive pressure
                 tractorController.button(21).onTrue(IntakeCommands.toggleVacuum(intake, false, 0));
+
+                // X Postive is TOWARDS battery
+                // tractorController.button(17).onTrue(Commands.runOnce(()-> arm.bumpXArm(1), arm));
+                // tractorController.button(18).onTrue(Commands.runOnce(()-> arm.bumpXArm(-1), arm));
+                // Y Postive is...up
+                // tractorController.button(20).onTrue(Commands.runOnce(() -> arm.bumpYArm(1), arm));
+                // tractorController.button(19).onTrue(Commands.runOnce(() -> arm.bumpYArm(-1), arm));
 
                 break;
             case ETHAN:

@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
@@ -59,7 +60,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     updateSetpoint(ArmStates.START);
 
-    DriverStation.reportWarning("ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
+    DriverStation.reportWarning(
+      "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
 
     armKinematics = new ArmKinematics(
         ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS,
@@ -224,5 +226,17 @@ public class ArmSubsystem extends SubsystemBase {
   public void jogWrist(double degrees) {
     setpoint = new ArmPose(setpoint.xTarget, setpoint.yTarget,
         setpoint.wristAngle.plus(Rotation2d.fromDegrees(degrees)));
+  }
+
+  public void bumpXArm(double inches) {
+    setpoint = new ArmPose(setpoint.xTarget + Units.inchesToMeters(inches), 
+                            setpoint.yTarget, 
+                            setpoint.wristAngle);
+  }
+
+  public void bumpYArm(double inches){
+    setpoint = new ArmPose(setpoint.xTarget,
+                          setpoint.yTarget + Units.inchesToMeters(inches),
+                          setpoint.wristAngle);
   }
 }
