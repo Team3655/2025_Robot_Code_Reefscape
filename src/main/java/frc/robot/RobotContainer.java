@@ -295,13 +295,10 @@ public class RobotContainer {
                 tractorController.button(21).onTrue(IntakeCommands.toggleVacuum(intake, false, 0));
 
                 // X Postive is TOWARDS battery
-                // tractorController.button(17).onTrue(Commands.runOnce(()-> arm.bumpXArm(1), arm));
-                // tractorController.button(18).onTrue(Commands.runOnce(()-> arm.bumpXArm(-1), arm));
-                // Y Postive is...up
-                // tractorController.button(20).onTrue(Commands.runOnce(() -> arm.bumpYArm(1), arm));
-                // tractorController.button(19).onTrue(Commands.runOnce(() -> arm.bumpYArm(-1), arm));
-
-                break;
+                // Y positive is UP
+                tractorController.button(17).onTrue(Commands.parallel(Commands.runOnce(()-> arm.bumpXArm(1), arm), Commands.runOnce(() -> arm.bumpYArm(-1), arm)));
+                // Bump up
+                tractorController.button(18).onTrue(Commands.parallel(Commands.runOnce(()-> arm.bumpXArm(-1), arm), Commands.runOnce(() -> arm.bumpYArm(1), arm)));
             case ETHAN:
                 drive.setDefaultCommand(
                         DriveCommands.joystickDrive(
