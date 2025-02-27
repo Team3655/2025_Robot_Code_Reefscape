@@ -134,9 +134,9 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(205));
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
-                                Units.inchesToMeters(7),
-                                Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(210));
+                                Units.inchesToMeters(3),
+                                Units.inchesToMeters(77),
+                                Rotation2d.fromDegrees(207));
 
                  public static final ArmPose ALGIE_STORE = new ArmPose(
                                 Units.inchesToMeters(19),

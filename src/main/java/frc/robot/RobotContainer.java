@@ -296,10 +296,11 @@ public class RobotContainer {
 
                 // X Postive is TOWARDS battery
                 // Y positive is UP
-                tractorController.button(17).onTrue(Commands.parallel(Commands.runOnce(()-> arm.bumpXArm(1), arm), Commands.runOnce(() -> arm.bumpYArm(-1), arm)));
+                tractorController.button(18).onTrue(Commands.runOnce(()-> arm.bumpBoth(-1, -0.5), arm));
                 // Bump up
-                tractorController.button(18).onTrue(Commands.parallel(Commands.runOnce(()-> arm.bumpXArm(-1), arm), Commands.runOnce(() -> arm.bumpYArm(1), arm)));
-            case ETHAN:
+                tractorController.button(17).onTrue((Commands.runOnce(()-> arm.bumpBoth(1, 0.5), arm)));
+                break;
+                case ETHAN:
                 drive.setDefaultCommand(
                         DriveCommands.joystickDrive(
                                 drive,
