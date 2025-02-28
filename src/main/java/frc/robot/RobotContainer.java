@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -233,8 +234,8 @@ public class RobotContainer {
                                         IntakeCommands.runIntake(intake, -6)))
                         .onFalse(Commands
                                 .sequence(IntakeCommands.stopIntake(intake),
-                                        //ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
-                                        //new WaitCommand(0.5),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                                        new WaitCommand(0.5),
                                         ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
                 tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));

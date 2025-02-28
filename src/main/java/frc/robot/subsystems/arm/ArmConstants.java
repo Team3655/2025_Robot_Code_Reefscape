@@ -109,9 +109,9 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FEEDER_START_TRANSITION = new ArmPose(
-                                Units.inchesToMeters(22),
-                                Units.inchesToMeters(43),
-                                Rotation2d.fromDegrees(15));
+                                Units.inchesToMeters(20),
+                                Units.inchesToMeters(40),
+                                Rotation2d.fromDegrees(40));
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
                                 Units.inchesToMeters(22),
@@ -119,7 +119,7 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(15));
 
                 public static final ArmPose FRONT_L1_REEF = new ArmPose(
-                                Units.inchesToMeters(36),
+                                Units.inchesToMeters(34),
                                 Units.inchesToMeters(29),
                                 Rotation2d.fromDegrees(0));
 
@@ -134,9 +134,9 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(205));
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
-                                Units.inchesToMeters(3),
-                                Units.inchesToMeters(77),
-                                Rotation2d.fromDegrees(207));
+                                Units.inchesToMeters(6),
+                                Units.inchesToMeters(78),
+                                Rotation2d.fromDegrees(210));
 
                  public static final ArmPose ALGIE_STORE = new ArmPose(
                                 Units.inchesToMeters(19),
@@ -144,14 +144,14 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(160));
 
                 public static final ArmPose FRONT_L1_ALGIE = new ArmPose(
-                                Units.inchesToMeters(34),
-                                Units.inchesToMeters(42),
-                                Rotation2d.fromDegrees(95));
+                                Units.inchesToMeters(20), //34
+                                Units.inchesToMeters(34.5), //42
+                                Rotation2d.fromDegrees(120)); //100
 
                 public static final ArmPose FRONT_L2_ALGIE = new ArmPose(
-                                Units.inchesToMeters(30), //34
-                                Units.inchesToMeters(38), //59
-                                Rotation2d.fromDegrees(155)); //90
+                                Units.inchesToMeters(29), //30
+                                Units.inchesToMeters(38), //38
+                                Rotation2d.fromDegrees(155)); //155
                 
                 public static final ArmPose FRONT_L2_ALGIE_ROTATED = new ArmPose(
                                 Units.inchesToMeters(22), //34
