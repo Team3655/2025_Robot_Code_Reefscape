@@ -85,30 +85,22 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final String canivoreName = Constants.CANIVORE_NAME;
 
   public ModuleIOTalonFX(int index) {
-    Rotation2d flEncoderOffset;
-    Rotation2d frEncoderOffset;
-    Rotation2d blEncoderOffset;
-    Rotation2d brEncoderOffset;
-    switch (Constants.currentRobot) {
-      case COMPBOT:
-        flEncoderOffset = DriveConstants.COMPBOT_FRONT_LEFT_ENCODER_OFFSET;
-        frEncoderOffset = DriveConstants.COMPBOT_FRONT_RIGHT_ENCODER_OFFSET;
-        blEncoderOffset = DriveConstants.COMPBOT_BACK_LEFT_ENCODER_OFFSET;
-        brEncoderOffset = DriveConstants.COMPBOT_BACK_RIGHT_ENCODER_OFFSET;
-        break;
-      case PROTOBOT:
-        flEncoderOffset = DriveConstants.PROTOBOT_FRONT_LEFT_ENCODER_OFFSET;
-        frEncoderOffset = DriveConstants.PROTOBOT_FRONT_RIGHT_ENCODER_OFFSET;
-        blEncoderOffset = DriveConstants.PROTOBOT_BACK_LEFT_ENCODER_OFFSET;
-        brEncoderOffset = DriveConstants.PROTOBOT_BACK_RIGHT_ENCODER_OFFSET;
-        break;
-      default:
-        flEncoderOffset = DriveConstants.COMPBOT_FRONT_LEFT_ENCODER_OFFSET;
-        frEncoderOffset = DriveConstants.COMPBOT_FRONT_RIGHT_ENCODER_OFFSET;
-        blEncoderOffset = DriveConstants.COMPBOT_BACK_LEFT_ENCODER_OFFSET;
-        brEncoderOffset = DriveConstants.COMPBOT_BACK_RIGHT_ENCODER_OFFSET;
-        break;
-    }
+
+    Rotation2d flEncoderOffset = (Constants.currentRobot == RobotType.COMPBOT)
+        ? DriveConstants.COMPBOT_FRONT_LEFT_ENCODER_OFFSET
+        : DriveConstants.PROTOBOT_FRONT_LEFT_ENCODER_OFFSET;
+
+    Rotation2d frEncoderOffset = (Constants.currentRobot == RobotType.COMPBOT)
+        ? DriveConstants.COMPBOT_FRONT_RIGHT_ENCODER_OFFSET
+        : DriveConstants.PROTOBOT_FRONT_RIGHT_ENCODER_OFFSET;
+
+    Rotation2d blEncoderOffset = (Constants.currentRobot == RobotType.COMPBOT)
+        ? DriveConstants.COMPBOT_BACK_LEFT_ENCODER_OFFSET
+        : DriveConstants.PROTOBOT_BACK_LEFT_ENCODER_OFFSET;
+
+    Rotation2d brEncoderOffset = (Constants.currentRobot == RobotType.COMPBOT)
+        ? DriveConstants.COMPBOT_BACK_RIGHT_ENCODER_OFFSET
+        : DriveConstants.PROTOBOT_BACK_RIGHT_ENCODER_OFFSET;
 
     switch (index) {
       // Front left
@@ -142,7 +134,7 @@ public class ModuleIOTalonFX implements ModuleIO {
       default:
         throw new RuntimeException("Invalid module index");
     }
-            final double DRIVE_GEAR_RATIO = (Constants.currentRobot == RobotType.COMPBOT)
+    final double DRIVE_GEAR_RATIO = (Constants.currentRobot == RobotType.COMPBOT)
         ? DriveConstants.COMPBOT_DRIVE_GEAR_RATIO
         : DriveConstants.PROTOBOT_DRIVE_GEAR_RATIO;
 

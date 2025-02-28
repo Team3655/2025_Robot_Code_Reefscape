@@ -84,31 +84,17 @@ public class DriveSubsystem extends SubsystemBase {
         1);
 
     RobotConfig config;
-
-    switch (Constants.currentRobot) {
-      case COMPBOT:
-        config = new RobotConfig(
-            DriveConstants.COMPBOT_MASS_KG,
-            DriveConstants.COMPBOT_MOI,
-            moduleConfig,
-            DriveConstants.moduleTranslations);
-
-        break;
-      case PROTOBOT:
-        config = new RobotConfig(
+    
+    config = (Constants.currentRobot == RobotType.COMPBOT) ? new RobotConfig(
+        DriveConstants.COMPBOT_MASS_KG,
+        DriveConstants.COMPBOT_MOI,
+        moduleConfig,
+        DriveConstants.moduleTranslations)
+        : new RobotConfig(
             DriveConstants.PROTOBOT_MASS_KG,
             DriveConstants.PROTOBOT_MOI,
             moduleConfig,
             DriveConstants.moduleTranslations);
-        break;
-      default:
-        config = new RobotConfig(
-            DriveConstants.COMPBOT_MASS_KG,
-            DriveConstants.COMPBOT_MOI,
-            moduleConfig,
-            DriveConstants.moduleTranslations);
-        break;
-    }
 
     try {
       PathPlannerUtil.writeSettings(config, moduleConfig, DRIVE_GEAR_RATIO);

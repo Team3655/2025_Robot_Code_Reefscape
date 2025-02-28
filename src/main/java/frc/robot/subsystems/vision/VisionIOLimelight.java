@@ -71,7 +71,7 @@ public class VisionIOLimelight implements VisionIO {
           estimatedPoseMT1.pose,
           totalPoseAmbiguity / tagAmbiguities.size(),
           tagIds.size(),
-          totalTagDistance / tagIds.size(),
+          estimatedPoseMT1.avgTagDist,
           ObservationType.MEGATAG_1));
     }
 

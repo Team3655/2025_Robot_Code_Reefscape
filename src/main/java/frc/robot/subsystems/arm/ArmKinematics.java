@@ -21,7 +21,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
-import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 
 /**
  * Kinematics class for a two stage arm
