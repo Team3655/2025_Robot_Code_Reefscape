@@ -251,4 +251,38 @@ public class ArmSubsystem extends SubsystemBase {
       //TODO: Print out problem?
     }
   }
+
+  public void bumpXArmUsingArc(double inches) {
+
+    ArmPose currentSetpoint = setpoint;
+    double bumpX = setpoint.xTarget + Units.inchesToMeters(inches);
+    // This will *always* calculate a positive Y setpoint
+    double bumpY = armKinematics.calculateArcYSetpoint(bumpX, currentSetpoint.xTarget, currentSetpoint.yTarget);
+
+    ArmPose bumpSetpoint = new ArmPose(bumpX, 
+                                        bumpY, 
+                                        setpoint.wristAngle);
+
+    if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
+      setpoint = bumpSetpoint;
+    } else {
+      //TODO: Print out problem?
+    }
+  }
+
+  public void bumpYArmUsingArc(double inches) {
+
+    double bumpY = setpoint.yTarget + Units.inchesToMeters(inches);
+    double bumpX = armKinematics.calculateArcXSetpoint(bumpY);
+
+    ArmPose bumpSetpoint = new ArmPose(bumpX, 
+                                        bumpY, 
+                                        setpoint.wristAngle);
+
+    if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
+      setpoint = bumpSetpoint;
+    } else {
+      //TODO: Print out problem?
+    }
+  }
 }

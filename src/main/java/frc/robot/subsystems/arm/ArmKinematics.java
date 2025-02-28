@@ -266,4 +266,38 @@ public class ArmKinematics {
 
       return insideArmCircle;
     }
+
+    /**
+     * Calculates the y position of the elbow given the x position of the bump
+     * Y setpoint will always be positive - dictated by the coordinate system of the robot
+     * @param bumpX The x position of the bump in meters
+     * @return
+     */
+    public double calculateArcYSetpoint(double bumpX, double currentXTarget, double currentYTarget) {
+
+      L4 = Math.sqrt(
+        (Math.pow(currentXTarget - d, 2)
+                + Math.pow(currentYTarget - h, 2)));
+
+      double r = L4;
+      double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
+      double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
+
+      // Pythagorean Theorem given leg x and hypotenuse r
+      // Equation of a circle: (x-h)^2 + (y-k)^2 = r^2 where (h, k) is the center of the circle
+      double bumpY = Math.sqrt(Math.pow(r, 2) - Math.pow(bumpX - h, 2)) + k;
+
+      return bumpY;
+    }
+
+    public double calculateArcXSetpoint(double bumpY) {
+      double r = ArmConstants.SHOULDER_LENGTH_METERS + ArmConstants.ELBOW_LENGTH_METERS;
+      double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
+      double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
+
+      // Pythagorean Theorem given leg y and hypotenuse r
+      double bumpX = Math.sqrt(Math.pow(r, 2) - Math.pow(bumpY - k, 2)) + h;
+
+      return bumpX;
+    }
 }
