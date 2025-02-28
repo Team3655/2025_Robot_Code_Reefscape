@@ -17,7 +17,7 @@ public class VisionConstants {
   public static final double SINGLE_TAG_MAXIMUM = 4.5;
   public static final double MULTI_TAG_MAXIMUM = 7.5;
 
-  public static final double MAX_AMBIGUITY = 0.8;
+  public static final double MAX_AMBIGUITY = 0.25;
 
   public static final double LINEAR_STD_DEV_FACTOR = 0.8;
   public static final double ANGULAR_STD_DEV_FACTOR = 2;
