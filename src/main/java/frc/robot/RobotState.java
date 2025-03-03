@@ -14,6 +14,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.drive.DriveConstants;
 
 public class RobotState {
@@ -31,7 +33,8 @@ public class RobotState {
       Matrix<N3, N1> stdDevs) {
   }
 
-  private record ArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle, double xPosition, double yPosition) {
+  private record ArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle, double xPosition,
+      double yPosition) {
   }
 
   private SwerveDriveKinematics kinematics;
@@ -110,10 +113,10 @@ public class RobotState {
         measurement.stdDevs);
   }
 
-  public synchronized void updateArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle, double xPosition, double yPosition) {
+  public synchronized void updateArmState(Rotation2d shoulderAngle, Rotation2d elbowAngle, Rotation2d wristAngle,
+      double xPosition, double yPosition) {
     armState = new ArmState(shoulderAngle, elbowAngle, wristAngle, xPosition, yPosition);
   }
-
 
   public synchronized void resetPose(Pose2d pose) {
     odometry.resetPosition(
@@ -128,12 +131,11 @@ public class RobotState {
   }
 
   public synchronized void zeroHeading() {
-    resetPose(new Pose2d(
-        poseEstimator.getEstimatedPosition().getX(),
-        poseEstimator.getEstimatedPosition().getY(),
-        new Rotation2d()));
+      resetPose(new Pose2d(
+          poseEstimator.getEstimatedPosition().getX(),
+          poseEstimator.getEstimatedPosition().getY(),
+          new Rotation2d()));
   }
-
 
   public Rotation2d getRotation() {
     return getOdometryPose().getRotation();

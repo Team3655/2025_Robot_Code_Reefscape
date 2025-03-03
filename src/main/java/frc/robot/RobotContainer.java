@@ -222,6 +222,8 @@ public class RobotContainer {
 
                 mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
+                mattTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX()));
+
                 tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
                         .onFalse(IntakeCommands.stopIntake(intake));
 
@@ -231,6 +233,16 @@ public class RobotContainer {
                 tractorController.button(5)
                         .onTrue(Commands
                                 .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
+                                        IntakeCommands.runIntake(intake, -6)))
+                        .onFalse(Commands
+                                .sequence(IntakeCommands.stopIntake(intake),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                                        new WaitCommand(0.5),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
+
+                tractorController.button(4)
+                        .onTrue(Commands
+                                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER_STRETCH),
                                         IntakeCommands.runIntake(intake, -6)))
                         .onFalse(Commands
                                 .sequence(IntakeCommands.stopIntake(intake),
