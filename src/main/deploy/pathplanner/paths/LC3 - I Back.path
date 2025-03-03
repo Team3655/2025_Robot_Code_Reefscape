@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.02,
-        "y": 5.05
+        "x": 7.05,
+        "y": 5.075
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.5520000000000005,
-        "y": 5.302249999999999
+        "x": 6.3375,
+        "y": 5.08775
       },
       "isLocked": false,
-      "linkedName": "BC3 Start"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.29425,
+        "x": 5.33,
         "y": 5.05
       },
       "prevControl": {
-        "x": 5.537999999999999,
-        "y": 5.57525
+        "x": 5.85,
+        "y": 5.033499999999999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "I Front"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.12247019679205
+    "rotation": 59.53836152217275
   },
   "reversed": false,
-  "folder": "Top Side Paths",
+  "folder": "Left Side Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }
