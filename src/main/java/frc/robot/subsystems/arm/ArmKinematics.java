@@ -22,6 +22,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
 import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
+import frc.robot.util.Elastic;
+import frc.robot.util.Elastic.Notification;
+import frc.robot.util.Elastic.Notification.NotificationLevel;
 
 /**
  * Kinematics class for a two stage arm
@@ -34,6 +37,11 @@ public class ArmKinematics {
     private double L1 = 0.0;
     private double L2 = 0.0;
     private double L3 = 0.0;
+
+    Notification invalidArmStateNotification = new Notification(
+        NotificationLevel.ERROR, 
+        "INVALID ARM STATE", 
+        "x and y setpoints are resulting in invalid arm angles.  Check your calculations");
 
     /**
      * Creates a new `ArmKinematics` object
@@ -109,6 +117,7 @@ public class ArmKinematics {
 
         } catch (InvalidArmState e) {
             DriverStation.reportError("INVALID ARM STATE INPUT, CANNOT MOVE ARM", true);
+            Elastic.sendNotification(invalidArmStateNotification);
             return currentArmAngles;
         }
 
