@@ -38,7 +38,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -220,6 +223,29 @@ public class DriveSubsystem extends SubsystemBase {
               moduleDeltas,
               modulePositions));
     }
+
+    // Elastic swerve visualizer
+    SmartDashboard.putData("Swerve Drive", new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+
+        builder.setSmartDashboardType("SwerveDrive");
+
+        builder.addDoubleProperty("Front Left Angle", () -> modules[0].getAngle().getRadians(), null);
+        builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getVelocityMetersPerSec(), null);
+
+        builder.addDoubleProperty("Front Right Angle", () -> modules[1].getAngle().getRadians(), null);
+        builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getAngle().getRadians(), null);
+
+        builder.addDoubleProperty("Back Left Angle", () -> modules[2].getAngle().getRadians(), null);
+        builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getVelocityMetersPerSec(), null);
+
+        builder.addDoubleProperty("Back Right Angle", () -> modules[3].getAngle().getRadians(), null);
+        builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getAngle().getRadians(), null);
+
+        builder.addDoubleProperty("Robot Angle", () -> gyroInputs.yawPosition.getRadians(), null);
+      }
+    });
 
   }
 
