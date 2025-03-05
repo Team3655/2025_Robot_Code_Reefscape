@@ -2,12 +2,10 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -17,7 +15,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -47,9 +44,6 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFXConfiguration elbowConfiguration;
   private final TalonFXConfiguration wristConfiguration;
 
-  private final DigitalInput elbowSwitch;
-  private final boolean elbowSwitchState;
-
   public ArmIOTalonFX() {
     shoulderLeaderTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_ID, Constants.CANIVORE_NAME);
     shoulderFollowerTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_FOLLOWER_ID, Constants.CANIVORE_NAME);
@@ -63,48 +57,6 @@ public class ArmIOTalonFX implements ArmIO {
 
     switch (ArmConstants.activeEncoders) {
       case ABSOLUTE:
-
-        CANcoder shoulderEncoder = new CANcoder(ArmConstants.SHOULDER_CANCODER_ID, ArmConstants.CANBUS_NAME);
-        CANcoder elbowEncoder = new CANcoder(ArmConstants.ELBOW_CANCODER_ID, ArmConstants.CANBUS_NAME);
-        CANcoder wristEncoder = new CANcoder(ArmConstants.WRIST_CANCODER_ID, ArmConstants.CANBUS_NAME);
-
-        // Create configuration settings for encoders.
-        CANcoderConfiguration shoulderEncoderConfig = new CANcoderConfiguration();
-        CANcoderConfiguration elbowEncoderConfig = new CANcoderConfiguration();
-        CANcoderConfiguration wristEncoderConfig = new CANcoderConfiguration();
-
-        shoulderEncoderConfig.MagnetSensor.MagnetOffset = ArmConstants.SHOULDER_ENCODER_OFFSET.getRadians();
-        elbowEncoderConfig.MagnetSensor.MagnetOffset = ArmConstants.ELBOW_ENCODER_OFFSET.getRadians();
-        wristEncoderConfig.MagnetSensor.MagnetOffset = ArmConstants.WRIST_ENCODER_OFFSET.getRadians();
-
-        shoulderEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-        elbowEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-
-        // TODO: Need to see constructed wrist to identify
-        wristEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-
-        // Apply configurations to specific encoders.
-        shoulderEncoder.getConfigurator().apply(shoulderEncoderConfig);
-        elbowEncoder.getConfigurator().apply(elbowEncoderConfig);
-        wristEncoder.getConfigurator().apply(wristEncoderConfig);
-
-        shoulderLeaderConfig.Feedback.FeedbackRemoteSensorID = ArmConstants.SHOULDER_CANCODER_ID;
-        elbowConfiguration.Feedback.FeedbackRemoteSensorID = ArmConstants.ELBOW_CANCODER_ID;
-        wristConfiguration.Feedback.FeedbackRemoteSensorID = ArmConstants.WRIST_CANCODER_ID;
-
-        // Fuse internal sensor with CANcoder
-        shoulderLeaderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        wristConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-
-        shoulderLeaderConfig.Feedback.RotorToSensorRatio = ArmConstants.SHOULDER_REDUCTION;
-        elbowConfiguration.Feedback.RotorToSensorRatio = ArmConstants.ELBOW_REDUCTION;
-        wristConfiguration.Feedback.RotorToSensorRatio = ArmConstants.WRIST_REDUCTION;
-
-        // Set this to one because CANcoder is on output of gearbox
-        shoulderLeaderConfig.Feedback.SensorToMechanismRatio = 1;
-        elbowConfiguration.Feedback.SensorToMechanismRatio = 1;
-        wristConfiguration.Feedback.SensorToMechanismRatio = 1;
 
         break;
       case RELATIVE:
@@ -127,7 +79,6 @@ public class ArmIOTalonFX implements ArmIO {
         // shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.SHOULDER_MIN_ANGLE_RADS.getDegrees();
         // shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         // shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-
 
         break;
       default:
@@ -205,8 +156,6 @@ public class ArmIOTalonFX implements ArmIO {
     shoulderFollowerTalon.setControl(new Follower(shoulderLeaderTalon.getDeviceID(), false));
     elbowFollowerTalon.setControl(new Follower(elbowLeaderTalon.getDeviceID(), false));
 
-    elbowSwitch = new DigitalInput(ArmConstants.LIMIT_SWITCH_ID);
-
     switch (ArmConstants.activeEncoders) {
       case RELATIVE:
         // Arm MUST be in correct position when deploying code or booting robot
@@ -235,9 +184,6 @@ public class ArmIOTalonFX implements ArmIO {
     wristVelocity = wristTalon.getVelocity();
     wristAppliedVolts = wristTalon.getMotorVoltage();
     wristCurrent = wristTalon.getSupplyCurrent();
-
-    elbowSwitchState = elbowSwitch.get();
-
   }
 
   @Override
@@ -266,8 +212,6 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.wristCurrentAmps = new double[] { wristCurrent.getValueAsDouble() };
     inputs.wristPosition = Rotation2d.fromRotations(wristPosition.getValueAsDouble());
     inputs.wristVelocityRadPerSec = wristVelocity.getValueAsDouble();
-
-    inputs.elbowSwitchState = elbowSwitch.get();
   }
 
   /**
@@ -340,20 +284,4 @@ public class ArmIOTalonFX implements ArmIO {
   public void setWristVoltage(double volts) {
     wristTalon.setControl(new VoltageOut(volts));
   }
-
-  @Override
-  public boolean getElbowSwitchState() {
-    return elbowSwitchState;
-  }
-
-  @Override
-  public void resetElbowPosition(Rotation2d position) {
-    elbowLeaderTalon.setPosition(position.getRotations());
-  }
-
-  @Override
-  public void resetShoulderPosition(Rotation2d position) {
-    shoulderLeaderTalon.setPosition(position.getRotations());
-  }
-
 }

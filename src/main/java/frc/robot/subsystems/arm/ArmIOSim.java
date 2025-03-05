@@ -147,10 +147,4 @@ public class ArmIOSim implements ArmIO {
   public void setWristPosition(Rotation2d position) {
     wristController.setSetpoint(position.getRadians());
   }
-
-  @Override
-  public boolean getElbowSwitchState() {
-    return false;
-  }
-
 }

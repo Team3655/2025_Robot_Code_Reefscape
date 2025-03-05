@@ -38,7 +38,4 @@ public interface ArmIO {
   public default void setShoulderVoltage(double volts) {}
   public default void setElbowVoltage(double volts) {}
   public default void setWristVoltage(double volts) {}
-  public default boolean getElbowSwitchState() {return false;}
-  public default void resetElbowPosition(Rotation2d position) {}
-  public default void resetShoulderPosition(Rotation2d position) {}
 }
