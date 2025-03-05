@@ -41,22 +41,10 @@ public class ArmKinematics {
         "INVALID ARM STATE", 
         "x and y setpoints are resulting in invalid arm angles.  Check your calculations");
 
-    /**
-     * Creates a new `ArmKinematics` object
-     * 
-     * @param d  How far the arm is from the back of the robot
-     * @param h  How far from the ground the first pivot point is
-     * @param L1 Length of the "tower" that the arm rests on
-     * @param L2 Length of the first stage of the arm. (shoulder)
-     * @param L3 Length of the second stage of the arm. (elbow)
-     */
-    public ArmKinematics(double d, double h, double L1, double L2, double L3) {
-        this.d = d;
-        this.h = h;
-        this.L1 = L1;
-        this.L2 = L2;
-        this.L3 = L3;
-    }
+    Notification invalidEncodersNotification = new Notification(
+        NotificationLevel.ERROR,
+        "Invalid Arm Encoders",
+        "Arm was initialized with invalid encoders");
 
     private double L4 = 0.0;
     private double L6 = 0.0;
@@ -72,6 +60,30 @@ public class ArmKinematics {
     public Rotation2d[] currentArmAngles = new Rotation2d[2];
     private Rotation2d[] calculatedArmAngles = new Rotation2d[2];
 
+
+    /**
+     * Creates a new `ArmKinematics` object
+     * 
+     * @param d  How far the arm is from the back of the robot
+     * @param h  How far from the ground the first pivot point is
+     * @param L1 Length of the "tower" that the arm rests on
+     * @param L2 Length of the first stage of the arm. (shoulder)
+     * @param L3 Length of the second stage of the arm. (elbow)
+     */
+    public ArmKinematics(double d, double h, double L1, double L2, double L3) {
+        this.d = d;
+        this.h = h;
+        this.L1 = L1;
+        this.L2 = L2;
+        this.L3 = L3;
+
+        currentArmAngles = getArmAngles(
+            ArmConstants.ArmStates.START.xTarget(), 
+            ArmConstants.ArmStates.START.yTarget(),
+            ArmConstants.activeEncoders);
+    }
+
+    
     /**
      * Gets the arm angles from the calculations
      * 
@@ -104,9 +116,11 @@ public class ArmKinematics {
                     break;
                 default:
 
-                    DriverStation.reportError("INVALID ARM ENCODER TYPE", false);
+                    Elastic.sendNotification(invalidEncodersNotification);
                     break;
             }
+
+            currentArmAngles = calculatedArmAngles;
 
             return calculatedArmAngles;
 

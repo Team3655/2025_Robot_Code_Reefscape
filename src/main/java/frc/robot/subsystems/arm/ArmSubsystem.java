@@ -64,6 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     updateSetpoint(ArmStates.START);
 
+    encoderNotification = new Notification();
     encoderNotification.setLevel(NotificationLevel.WARNING);
     encoderNotification.setTitle(ArmConstants.activeEncoders.toString() +  " Arm Encoders");
     encoderNotification.setDescription(
