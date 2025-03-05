@@ -17,11 +17,6 @@ public interface IntakeIO {
     public double[] intakeCurrentAmps = new double[] {};
     public double intakeTemp = 0.0;
 
-    public double vacuumAppliedVolts = 0.0;
-    public double vacuumTemp = 0.0;
-
-    public boolean hasCoral = false;
-
   }
 
   public default void updateInputs(IntakeIOInputs inputs) {
@@ -30,9 +25,4 @@ public interface IntakeIO {
   public default void setVoltage(double volts) {
   }
 
-  public default void setVacuumVoltage(double voltage) {
-  }
-
-  public default void setVacuumSolenoid(boolean state) {
-  }
 }
