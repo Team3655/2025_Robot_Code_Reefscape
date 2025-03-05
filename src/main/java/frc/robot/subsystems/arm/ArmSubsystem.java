@@ -23,6 +23,8 @@ import frc.robot.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.util.Elastic.Notification;
+import frc.robot.util.Elastic.Notification.NotificationLevel;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -54,14 +56,18 @@ public class ArmSubsystem extends SubsystemBase {
 
   public SysIdRoutineLog sysIdLog;
 
+  public Notification encoderNotification;
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
     this.io = io;
 
     updateSetpoint(ArmStates.START);
 
-    DriverStation.reportWarning(
-      "ARM IS SET TO USE " + ArmConstants.activeEncoders.toString() + " ENCODERS. IS THIS CORRECT?", false);
+    encoderNotification.setLevel(NotificationLevel.WARNING);
+    encoderNotification.setTitle(ArmConstants.activeEncoders.toString() +  " Arm Encoders");
+    encoderNotification.setDescription(
+      "The arm is set to use " + ArmConstants.activeEncoders.toString() + " encoders");
 
     armKinematics = new ArmKinematics(
         ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS,

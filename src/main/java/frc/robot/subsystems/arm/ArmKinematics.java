@@ -111,7 +111,6 @@ public class ArmKinematics {
             return calculatedArmAngles;
 
         } catch (InvalidArmState e) {
-            DriverStation.reportError("INVALID ARM STATE INPUT, CANNOT MOVE ARM", true);
             Elastic.sendNotification(invalidArmStateNotification);
             return currentArmAngles;
         }
