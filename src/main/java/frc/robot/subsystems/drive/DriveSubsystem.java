@@ -185,7 +185,7 @@ public class DriveSubsystem extends SubsystemBase {
         builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getVelocityMetersPerSec(), null);
 
         builder.addDoubleProperty("Back Right Angle", () -> modules[3].getAngle().getRadians(), null);
-        builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getVelocityMetersPerSec()), null);
+        builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getVelocityMetersPerSec(), null);
 
         builder.addDoubleProperty("Robot Angle", () -> gyroInputs.yawPosition.getRadians(), null);
       }
