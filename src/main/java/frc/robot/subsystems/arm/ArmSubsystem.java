@@ -58,6 +58,7 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmSubsystem(ArmIO io) {
     this.io = io;
 
+    Logger.processInputs("Inputs/Arm", inputs);
     updateSetpoint(ArmStates.START);
 
     DriverStation.reportWarning(
