@@ -19,6 +19,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -375,15 +376,17 @@ public class RobotContainer {
                                 driveMultiplier,
                                 programmingController.leftTrigger()));
 
-                programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-                programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
+                // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+                // programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
 
-                programmingController.button(1).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
-                programmingController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
-                programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
-                programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-                programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
-                programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+                programmingController.button(7).whileTrue(DriveCommands.pathFindNearestLeftBranch(drive));
+
+                // programmingController.button(1).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
+                // programmingController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
+                // programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+                // programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
+                // programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
+                // programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
 
                 // programmingController.rightBumper().onTrue(IntakeCommands.runIntake(intake,
                 // 12)).onFalse(IntakeCommands.stopIntake(intake));

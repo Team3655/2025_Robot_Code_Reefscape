@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.FieldConstants.Reef;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -95,6 +96,9 @@ public class Robot extends LoggedRobot {
 
     // Start AdvantageKit logger
     Logger.start();
+
+    Logger.recordOutput("FieldConstants/left branches", Reef.leftBranchPoses);
+    Logger.recordOutput("FieldConstants/right branches", Reef.rightBranchPoses);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.

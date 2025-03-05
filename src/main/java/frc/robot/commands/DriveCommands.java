@@ -15,12 +15,17 @@ package frc.robot.commands;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -36,12 +41,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotState;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.util.JoystickUtils;
 
 public class DriveCommands {
@@ -133,7 +139,32 @@ public class DriveCommands {
           ChassisSpeeds.fromRobotRelativeSpeeds(
               speeds,
               RobotState.getInstance().getRotation()));
-            }, drive, vision);
+    }, drive, vision);
+  }
+
+  public static Command pathFindNearestLeftBranch(DriveSubsystem drive) {
+    return pathFinding(drive, 
+        () -> RobotState 
+            .getInstance()
+            .getNearestBranch()
+            .getFirst()
+            .transformBy(new Transform2d(
+                DriveConstants.BUMPER_WIDTH_Y / 2.0, 
+                DriveConstants.BUMPER_WIDTH_X / 2.0, 
+                new Rotation2d())));
+  }
+
+  public static Command pathFinding(DriveSubsystem drive, Supplier<Pose2d> target) {
+
+    var constraints = new PathConstraints(
+        4.0, 
+        8.0, 
+        4 * Math.PI, 
+        8 * Math.PI);
+
+    return Commands.defer(
+        () -> AutoBuilder.pathfindToPose(target.get(), constraints), 
+        new HashSet<Subsystem>(Arrays.asList(drive)));
   }
 
   /**

@@ -4,21 +4,19 @@
 
 package frc.robot.subsystems.vision;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FieldConstants;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionMeasurement;
 import frc.robot.subsystems.vision.VisionConstants.ObservationType;
@@ -35,11 +33,8 @@ public class VisionSubsystem extends SubsystemBase {
     this.io = io;
     this.inputs = new VisionIOInputsAutoLogged[io.length];
 
-    try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
-    } catch (IOException e) {
-      DriverStation.reportError("Failed to load april tags :3 !!", null);
-    }
+    tagLayout = FieldConstants.layout;
+
 
     // Create inputs
     for (int i = 0; i < inputs.length; i++) {

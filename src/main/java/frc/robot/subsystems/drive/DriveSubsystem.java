@@ -126,7 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this);
 
-    // Allows AdvatangeKit to interface with PP
+    // Allows AdvantageKit to interface with PP
     Pathfinding.setPathfinder(new LocalADStarAK());
 
     PathPlannerLogging.setLogActivePathCallback(

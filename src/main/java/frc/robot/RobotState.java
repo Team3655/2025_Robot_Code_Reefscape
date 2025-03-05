@@ -2,7 +2,10 @@ package frc.robot;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import com.pathplanner.lib.util.FlippingUtil;
+
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +19,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.FieldConstants.Reef;
 import frc.robot.subsystems.drive.DriveConstants;
 
 public class RobotState {
@@ -161,6 +165,30 @@ public class RobotState {
   @AutoLogOutput(key = "RobotState/ArmPose")
   public ArmState getArmState() {
     return armState;
+  }
+
+  public Pair<Pose2d, Pose2d> getNearestBranch() {
+
+      boolean shouldFlip = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+
+      Pose2d closestLeft = new Pose2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, new Rotation2d());
+      Pose2d closestRight = new Pose2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, new Rotation2d());
+
+      for (int i = 0; i < Reef.leftBranchPoses.length; i++) {
+        Pose2d reefPose = shouldFlip ? FlippingUtil.flipFieldPose(Reef.leftBranchPoses[i]) : Reef.leftBranchPoses[i];
+        double closestLeftDelta = closestLeft.getTranslation().getDistance(getPose().getTranslation());
+        double leftDelta = reefPose.getTranslation().getDistance(getPose().getTranslation());
+        if (leftDelta < closestLeftDelta) 
+          closestLeft = reefPose;
+
+        reefPose = shouldFlip ? FlippingUtil.flipFieldPose(Reef.rightBranchPoses[i]) : Reef.rightBranchPoses[i];
+        double closestRightDelta = closestRight.getTranslation().getDistance(getPose().getTranslation());
+        double rightDelta = reefPose.getTranslation().getDistance(getPose().getTranslation());
+        if (rightDelta < closestRightDelta) 
+          closestRight = reefPose;
+      }
+
+      return new Pair<>(closestLeft, closestRight);
   }
 
 }
