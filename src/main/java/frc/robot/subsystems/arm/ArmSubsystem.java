@@ -181,8 +181,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("WristDeg", inputs.wristPosition.getDegrees());
 
-    SmartDashboard.putBoolean("LimitSwitch", inputs.elbowSwitchState);
-
   }
 
   /**

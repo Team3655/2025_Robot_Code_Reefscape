@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -27,9 +26,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     intakeIO.setVoltage(intakeVoltage);
     intakeIO.setVacuumVoltage(vacuumVoltage);
-
-    SmartDashboard.putBoolean("Has Coral", hasCoral());
-    SmartDashboard.putBoolean("Current Spike", checkCurrentSpike(10));
   }
 
   public void setIntakeVoltage(double voltage) {

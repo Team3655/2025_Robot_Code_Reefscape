@@ -27,6 +27,9 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.util.Elastic;
+import frc.robot.util.Elastic.Notification;
+import frc.robot.util.Elastic.Notification.NotificationLevel;
 
 /** IO implementation for Pigeon2 */
 public class GyroIOPigeon2 implements GyroIO {
@@ -42,6 +45,12 @@ public class GyroIOPigeon2 implements GyroIO {
   private final Queue<Double> yawTimestampQueue;
   private final StatusSignal<AngularVelocity> yawVelocity = pidgey.getAngularVelocityZWorld();
 
+  private final Notification gyroConnectedNotification = 
+    new Notification(
+      NotificationLevel.ERROR, 
+      "Gyro Disconnected",
+      "CTRE Pigeon 2 did not initialize correctly");
+
   public GyroIOPigeon2() {
     pidgey.getConfigurator().apply(new Pigeon2Configuration());
     pidgey.getConfigurator().setYaw(0.0);
@@ -50,6 +59,10 @@ public class GyroIOPigeon2 implements GyroIO {
     //pidgey.optimizeBusUtilization();
     yawTimestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
     yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(pidgey, pidgey.getYaw());
+
+    if(!pidgey.isConnected()) {
+      Elastic.sendNotification(gyroConnectedNotification);
+    }
   }
 
   @Override
@@ -66,6 +79,7 @@ public class GyroIOPigeon2 implements GyroIO {
     yawPositionQueue.clear();
 
     SmartDashboard.putNumber("Gyro Yaw", inputs.yawPosition.getDegrees());
+
   }
 
   @Override

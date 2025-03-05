@@ -19,9 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
-import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 import frc.robot.util.Elastic;
 import frc.robot.util.Elastic.Notification;
 import frc.robot.util.Elastic.Notification.NotificationLevel;
@@ -109,9 +107,6 @@ public class ArmKinematics {
                     DriverStation.reportError("INVALID ARM ENCODER TYPE", false);
                     break;
             }
-
-            SmartDashboard.putNumber("Theta1Deg Target", theta1.getDegrees());
-            SmartDashboard.putNumber("Theta2Deg Target", calculatedArmAngles[1].getDegrees());
 
             return calculatedArmAngles;
 
