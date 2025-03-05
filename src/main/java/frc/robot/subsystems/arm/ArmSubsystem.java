@@ -22,6 +22,7 @@ import frc.robot.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.util.Elastic;
 import frc.robot.util.Elastic.Notification;
 import frc.robot.util.Elastic.Notification.NotificationLevel;
 
@@ -57,6 +58,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   public Notification encoderNotification;
 
+  public Notification bumpNotification;
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
     this.io = io;
@@ -64,11 +67,15 @@ public class ArmSubsystem extends SubsystemBase {
     Logger.processInputs("Inputs/Arm", inputs);
     updateSetpoint(ArmStates.START);
 
-    encoderNotification = new Notification();
-    encoderNotification.setLevel(NotificationLevel.WARNING);
-    encoderNotification.setTitle(ArmConstants.activeEncoders.toString() +  " Arm Encoders");
-    encoderNotification.setDescription(
+    encoderNotification = new Notification(
+      NotificationLevel.WARNING, 
+      ArmConstants.activeEncoders.toString() + " Arm Encoders", 
       "The arm is set to use " + ArmConstants.activeEncoders.toString() + " encoders");
+
+    bumpNotification = new Notification(
+      NotificationLevel.WARNING,
+      "Bump Invalid",
+      "Arm bump is pushing end effector outside of physical reach");
 
     armKinematics = new ArmKinematics(
         ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS,
@@ -241,7 +248,7 @@ public class ArmSubsystem extends SubsystemBase {
     if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
       setpoint = bumpSetpoint;
     } else {
-      //TODO: Print out problem?
+      Elastic.sendNotification(bumpNotification);
     }
   }
 
@@ -253,7 +260,7 @@ public class ArmSubsystem extends SubsystemBase {
     if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
       setpoint = bumpSetpoint;
     } else {
-      //TODO: Print out problem?
+      Elastic.sendNotification(bumpNotification);
     }
   }
 
@@ -271,7 +278,7 @@ public class ArmSubsystem extends SubsystemBase {
     if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
       setpoint = bumpSetpoint;
     } else {
-      //TODO: Print out problem?
+      Elastic.sendNotification(bumpNotification);
     }
   }
 
@@ -287,7 +294,7 @@ public class ArmSubsystem extends SubsystemBase {
     if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
       setpoint = bumpSetpoint;
     } else {
-      //TODO: Print out problem?
+      Elastic.sendNotification(bumpNotification);
     }
   }
 }
