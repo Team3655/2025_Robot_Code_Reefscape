@@ -112,8 +112,8 @@ public class DriveSubsystem extends SubsystemBase {
         this::getChassisSpeeds, // ChassisSpeeds supplier
         this::runVelocity, // Runs robot given chassis speeds
         new PPHolonomicDriveController(
-            new PIDConstants(4.25, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(3.0, 0.0, 0.0) // Rotation PID constants
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
         ),
         config,
         () -> {

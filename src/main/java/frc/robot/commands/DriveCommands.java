@@ -80,16 +80,16 @@ public class DriveCommands {
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
       double multiplier,
-      Trigger fastButton) {
+      Trigger slowButton) {
     return Commands.run(
         () -> {
           Translation2d linearVelocity;
-          if (fastButton.getAsBoolean()) {
-            linearVelocity = getLinearVelocityFromJoysticks(xSupplier.getAsDouble(),
-                ySupplier.getAsDouble());
-          } else {
+          if (slowButton.getAsBoolean()) {
             linearVelocity = getLinearVelocityFromJoysticks(xSupplier.getAsDouble(),
                 ySupplier.getAsDouble()).times(multiplier);
+          } else {
+            linearVelocity = getLinearVelocityFromJoysticks(xSupplier.getAsDouble(),
+                ySupplier.getAsDouble());
           }
 
           double omega = JoystickUtils.curveInput(omegaSupplier.getAsDouble(), DEADBAND);

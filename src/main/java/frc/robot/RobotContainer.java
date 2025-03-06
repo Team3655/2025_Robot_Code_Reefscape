@@ -92,7 +92,7 @@ public class RobotContainer {
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
-    private double driveMultiplier = 0.6;
+    private double driveMultiplier = 0.4;
 
     /**
      * The container for the robot. Contains subsystems, IO devices, and commands.
@@ -214,11 +214,11 @@ public class RobotContainer {
                 drive.setDefaultCommand(
                         DriveCommands.joystickDrive(
                                 drive,
-                                () -> mattTranslation.StickYAxis(),
-                                () -> mattTranslation.StickXAxis(),
+                                () -> mattTranslation.StickYAxis() * 0.8,
+                                () -> mattTranslation.StickXAxis() * 0.8,
                                 () -> -mattRotation.StickXAxis() * 0.7,
                                 driveMultiplier,
-                                mattTranslation.A2()));
+                                mattTranslation.fireStage1().or(mattTranslation.fireStage2())));
 
                 mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 

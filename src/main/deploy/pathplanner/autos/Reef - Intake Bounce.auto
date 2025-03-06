@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K Back - Outer Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outer Intake - K Back"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K Back - Outer Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outer Intake - K Back"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Tests",
+  "choreoAuto": false
+}

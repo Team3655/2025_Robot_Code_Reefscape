@@ -16,10 +16,10 @@ public class DriveConstants {
   public static final double MAX_LINEAR_SPEED = Units.feetToMeters(17.7);
 
   // TODO: get real bumper width
-  public static final double BUMPER_WIDTH_X = Units.inchesToMeters(36.0);
-  public static final double BUMPER_WIDTH_Y = Units.inchesToMeters(36.0);
-  public static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
-  public static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
+  public static final double BUMPER_WIDTH_X = Units.inchesToMeters(33.5);
+  public static final double BUMPER_WIDTH_Y = Units.inchesToMeters(33.75);
+  public static final double TRACK_WIDTH_X = Units.inchesToMeters(20.75);
+  public static final double TRACK_WIDTH_Y = Units.inchesToMeters(20.75);
   public static final double DRIVE_BASE_RADIUS = Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   public static final double MAX_ANGULAR_SPEED = (MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS);
 

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.05,
-        "y": 5.075
+        "x": 1.6063524590163931,
+        "y": 7.369569672131148
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.30825,
-        "y": 5.039
+        "x": 2.257437570779996,
+        "y": 6.638332364760191
       },
-      "isLocked": true,
-      "linkedName": "LC3 Back"
+      "isLocked": false,
+      "linkedName": "Left Outer Intake"
     },
     {
       "anchor": {
-        "x": 5.33,
-        "y": 5.05
+        "x": 3.7147500000000004,
+        "y": 5.077999999999999
       },
       "prevControl": {
-        "x": 5.889000000000001,
-        "y": 5.039
+        "x": 3.3857773864844467,
+        "y": 5.447375911346112
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "I Back"
+      "linkedName": "L Back"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.53836152217275
+    "rotation": 119.99999999999999
   },
   "reversed": false,
   "folder": "Left Side Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": 125.00000000000001
   },
   "useDefaultConstraints": true
 }
