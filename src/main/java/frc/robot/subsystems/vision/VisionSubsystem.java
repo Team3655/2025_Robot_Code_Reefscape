@@ -51,7 +51,6 @@ public class VisionSubsystem extends SubsystemBase {
     for (int i = 0; i < disconnectedAlerts.length; i++) {
       disconnectedAlerts[i] = new Alert("Limelight" + Integer.toString(i) + " is disconnected", AlertType.kWarning);
     }
-
   }
 
   public TargetObservation getLatestTargetObservation(int cameraID) {

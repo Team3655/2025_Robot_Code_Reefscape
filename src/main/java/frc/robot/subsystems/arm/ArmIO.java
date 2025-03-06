@@ -27,8 +27,6 @@ public interface ArmIO {
     public double wristAppliedVolts = 0.0;
     public double[] wristCurrentAmps = new double[] {};
 
-    public boolean elbowSwitchState = false;
-
   }
 
   public default void updateInputs(ArmIOInputs inputs) {}

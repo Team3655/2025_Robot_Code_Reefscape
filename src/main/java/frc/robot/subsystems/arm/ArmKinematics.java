@@ -15,10 +15,11 @@
 
 package frc.robot.subsystems.arm;
 
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
+import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 import frc.robot.util.Elastic;
 import frc.robot.util.Elastic.Notification;
 import frc.robot.util.Elastic.Notification.NotificationLevel;
@@ -34,19 +35,13 @@ public class ArmKinematics {
     private double L1 = 0.0;
     private double L2 = 0.0;
     private double L3 = 0.0;
+    private double L4 = 0.0;
+    private double L6 = 0.0;
 
-    Notification invalidArmStateNotification = new Notification(
-        NotificationLevel.ERROR, 
-        "INVALID ARM STATE", 
-        "x and y setpoints are resulting in invalid arm angles.  Check your calculations");
-
-    Notification invalidEncodersNotification = new Notification(
+    private Notification invalidEncodersNotification = new Notification(
         NotificationLevel.ERROR,
         "Invalid Arm Encoders",
         "Arm was initialized with invalid encoders");
-
-    private double L4 = 0.0;
-    private double L6 = 0.0;
 
     private Rotation2d theta1 = Rotation2d.fromRadians(0.0);
     private Rotation2d relativeTheta2 = Rotation2d.fromRadians(0.0);
@@ -90,17 +85,17 @@ public class ArmKinematics {
      * @param ySetpoint The y coordinate of the target in meters
      * @return The angles of the arm joints - value is dependent on the active encoders.
      */
-    public Rotation2d[] getArmAngles(double xTarget, double yTarget, ArmEncoders encoderType) {
+    public Rotation2d[] getArmAngles(double xTarget, double yTarget, ArmEncoders encoderType){
 
         calculateInverseKinematics(xTarget, yTarget);
 
-        try {
-            validateState(L4,
-                    L6,
-                    theta1.getRadians(),
-                    relativeTheta2.getRadians(),
-                    theta3.getRadians(),
-                    theta4.getRadians());
+        // try {
+        //     validateState(L4,
+        //             L6,
+        //             theta1.getRadians(),
+        //             relativeTheta2.getRadians(),
+        //             theta3.getRadians(),
+        //             theta4.getRadians());
 
             calculatedArmAngles[0] = theta1;
 
@@ -119,14 +114,16 @@ public class ArmKinematics {
                     break;
             }
 
-            currentArmAngles = calculatedArmAngles;
+        //     currentArmAngles = calculatedArmAngles;
 
-            return calculatedArmAngles;
+        //     return calculatedArmAngles;
 
-        } catch (InvalidArmState e) {
-            Elastic.sendNotification(invalidArmStateNotification);
-            return currentArmAngles;
-        }
+        // } catch (InvalidArmState e) {
+        //     //Elastic.sendNotification(invalidArmStateNotification);
+        //     return currentArmAngles;
+        // }
+
+        return calculatedArmAngles;
 
     }
 
@@ -224,51 +221,45 @@ public class ArmKinematics {
      * @param theta1         Angle of the shoulder relative to the horizontal
      * @param relativeTheta2 Angle of the elbow relative to the Earth
      * @param theta3         Angle between shoulder and L4
-     * @param thetaL4        Obtuse angle between shoulder and elbow - across from
+     * @param theta4        Obtuse angle between shoulder and elbow - across from
      *                       L4
      * @throws InvalidArmState Error to throw when state is not valid
      */
-    private static void validateState(double L4, double L6, double theta1, double relativeTheta2,
-            double theta3, double thetaL4) throws InvalidArmState {
-        if (theta1 > (Math.PI / 2) || theta1 < Units.degreesToRadians(-80)) {
-            throw new InvalidArmState("ARM SEGMENT 2 CANNOT EXTEND PAST 180 DEG.  THETA1:  " + theta1);
-        }
+    public boolean isValidState(ArmPose pose) {
+
+        calculateInverseKinematics(pose.xTarget(), pose.yTarget());
 
         double[] values = new double[6];
         values[0] = L4;
         values[1] = L6;
-        values[2] = theta1;
-        values[3] = relativeTheta2;
-        values[4] = theta3;
-        values[5] = thetaL4;
+        values[2] = theta1.getDegrees();
+        values[3] = relativeTheta2.getDegrees();
+        values[4] = theta3.getDegrees();
+        values[5] = theta4.getDegrees();
+
+        if (theta1.getRadians() > (Math.PI / 2) || theta1.getRadians() < ArmConstants.SHOULDER_MIN_ANGLE.getRadians()) {
+            System.out.print("Error1");
+            return false;
+        }
 
         for (int i = 0; i < 6; i++) {
             if (!Double.isFinite(values[i])) {
-                throw new InvalidArmState("ARM OUT OF BOUNDS - INVALID X AND Y");
+                return false;
             }
         }
+
+        return true;
     }
 
     /**
-     * Error to throw when state is not valid
-     */
-    private static class InvalidArmState extends RuntimeException {
-        public InvalidArmState(String m) {
-            super(m);
-        }
-    }
-
-
-    /**
-     * Validates that the requested bump is possible to achieve
+     * Validates that the requested setpoint is possible to achieve
      * WARNING: THIS DOES NOT ACCOUNT FOR BUMPS THAT RUN INTO THE CHASSIS OR THE TOWER
      * USE ONLY TO VALIDATE UPPER CIRCLE BUMPS
      * @param xTarget The requested x position in meters
      * @param yTarget The requested y position in meters
-     * @param encoderType
      * @return
      */
-    public boolean isValidBumpRequest(double xTarget, double yTarget) {
+    public boolean isInsideArmReach(double xTarget, double yTarget) {
       double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
       double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
       double r = ArmConstants.SHOULDER_LENGTH_METERS + ArmConstants.ELBOW_LENGTH_METERS;

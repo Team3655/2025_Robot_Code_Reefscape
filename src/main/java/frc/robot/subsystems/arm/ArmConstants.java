@@ -34,8 +34,13 @@ public class ArmConstants {
         public static final Rotation2d SHOULDER_ENCODER_OFFSET = Rotation2d.fromRotations(0);
         public static final double SHOULDER_LENGTH_METERS = Units.inchesToMeters(22.75);
         public static final double SHOULDER_MASS_KG = 1;
-        public static final Rotation2d SHOULDER_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-67);
-        public static final Rotation2d SHOULDER_MAX_ANGLE_RADS = Rotation2d.fromDegrees(90);
+        // Used the check the validity of the arm setpoints only
+        // MATT, FOR THE LOVE OF GOD MAKE SURE THIS ANGLE IS SMALL ENOUGH TO ACCOUNT FOR
+        // BOTH THE CAD AND YOUR INITIAL OFFSET
+        // ...
+        // IF YOU CRASH THE CODE ON LAUNCH THIS IS WHY
+        public static final Rotation2d SHOULDER_MIN_ANGLE = Rotation2d.fromDegrees(-80);
+        public static final Rotation2d SHOULDER_MAX_ANGLE = Rotation2d.fromDegrees(90);
         public static final double SHOULDER_REDUCTION = 63; //63.7755
         public static final double KG_SHOULDER = 0.70;
         public static final double KS_SHOULDER = 3.0;
@@ -103,6 +108,11 @@ public class ArmConstants {
          * <br></br> <code> ArmStates.STATE; </code>
          */
         public class ArmStates {
+                /**
+                 * WARNING - Changing the initial/START pose of the robot arm
+                 * to an invalid state could BREAK the robot.  Ensure the 
+                 * setpoints are physically possible before deploying.
+                 */
                 public static final ArmPose START = new ArmPose(
                                 Units.inchesToMeters(17.25),
                                 Units.inchesToMeters(34.5),

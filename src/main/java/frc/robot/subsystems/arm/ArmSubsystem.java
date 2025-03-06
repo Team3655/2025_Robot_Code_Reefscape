@@ -7,11 +7,10 @@ package frc.robot.subsystems.arm;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
@@ -59,23 +58,11 @@ public class ArmSubsystem extends SubsystemBase {
   public Notification encoderNotification;
 
   public Notification bumpNotification;
+  public Notification invalidArmStateNotification;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
     this.io = io;
-
-    Logger.processInputs("Inputs/Arm", inputs);
-    updateSetpoint(ArmStates.START);
-
-    encoderNotification = new Notification(
-      NotificationLevel.WARNING, 
-      ArmConstants.activeEncoders.toString() + " Arm Encoders", 
-      "The arm is set to use " + ArmConstants.activeEncoders.toString() + " encoders");
-
-    bumpNotification = new Notification(
-      NotificationLevel.WARNING,
-      "Bump Invalid",
-      "Arm bump is pushing end effector outside of physical reach");
 
     armKinematics = new ArmKinematics(
         ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS,
@@ -84,13 +71,33 @@ public class ArmSubsystem extends SubsystemBase {
         ArmConstants.SHOULDER_LENGTH_METERS,
         ArmConstants.ELBOW_LENGTH_METERS);
 
+    Logger.processInputs("Inputs/Arm", inputs);
+    updateSetpoint(ArmStates.START);
+
+    encoderNotification = new Notification(
+        NotificationLevel.WARNING,
+        ArmConstants.activeEncoders.toString() + " Arm Encoders",
+        "The arm is set to use " + ArmConstants.activeEncoders.toString() + " encoders");
+
+    Elastic.sendNotification(encoderNotification);
+
+    bumpNotification = new Notification(
+        NotificationLevel.WARNING,
+        "Bump Invalid",
+        "Arm bump is pushing end effector outside of physical reach");
+
+    invalidArmStateNotification = new Notification(
+        NotificationLevel.ERROR,
+        "INVALID ARM STATE",
+        "x and y setpoints are resulting in invalid arm angles.  Check your calculations");
+
     shoulderRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(
             Volts.of(0.25).per(Second),
             Volts.of(0.5),
             Seconds.of(5),
-            (state) -> Logger.recordOutput("Arm/SysIdState", 
-            state.toString())),
+            (state) -> Logger.recordOutput("Arm/SysIdState",
+                state.toString())),
 
         new SysIdRoutine.Mechanism(
             (voltage) -> io.setShoulderVoltage(voltage.in(Volts)),
@@ -139,7 +146,7 @@ public class ArmSubsystem extends SubsystemBase {
     Rotation2d wristSetPoint = setpoint.wristAngle;
 
     // Updates arm position
-    io.setShoulderPosition(shoulderSetPoint); 
+    io.setShoulderPosition(shoulderSetPoint);
     io.setElbowPosition(elbowSetPoint);
     io.setWristPosition(wristSetPoint);
 
@@ -168,31 +175,12 @@ public class ArmSubsystem extends SubsystemBase {
         armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[0],
         armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[1]);
 
-    if(inputs.elbowSwitchState){
-      // io.resetShoulderPosition(
-      //   armKinematics.getArmAngles(ArmConstants.ArmStates.START.xTarget, 
-      //   ArmConstants.ArmStates.START.yTarget, 
-      //   ArmConstants.activeEncoders)[0]);
-
-      // io.resetElbowPosition(
-      //   armKinematics.getArmAngles(ArmConstants.ArmStates.START.xTarget, 
-      //   ArmConstants.ArmStates.START.yTarget, 
-      //   ArmConstants.activeEncoders)[1]);
-
-      // io.resetShoulderPosition(Rotation2d.fromDegrees(-63));
-      // io.resetElbowPosition(Rotation2d.fromDegrees(97));
-    }
-
+    // Live telemetry for arm setpoints and actual positions
     SmartDashboard.putNumber("ShoulderSetpoint", shoulderSetPoint.getDegrees());
-
     SmartDashboard.putNumber("ElbowSetpoint", elbowSetPoint.getDegrees());
-
     SmartDashboard.putNumber("WristSetpoint", wristSetPoint.getDegrees());
-
     SmartDashboard.putNumber("ShoulderDeg", inputs.shoulderPosition.getDegrees());
-
     SmartDashboard.putNumber("ElbowDeg", inputs.elbowPosition.getDegrees());
-
     SmartDashboard.putNumber("WristDeg", inputs.wristPosition.getDegrees());
 
   }
@@ -227,7 +215,12 @@ public class ArmSubsystem extends SubsystemBase {
    * @param pose An ArmState to update the setpoint to
    */
   public void updateSetpoint(ArmPose pose) {
-    setpoint = pose;
+
+    if (armKinematics.isValidState(pose)) {
+      setpoint = pose;
+    } else {
+      Elastic.sendNotification(invalidArmStateNotification);
+    }
   }
 
   /**
@@ -241,57 +234,61 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void bumpXArm(double inches) {
-    ArmPose bumpSetpoint = new ArmPose(setpoint.xTarget + Units.inchesToMeters(inches), 
-                            setpoint.yTarget, 
-                            setpoint.wristAngle);
+    ArmPose bumpSetpoint = new ArmPose(setpoint.xTarget + Units.inchesToMeters(inches),
+        setpoint.yTarget,
+        setpoint.wristAngle);
 
-    if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
+    if (armKinematics.isInsideArmReach(bumpSetpoint.xTarget, bumpSetpoint.yTarget)
+        && armKinematics.isValidState(bumpSetpoint)) {
       setpoint = bumpSetpoint;
     } else {
       Elastic.sendNotification(bumpNotification);
     }
   }
 
-  public void bumpYArm(double inches){
-    ArmPose bumpSetpoint = new ArmPose(setpoint.xTarget, 
-                            setpoint.yTarget + Units.inchesToMeters(inches), 
-                            setpoint.wristAngle);
+  public void bumpYArm(double inches) {
+    ArmPose bumpSetpoint = new ArmPose(setpoint.xTarget,
+        setpoint.yTarget + Units.inchesToMeters(inches),
+        setpoint.wristAngle);
 
-    if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
+    if (armKinematics.isInsideArmReach(bumpSetpoint.xTarget, bumpSetpoint.yTarget)) {
       setpoint = bumpSetpoint;
     } else {
       Elastic.sendNotification(bumpNotification);
     }
   }
 
-  public void bumpXArmUsingArc(double inches) {
+  /**
+   * Bumps the arm around a circle with a radius drawn from
+   * the shoulder pivot point to the current setpoint
+   * 
+   * @param inches Arc length bumped. Negative values move the arm towards the
+   *               back
+   */
+  public void bumpArmUsingArc(double arcLengthInches) {
 
-    ArmPose currentSetpoint = setpoint;
-    double bumpX = setpoint.xTarget + Units.inchesToMeters(inches);
-    // This will *always* calculate a positive Y setpoint
-    double bumpY = armKinematics.calculateArcYSetpoint(bumpX, currentSetpoint.xTarget, currentSetpoint.yTarget);
+    Translation2d radiusEndEffector = new Translation2d(
+        setpoint.xTarget - ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS,
+        setpoint.yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS);
 
-    ArmPose bumpSetpoint = new ArmPose(bumpX, 
-                                        bumpY, 
-                                        setpoint.wristAngle);
+    double theta = Units.inchesToMeters(arcLengthInches) / radiusEndEffector.getNorm();
 
-    if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
-      setpoint = bumpSetpoint;
-    } else {
-      Elastic.sendNotification(bumpNotification);
-    }
-  }
+    // Translation of
+    double bumpedX = (setpoint.xTarget - ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS) * Math.cos(theta)
+        - (setpoint.yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS) * Math.sin(theta)
+        + ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
 
-  public void bumpYArmUsingArc(double inches) {
+    double bumpedY = (setpoint.xTarget - ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS) * Math.sin(theta)
+        + (setpoint.yTarget - ArmConstants.H_TOWER_GROUND_HEIGHT_METERS) * Math.cos(theta)
+        + ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
 
-    double bumpY = setpoint.yTarget + Units.inchesToMeters(inches);
-    double bumpX = armKinematics.calculateArcXSetpoint(bumpY);
+    ArmPose bumpSetpoint = new ArmPose(
+        bumpedX,
+        bumpedY,
+        setpoint.wristAngle);
 
-    ArmPose bumpSetpoint = new ArmPose(bumpX, 
-                                        bumpY, 
-                                        setpoint.wristAngle);
-
-    if(armKinematics.isValidBumpRequest(bumpSetpoint.xTarget, bumpSetpoint.yTarget)){
+    if (armKinematics.isInsideArmReach(bumpSetpoint.xTarget, bumpSetpoint.yTarget)
+        && armKinematics.isValidState(bumpSetpoint)) {
       setpoint = bumpSetpoint;
     } else {
       Elastic.sendNotification(bumpNotification);
