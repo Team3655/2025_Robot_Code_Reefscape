@@ -15,12 +15,8 @@ package frc.robot;
 
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -76,7 +72,7 @@ public class RobotContainer {
     private final IntakeSubsystem intake;
 
     // Controller
-    // programming controller
+    // Programming controller
     private final CommandXboxController programmingController = new CommandXboxController(5);
 
     // Matt's controller
@@ -200,14 +196,6 @@ public class RobotContainer {
         configureButtonBindings();
     }
 
-    /**
-     * Use this method to define your button -> command mappings. Buttons can be
-     * created by
-     * instantiating a {@link GenericHID} or one of its subclasses
-     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}) and then
-     * passing it to a
-     * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
     private void configureButtonBindings() {
         switch (Constants.currentDriver) {
             case MATT:
@@ -329,7 +317,6 @@ public class RobotContainer {
                                 driveMultiplier,
                                 programmingController.leftTrigger()));
 
-                // programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
                 programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
 
                 // programmingController.a().onTrue(ArmCommands.updateSetpoint(arm,
@@ -351,18 +338,6 @@ public class RobotContainer {
                 programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
                         .onFalse(IntakeCommands.stopIntake(intake));
 
-                // Close valve and create vacuum pressure
-                programmingController.a()
-                        .onTrue(IntakeCommands.toggleVacuum(intake, false, 12));
-
-                // Open valve and create positive pressure
-                // Turn off vacuum when released
-                programmingController.b()
-                        .onTrue(IntakeCommands.toggleVacuum(intake, true, -12))
-                        .onFalse(IntakeCommands.toggleVacuum(intake, false, 0));
-
-                // programmingController.rightBumper().whileTrue(arm.sysIdDynamic(Direction.kForward));
-                // programmingController.leftBumper().whileTrue(arm.sysIdQuasistatic(Direction.kForward));
                 break;
 
             case MACBOOK:
