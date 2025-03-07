@@ -15,6 +15,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionMeasurement;
 import frc.robot.subsystems.vision.VisionConstants.ObservationType;
+import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -56,6 +58,31 @@ public class VisionSubsystem extends SubsystemBase {
 
   public TargetObservation getLatestTargetObservation(int cameraID) {
     return new TargetObservation(inputs[cameraID].latestObservation.tx(), inputs[cameraID].latestObservation.ty());
+  }
+
+  public boolean isInsideField(PoseObservation observation) {
+    // Directions are relative to driver's perspective
+    // Blue Left: y = 0.7587x + 267.2
+    // Blue Right: y = -0.7587x - 49.95
+    // Red Left: y = 0.7587x - 474.187
+    // Red Right: y = -0.7587x + 791.337
+
+    double slope = Units.inchesToMeters(0.7587);
+    double x = observation.pose().getX();
+    double y = observation.pose().getY();
+
+    boolean isInsideBlueLeft = (y < slope*x +267.2);
+    boolean isInsideBlueRight = (y > -slope*x +49.95);
+    boolean isInsideRedLeft = (y > slope*x -474.187);
+    boolean isInsideRedRight = (y < -slope*x +791.337);
+    boolean isInsideRectangle = (x > 0 && x < tagLayout.getFieldLength() && y > 0 && y < tagLayout.getFieldWidth());
+
+    if(isInsideBlueRight && isInsideBlueLeft && isInsideRedLeft && isInsideRedRight && isInsideRectangle) {
+      return true;
+    } else {
+      return false;
+    }
+    
   }
 
   @Override
@@ -104,20 +131,22 @@ public class VisionSubsystem extends SubsystemBase {
                 || observation.ambiguity() > VisionConstants.MAX_AMBIGUITY // Must be a trustworthy pose
                 || observation.averageTagDistance() > VisionConstants.MULTI_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
-                || observation.pose().getX() < 0.0
-                || observation.pose().getX() > tagLayout.getFieldLength()
-                || observation.pose().getY() < 0.0
-                || observation.pose().getY() > tagLayout.getFieldWidth()
+                || !isInsideField(observation)
+                // || observation.pose().getX() < 0.0
+                // || observation.pose().getX() > tagLayout.getFieldLength()
+                // || observation.pose().getY() < 0.0
+                // || observation.pose().getY() > tagLayout.getFieldWidth()
 
             // Single tag in observation
             : observation.tagCount() == 0 // Must have at least one tag
                 || observation.ambiguity() > VisionConstants.MAX_AMBIGUITY // Must be a trustworthy pose
                 || observation.averageTagDistance() > VisionConstants.SINGLE_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
-                || observation.pose().getX() < 0.0
-                || observation.pose().getX() > tagLayout.getFieldLength()
-                || observation.pose().getY() < 0.0
-                || observation.pose().getY() > tagLayout.getFieldWidth();
+                || !isInsideField(observation);
+                // || observation.pose().getX() < 0.0
+                // || observation.pose().getX() > tagLayout.getFieldLength()
+                // || observation.pose().getY() < 0.0
+                // || observation.pose().getY() > tagLayout.getFieldWidth();
 
         // Add pose to list of all poses
         robotPoses.add(observation.pose());
