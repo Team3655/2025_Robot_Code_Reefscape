@@ -49,8 +49,8 @@ public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static final double FF_START_DELAY = 2.0; // secs
   private static final double FF_RAMP_RATE = 0.1; // volts/vec
-  private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // rads/sec^2
-  private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // rads/sec
+  private static final double WHEEL_RADIUS_RAMP_RATE = 0.15; // rads/sec^2
+  private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.5; // rads/sec
 
   private static final PIDController reefAlignmentTranslationPID = new PIDController(3, 0, 0);
 

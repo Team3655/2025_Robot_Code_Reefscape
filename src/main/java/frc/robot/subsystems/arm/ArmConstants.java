@@ -84,7 +84,7 @@ public class ArmConstants {
         public static final double KP_WRIST = 100.0;
         public static final double KI_WRIST = 0.0;
         public static final double KD_WRIST = 0.0;
-        public static final double WRIST_MAX_VELOCITY_RPS = 0.5;
+        public static final double WRIST_MAX_VELOCITY_RPS = 1.0;
         public static final double WRIST_MAX_ACCELERATION_RPS2 = 8.0;
         public static final double WRIST_MAX_JERK_RPS3 = 60.0;
 
@@ -104,7 +104,7 @@ public class ArmConstants {
          */
         public class ArmStates {
                 public static final ArmPose START = new ArmPose(
-                                Units.inchesToMeters(17.25),
+                                Units.inchesToMeters(18),
                                 Units.inchesToMeters(34.5),
                                 Rotation2d.fromDegrees(0));
 
