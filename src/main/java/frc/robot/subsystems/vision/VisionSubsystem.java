@@ -19,7 +19,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionMeasurement;
@@ -72,16 +71,11 @@ public class VisionSubsystem extends SubsystemBase {
     double x = observation.pose().getX();
     double y = observation.pose().getY();
 
-    boolean isInsideBlueLeft = (y < slope*x + Units.inchesToMeters(267.2));
-    boolean isInsideBlueRight = (y > -slope*x +Units.inchesToMeters(49.95));
-    boolean isInsideRedLeft = (y > slope*x - Units.inchesToMeters(474.187));
-    boolean isInsideRedRight = (y < -slope*x + Units.inchesToMeters(791.337));
+    boolean isInsideBlueLeft = (y < slope*x +267.2);
+    boolean isInsideBlueRight = (y > -slope*x +49.95);
+    boolean isInsideRedLeft = (y > slope*x -474.187);
+    boolean isInsideRedRight = (y < -slope*x +791.337);
     boolean isInsideRectangle = (x > 0 && x < tagLayout.getFieldLength() && y > 0 && y < tagLayout.getFieldWidth());
-
-    SmartDashboard.putBoolean("blueRight", isInsideBlueRight);
-    SmartDashboard.putBoolean("blueLeft", isInsideBlueLeft);
-    SmartDashboard.putBoolean("redRight", isInsideRedRight);
-    SmartDashboard.putBoolean("redLeft", isInsideRedLeft);
 
     if(isInsideBlueRight && isInsideBlueLeft && isInsideRedLeft && isInsideRedRight && isInsideRectangle) {
       return true;
@@ -89,7 +83,6 @@ public class VisionSubsystem extends SubsystemBase {
       return false;
     }
     
-
   }
 
   @Override

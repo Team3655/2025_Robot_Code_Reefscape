@@ -169,7 +169,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("ArmState_L1", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         NamedCommands.registerCommand("ArmState_L2", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
         //NamedCommands.registerCommand("ArmState_L3", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
-        NamedCommands.registerCommand("ArmState_L4", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF));
+        NamedCommands.registerCommand("ArmState_L4", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
+                IntakeCommands.runIntake(intake, -3)));
         NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 6));
         NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
 
@@ -202,8 +203,8 @@ public class RobotContainer {
                 drive.setDefaultCommand(
                         DriveCommands.joystickDrive(
                                 drive,
-                                () -> mattTranslation.StickYAxis() * 0.8,
-                                () -> mattTranslation.StickXAxis() * 0.8,
+                                () -> mattTranslation.StickYAxis() * 1.0,
+                                () -> mattTranslation.StickXAxis() * 1.0,
                                 () -> -mattRotation.StickXAxis() * 0.7,
                                 driveMultiplier,
                                 mattTranslation.fireStage1().or(mattTranslation.fireStage2())));
