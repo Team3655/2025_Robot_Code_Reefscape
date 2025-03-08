@@ -148,22 +148,22 @@ public class ArmConstants {
                                 Units.inchesToMeters(78.5),
                                 Rotation2d.fromDegrees(210));
 
-                 public static final ArmPose ALGIE_STORE = new ArmPose(
+                 public static final ArmPose ALGAE_STORE = new ArmPose(
                                 Units.inchesToMeters(19),
                                 Units.inchesToMeters(34.5),
                                 Rotation2d.fromDegrees(160));
 
-                public static final ArmPose FRONT_L1_ALGIE = new ArmPose(
+                public static final ArmPose FRONT_L1_ALGAE = new ArmPose(
                                 Units.inchesToMeters(34),
                                 Units.inchesToMeters(42),
                                 Rotation2d.fromDegrees(95));
 
-                public static final ArmPose FRONT_L2_ALGIE = new ArmPose(
+                public static final ArmPose FRONT_L2_ALGAE = new ArmPose(
                                 Units.inchesToMeters(30), //34
                                 Units.inchesToMeters(38), //59
                                 Rotation2d.fromDegrees(155)); //90
                 
-                public static final ArmPose FRONT_L2_ALGIE_ROTATED = new ArmPose(
+                public static final ArmPose FRONT_L2_ALGAE_ROTATED = new ArmPose(
                                 Units.inchesToMeters(22), //34
                                 Units.inchesToMeters(42), //59
                                 Rotation2d.fromDegrees(160)); //185
