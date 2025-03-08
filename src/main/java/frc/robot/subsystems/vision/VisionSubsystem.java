@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
@@ -71,10 +70,10 @@ public class VisionSubsystem extends SubsystemBase {
     double x = observation.pose().getX();
     double y = observation.pose().getY();
 
-    boolean isInsideBlueLeft = (y < slope*x +267.2);
-    boolean isInsideBlueRight = (y > -slope*x +49.95);
-    boolean isInsideRedLeft = (y > slope*x -474.187);
-    boolean isInsideRedRight = (y < -slope*x +791.337);
+    boolean isInsideBlueLeft = (y < slope*x + Units.inchesToMeters(267.2));
+    boolean isInsideBlueRight = (y > -slope*x + Units.inchesToMeters(49.95));
+    boolean isInsideRedLeft = (y > slope*x - Units.inchesToMeters(474.187));
+    boolean isInsideRedRight = (y < -slope*x + Units.inchesToMeters(791.337));
     boolean isInsideRectangle = (x > 0 && x < tagLayout.getFieldLength() && y > 0 && y < tagLayout.getFieldWidth());
 
     if(isInsideBlueRight && isInsideBlueLeft && isInsideRedLeft && isInsideRedRight && isInsideRectangle) {
@@ -82,7 +81,6 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       return false;
     }
-    
   }
 
   @Override
