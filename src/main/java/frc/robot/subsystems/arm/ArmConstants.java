@@ -104,14 +104,19 @@ public class ArmConstants {
          */
         public class ArmStates {
                 public static final ArmPose START = new ArmPose(
-                                Units.inchesToMeters(18),
-                                Units.inchesToMeters(34.5),
+                                Units.inchesToMeters(18.9), //cad number = 18.138
+                                Units.inchesToMeters(35.2), //cad number = 35.059
                                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FEEDER_START_TRANSITION = new ArmPose(
                                 Units.inchesToMeters(20),
                                 Units.inchesToMeters(41),
                                 Rotation2d.fromDegrees(40));
+
+                // public static final ArmPose TRANSITION = new ArmPose(
+                //                 Units.inchesToMeters(22),
+                //                 Units.inchesToMeters(47),
+                //                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
                                 Units.inchesToMeters(24),

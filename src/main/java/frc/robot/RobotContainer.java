@@ -27,6 +27,7 @@ import frc.robot.commands.ArmCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -168,7 +169,6 @@ public class RobotContainer {
                 ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, -6)));
         NamedCommands.registerCommand("ArmState_L1", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
         NamedCommands.registerCommand("ArmState_L2", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF));
-        //NamedCommands.registerCommand("ArmState_L3", ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF));
         NamedCommands.registerCommand("ArmState_L4", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
                 IntakeCommands.runIntake(intake, -3)));
         NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 6));
@@ -219,6 +219,13 @@ public class RobotContainer {
                 tractorController.button(10).onTrue(Commands.parallel(
                         ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)));
 
+                // tractorController.button(10)
+                //         .onTrue(Commands
+                //                 .sequence(IntakeCommands.stopIntake(intake),
+                //                         ArmCommands.updateSetpoint(arm, ArmStates.TRANSITION),
+                //                         new WaitCommand(0.5/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                //                         ArmCommands.updateSetpoint(arm, ArmStates.START)));
+
                 tractorController.button(5)
                         .onTrue(Commands
                                 .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
@@ -255,6 +262,14 @@ public class RobotContainer {
                         .onTrue(Commands
                                 .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
                                         IntakeCommands.runIntake(intake, -3)));
+
+                // tractorController.button(3)
+                //         .onTrue(Commands
+                //                 .sequence(IntakeCommands.stopIntake(intake),
+                //                         IntakeCommands.runIntake(intake, -3),
+                //                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF),
+                //                         new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                //                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF)));
 
                 // Close valve and create vacuum pressure
                 tractorController.button(14)
