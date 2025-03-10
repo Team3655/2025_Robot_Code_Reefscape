@@ -91,12 +91,6 @@ public class VisionSubsystem extends SubsystemBase {
       Logger.processInputs("Inputs/Vision/Camera " + inputs[i].name, inputs[i]);
     }
 
-    // Initialize logging data
-    List<Pose3d> allTagPoses = new LinkedList<>();
-    List<Pose2d> allRobotPoses = new LinkedList<>();
-    List<Pose2d> allRobotPosesAccepted = new LinkedList<>();
-    List<Pose2d> allRobotPosesRejected = new LinkedList<>();
-
     for (int i = 0; i < io.length; i++) {
       // Check if camera is disconnected and alert if so
       disconnectedAlerts[i].set(!inputs[i].connected);
@@ -129,10 +123,7 @@ public class VisionSubsystem extends SubsystemBase {
                 || observation.averageTagDistance() > VisionConstants.MULTI_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
                 || !isInsideField(observation)
-                // || observation.pose().getX() < 0.0
-                // || observation.pose().getX() > tagLayout.getFieldLength()
-                // || observation.pose().getY() < 0.0
-                // || observation.pose().getY() > tagLayout.getFieldWidth()
+
 
             // Single tag in observation
             : observation.tagCount() == 0 // Must have at least one tag
@@ -140,10 +131,6 @@ public class VisionSubsystem extends SubsystemBase {
                 || observation.averageTagDistance() > VisionConstants.SINGLE_TAG_MAXIMUM // Must not be too far away
                 // Must be within the field
                 || !isInsideField(observation);
-                // || observation.pose().getX() < 0.0
-                // || observation.pose().getX() > tagLayout.getFieldLength()
-                // || observation.pose().getY() < 0.0
-                // || observation.pose().getY() > tagLayout.getFieldWidth();
 
         // Add pose to list of all poses
         robotPoses.add(observation.pose());
@@ -194,25 +181,6 @@ public class VisionSubsystem extends SubsystemBase {
       Logger.recordOutput(
           "Vision/Cameras/" + inputs[i].name + "/RobotPosesRejected",
           robotPosesRejected.toArray(new Pose2d[robotPosesRejected.size()]));
-
-      // Add poses to total data
-      allTagPoses.addAll(tagPoses);
-      allRobotPoses.addAll(robotPoses);
-      allRobotPosesAccepted.addAll(robotPosesAccepted);
-      allRobotPosesRejected.addAll(robotPosesRejected);
     }
-
-    // Log all camera data
-    Logger.recordOutput(
-        "Vision/Summary/TagPoses", allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
-    Logger.recordOutput(
-        "Vision/Summary/RobotPoses", allRobotPoses.toArray(new Pose2d[allRobotPoses.size()]));
-    Logger.recordOutput(
-        "Vision/Summary/RobotPosesAccepted",
-        allRobotPosesAccepted.toArray(new Pose2d[allRobotPosesAccepted.size()]));
-    Logger.recordOutput(
-        "Vision/Summary/RobotPosesRejected",
-        allRobotPosesRejected.toArray(new Pose2d[allRobotPosesRejected.size()]));
-
   }
 }

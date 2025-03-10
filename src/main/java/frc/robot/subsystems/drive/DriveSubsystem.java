@@ -39,8 +39,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -157,27 +155,27 @@ public class DriveSubsystem extends SubsystemBase {
             this));
 
         // Elastic swerve visualizer
-    SmartDashboard.putData("Swerve Drive", new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
+    // SmartDashboard.putData("Swerve Drive", new Sendable() {
+    //   @Override
+    //   public void initSendable(SendableBuilder builder) {
 
-        builder.setSmartDashboardType("SwerveDrive");
+    //     builder.setSmartDashboardType("SwerveDrive");
 
-        builder.addDoubleProperty("Front Left Angle", () -> modules[0].getAngle().getRadians(), null);
-        builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getVelocityMetersPerSec(), null);
+    //     builder.addDoubleProperty("Front Left Angle", () -> modules[0].getAngle().getRadians(), null);
+    //     builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getVelocityMetersPerSec(), null);
 
-        builder.addDoubleProperty("Front Right Angle", () -> modules[1].getAngle().getRadians(), null);
-        builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getVelocityMetersPerSec(), null);
+    //     builder.addDoubleProperty("Front Right Angle", () -> modules[1].getAngle().getRadians(), null);
+    //     builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getVelocityMetersPerSec(), null);
 
-        builder.addDoubleProperty("Back Left Angle", () -> modules[2].getAngle().getRadians(), null);
-        builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getVelocityMetersPerSec(), null);
+    //     builder.addDoubleProperty("Back Left Angle", () -> modules[2].getAngle().getRadians(), null);
+    //     builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getVelocityMetersPerSec(), null);
 
-        builder.addDoubleProperty("Back Right Angle", () -> modules[3].getAngle().getRadians(), null);
-        builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getVelocityMetersPerSec(), null);
+    //     builder.addDoubleProperty("Back Right Angle", () -> modules[3].getAngle().getRadians(), null);
+    //     builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getVelocityMetersPerSec(), null);
 
-        builder.addDoubleProperty("Robot Angle", () -> gyroInputs.yawPosition.getRadians(), null);
-      }
-    });
+    //     builder.addDoubleProperty("Robot Angle", () -> gyroInputs.yawPosition.getRadians(), null);
+    //   }
+    // });
   }
 
   public void periodic() {
@@ -202,10 +200,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     // Log empty setpoint states when disabled
-    if (DriverStation.isDisabled()) {
-      Logger.recordOutput("Drive/SwerveStates/Setpoints", new SwerveModuleState[] {});
-      Logger.recordOutput("Drive/SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
-    }
+    // if (DriverStation.isDisabled()) {
+    //   Logger.recordOutput("Drive/SwerveStates/Setpoints", new SwerveModuleState[] {});
+    //   Logger.recordOutput("Drive/SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+    // }
 
     // Update odometry
     double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
@@ -250,7 +248,7 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveModuleState[] setpointStates = DriveConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.MAX_LINEAR_SPEED);
 
-    Logger.recordOutput("Drive/SwerveStates/Setpoints", setpointStates);
+    // Logger.recordOutput("Drive/SwerveStates/Setpoints", setpointStates);
 
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
@@ -339,7 +337,6 @@ public class DriveSubsystem extends SubsystemBase {
     return output;
   }
 
-  @AutoLogOutput(key = "Drive/ReefSextant")
   public int getReefSextant(){
     Translation2d blueReefPosition = new Translation2d(4, 4);
     Translation2d redReefPosition = new Translation2d(13, 4);

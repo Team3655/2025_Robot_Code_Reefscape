@@ -214,7 +214,7 @@ public class RobotContainer {
 
                 mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
-                mattTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX()));
+                mattTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
 
                 tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
                         .onFalse(IntakeCommands.stopIntake(intake));

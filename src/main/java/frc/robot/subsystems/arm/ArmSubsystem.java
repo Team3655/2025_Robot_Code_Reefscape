@@ -155,18 +155,18 @@ public class ArmSubsystem extends SubsystemBase {
     armKinematics.currentArmAngles[1] = inputs.elbowPosition;
 
     // Update visualizers
-    setpointVisualizer.update(
-        shoulderSetPoint.getDegrees() - 90,
-        elbowSetPoint.getDegrees(),
-        wristSetPoint.getDegrees() - 90);
+    // setpointVisualizer.update(
+    //     shoulderSetPoint.getDegrees() - 90,
+    //     elbowSetPoint.getDegrees(),
+    //     wristSetPoint.getDegrees() - 90);
 
-    currentVisualizer.update(
-        inputs.shoulderPosition.getDegrees() - 90,
-        inputs.elbowPosition.getDegrees(),
-        inputs.wristPosition.getDegrees() - 90);
+    // currentVisualizer.update(
+    //     inputs.shoulderPosition.getDegrees() - 90,
+    //     inputs.elbowPosition.getDegrees(),
+    //     inputs.wristPosition.getDegrees() - 90);
 
-    Logger.recordOutput("Arm/Mechanism2d/Setpoint", setpointVisualizer.arm);
-    Logger.recordOutput("Arm/Mechanism2d/Current", currentVisualizer.arm);
+    // Logger.recordOutput("Arm/Mechanism2d/Setpoint", setpointVisualizer.arm);
+    // Logger.recordOutput("Arm/Mechanism2d/Current", currentVisualizer.arm);
 
     RobotState.getInstance().updateArmState(
         inputs.shoulderPosition,

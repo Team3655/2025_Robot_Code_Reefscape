@@ -26,7 +26,6 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-
     io.setClimberVoltage(climberVolts);
     io.setArmPosition(armPosition, ArmFeedforward);
   }
