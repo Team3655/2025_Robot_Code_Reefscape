@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -274,45 +275,13 @@ public class RobotContainer {
                 //                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF)));
 
                 // Close valve and create vacuum pressure
-                tractorController.button(14)
-                        .onTrue(Commands
-                                .parallel(IntakeCommands.toggleVacuum(intake, false, 12),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.ALGIE_STORE)));
-                // Close valve and create vacuum pressure
-                tractorController.button(13)
-                        .onTrue(Commands
-                                .parallel(IntakeCommands.toggleVacuum(intake, false, 12),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_ALGIE)));
-                // Close valve and create vacuum pressure
-                tractorController.button(15)
-                        .onTrue(Commands
-                                .parallel(IntakeCommands.toggleVacuum(intake, false, 12),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_ALGIE)));
-                // Close valve and create vacuum pressure
-                tractorController.button(16)
-                        .onTrue(Commands
-                                .parallel(IntakeCommands.toggleVacuum(intake, false, 12),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_ALGIE_ROTATED)));
-                // Close valve and create vacuum pressure
-                tractorController.button(12)
-                        .onTrue(Commands
-                                .parallel(IntakeCommands.toggleVacuum(intake, false, 12),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FRONT_BARGE)));
-                // Open valve and create positive pressure
-                // Turn off vacuum when released
-                tractorController.button(11)
-                        .onTrue(Commands
-                                .parallel(IntakeCommands.toggleVacuum(intake, true, 0),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FRONT_BARGE_ROTATED)))
-                        .onFalse(IntakeCommands.toggleVacuum(intake, false, 0));
-                // Open valve and create positive pressure
-                tractorController.button(21).onTrue(IntakeCommands.toggleVacuum(intake, false, 0));
+
 
                 // X Postive is TOWARDS battery
                 // Y positive is UP
-                tractorController.button(18).onTrue(Commands.runOnce(()-> arm.bumpBoth(-1, -0.5), arm));
+                tractorController.button(18).onTrue(Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm));
                 // Bump up
-                tractorController.button(17).onTrue((Commands.runOnce(()-> arm.bumpBoth(1, 0.5), arm)));
+                tractorController.button(17).onTrue((Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm)));
                 break;
                 case ETHAN:
                 drive.setDefaultCommand(
