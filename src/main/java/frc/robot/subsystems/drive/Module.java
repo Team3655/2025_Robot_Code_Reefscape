@@ -19,7 +19,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Module {
 
@@ -46,8 +45,7 @@ public class Module {
   }
 
   public void periodic() {
-    Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
-    SmartDashboard.putNumber("Drive Position Meters", inputs.drivePositionRad * DriveConstants.WHEEL_RADIUS);
+    Logger.processInputs("Inputs/Drive/Module" + Integer.toString(index), inputs);
 
     // On first cycle, reset relative turn encoder
     // Wait until absolute angle is nonzero in case it wasn't initialized yet
@@ -76,8 +74,6 @@ public class Module {
     // Optimize state based on current angle
     targetState.optimize(getAngle());
     targetState.cosineScale(getAngle());
-
-    SmartDashboard.putNumber("Module " + this.index + " target position", targetState.angle.getDegrees());
 
     io.setTurnPosition(targetState.angle);
     io.setDriveVelocity(targetState.speedMetersPerSecond / DriveConstants.WHEEL_RADIUS);
