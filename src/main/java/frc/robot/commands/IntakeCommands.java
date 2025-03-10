@@ -9,30 +9,13 @@ public class IntakeCommands {
         return Commands.runOnce(() -> intake.setIntakeVoltage(volts), intake);
     }
 
-    public static Command runVacuum(IntakeSubsystem intake, double volts) {
-        return Commands.runOnce(() -> intake.setVacuumVoltage(volts), intake);
-    }
-
     public static Command stopIntake(IntakeSubsystem intake) {
         return Commands.runOnce(() -> intake.setIntakeVoltage(0), intake);
-    }
-
-    public static Command stopVacuum(IntakeSubsystem intake) {
-        return Commands.runOnce(() -> intake.setVacuumVoltage(0), intake);
-    }
-
-    public static Command toggleVacuumSolenoid(boolean state, IntakeSubsystem intake) {
-        return Commands.runOnce(() -> intake.toggleVacuumSolenoid(state));
-    }
-
-    public static Command toggleVacuum(IntakeSubsystem intake, boolean solenoidState, double volts) {
-        return Commands.runOnce(() -> intake.toggleVacuum(solenoidState, volts), intake);
     }
 
     public static Command stopAll(IntakeSubsystem intake) {
         return Commands.runOnce(() -> {
             intake.setIntakeVoltage(0);
-            intake.setVacuumVoltage(0);
         }, intake);
     }
 }

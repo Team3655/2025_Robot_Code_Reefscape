@@ -15,7 +15,6 @@ public class DriveConstants {
   // 16.9 rot/s of wheel -> 5.409929 m/s -> 17.7 ft/s
   public static final double MAX_LINEAR_SPEED = Units.feetToMeters(17.7);
 
-  // TODO: get real bumper width
   public static final double BUMPER_WIDTH_X = Units.inchesToMeters(33.5);
   public static final double BUMPER_WIDTH_Y = Units.inchesToMeters(33.75);
   public static final double TRACK_WIDTH_X = Units.inchesToMeters(20.75);

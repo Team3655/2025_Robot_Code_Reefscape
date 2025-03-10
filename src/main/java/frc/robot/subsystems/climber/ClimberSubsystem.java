@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.climber;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -18,6 +20,7 @@ public class ClimberSubsystem extends SubsystemBase {
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
+    Logger.processInputs("Inputs/Climber", inputs);
   }
 
   @Override

@@ -33,12 +33,16 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -151,6 +155,29 @@ public class DriveSubsystem extends SubsystemBase {
             (voltage) -> runCharacterization(voltage.in(Volts)),
             null,
             this));
+
+        // Elastic swerve visualizer
+    SmartDashboard.putData("Swerve Drive", new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+
+        builder.setSmartDashboardType("SwerveDrive");
+
+        builder.addDoubleProperty("Front Left Angle", () -> modules[0].getAngle().getRadians(), null);
+        builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getVelocityMetersPerSec(), null);
+
+        builder.addDoubleProperty("Front Right Angle", () -> modules[1].getAngle().getRadians(), null);
+        builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getVelocityMetersPerSec(), null);
+
+        builder.addDoubleProperty("Back Left Angle", () -> modules[2].getAngle().getRadians(), null);
+        builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getVelocityMetersPerSec(), null);
+
+        builder.addDoubleProperty("Back Right Angle", () -> modules[3].getAngle().getRadians(), null);
+        builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getVelocityMetersPerSec(), null);
+
+        builder.addDoubleProperty("Robot Angle", () -> gyroInputs.yawPosition.getRadians(), null);
+      }
+    });
   }
 
   public void periodic() {
@@ -161,7 +188,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
     odometryLock.unlock();
 
-    Logger.processInputs("Drive/Gyro", gyroInputs);
+    Logger.processInputs("Inputs/Drive/Gyro", gyroInputs);
 
     for (var module : modules) {
       module.periodic();
@@ -176,8 +203,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Log empty setpoint states when disabled
     if (DriverStation.isDisabled()) {
-      Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
-      Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+      Logger.recordOutput("Drive/SwerveStates/Setpoints", new SwerveModuleState[] {});
+      Logger.recordOutput("Drive/SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
     // Update odometry
@@ -223,7 +250,7 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveModuleState[] setpointStates = DriveConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.MAX_LINEAR_SPEED);
 
-    Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
+    Logger.recordOutput("Drive/SwerveStates/Setpoints", setpointStates);
 
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
@@ -232,7 +259,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     // Log setpoint states
-    Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
+    Logger.recordOutput("Drive/SwerveStates/SetpointsOptimized", setpointStates);
   }
 
   /** Runs the drive in a straight line with the specified drive output. */
@@ -276,7 +303,7 @@ public class DriveSubsystem extends SubsystemBase {
    * Returns the module states (turn angles and drive velocities) for all of the
    * modules.
    */
-  @AutoLogOutput(key = "SwerveStates/Measured")
+  @AutoLogOutput(key = "Drive/SwerveStates/Measured")
   private SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (int i = 0; i < 4; i++) {
@@ -286,7 +313,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /** Returns the measured chassis speeds of the robot. */
-  @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
+  @AutoLogOutput(key = "Drive/SwerveChassisSpeeds/Measured")
   private ChassisSpeeds getChassisSpeeds() {
     return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
   }
@@ -310,6 +337,58 @@ public class DriveSubsystem extends SubsystemBase {
       output += modules[i].getFFCharacterizationVelocity() / 4.0;
     }
     return output;
+  }
+
+  @AutoLogOutput(key = "Drive/ReefSextant")
+  public int getReefSextant(){
+    Translation2d blueReefPosition = new Translation2d(4, 4);
+    Translation2d redReefPosition = new Translation2d(13, 4);
+
+
+
+    Translation2d reefPosition = DriverStation.getAlliance().get() == Alliance.Red ? redReefPosition : blueReefPosition;
+    Rotation2d rotation = reefPosition.minus(RobotState.getInstance().getEstimatedPose().getTranslation()).getAngle();
+
+    
+    double angle = reefPosition.minus(RobotState.getInstance().getEstimatedPose().getTranslation()).getAngle().getDegrees();
+
+    switch (DriverStation.getAlliance().get()) {
+      case Blue:
+      if(angle < 30 && angle > -30){
+        return 1;
+      } else if(angle < 90 && angle > 30){
+        return 6;
+      } else if(angle < 150 && angle > 90){
+        return 5;
+      } else if(angle < 180 && angle > 150){
+        return 4;
+      } else if(angle < -150 && angle > -180){
+        return 4;
+      } else if(angle < -90 && angle > -150){
+        return 3;
+      } else if(angle < -30 && angle > -90){
+        return 2;
+      }
+      case Red:
+      if(angle < 30 && angle > -30){
+        return 4;
+      } else if(angle < 90 && angle > 30){
+        return 3;
+      } else if(angle < 150 && angle > 90){
+        return 2;
+      } else if(angle < 180 && angle > 150){
+        return 1;
+      } else if(angle < -150 && angle > -180){
+        return 1;
+      } else if(angle < -90 && angle > -150){
+        return 6;
+      } else if(angle < -30 && angle > -90){
+        return 5;
+      }
+      default:
+      DriverStation.reportError("Your angle is not even real brah. How did we get here", null);
+      return 0;
+    }
   }
 
 }

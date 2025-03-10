@@ -34,8 +34,13 @@ public class ArmConstants {
         public static final Rotation2d SHOULDER_ENCODER_OFFSET = Rotation2d.fromRotations(0);
         public static final double SHOULDER_LENGTH_METERS = Units.inchesToMeters(22.75);
         public static final double SHOULDER_MASS_KG = 1;
-        public static final Rotation2d SHOULDER_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-67);
-        public static final Rotation2d SHOULDER_MAX_ANGLE_RADS = Rotation2d.fromDegrees(90);
+        // Used the check the validity of the arm setpoints only
+        // MATT, FOR THE LOVE OF GOD MAKE SURE THIS ANGLE IS SMALL ENOUGH TO ACCOUNT FOR
+        // BOTH THE CAD AND YOUR INITIAL OFFSET
+        // ...
+        // IF YOU CRASH THE CODE ON LAUNCH THIS IS WHY
+        public static final Rotation2d SHOULDER_MIN_ANGLE = Rotation2d.fromDegrees(-80);
+        public static final Rotation2d SHOULDER_MAX_ANGLE = Rotation2d.fromDegrees(90);
         public static final double SHOULDER_REDUCTION = 63; //63.7755
         public static final double KG_SHOULDER = 0.70;
         public static final double KS_SHOULDER = 3.0;
@@ -103,6 +108,11 @@ public class ArmConstants {
          * <br></br> <code> ArmStates.STATE; </code>
          */
         public class ArmStates {
+                /**
+                 * WARNING - Changing the initial/START pose of the robot arm
+                 * to an invalid state could BREAK the robot.  Ensure the 
+                 * setpoints are physically possible before deploying.
+                 */
                 public static final ArmPose START = new ArmPose(
                                 Units.inchesToMeters(19.0), //cad number = 18.138
                                 Units.inchesToMeters(35.1), //cad number = 35.059
@@ -148,22 +158,22 @@ public class ArmConstants {
                                 Units.inchesToMeters(78),
                                 Rotation2d.fromDegrees(210));
 
-                 public static final ArmPose ALGIE_STORE = new ArmPose(
+                 public static final ArmPose ALGAE_STORE = new ArmPose(
                                 Units.inchesToMeters(19),
                                 Units.inchesToMeters(34.5),
                                 Rotation2d.fromDegrees(160));
 
-                public static final ArmPose FRONT_L1_ALGIE = new ArmPose(
+                public static final ArmPose FRONT_L1_ALGAE = new ArmPose(
                                 Units.inchesToMeters(21), //34
                                 Units.inchesToMeters(35.5), //42
                                 Rotation2d.fromDegrees(115)); //100
 
-                public static final ArmPose FRONT_L2_ALGIE = new ArmPose(
+                public static final ArmPose FRONT_L2_ALGAE = new ArmPose(
                                 Units.inchesToMeters(29), //30
                                 Units.inchesToMeters(39), //38
                                 Rotation2d.fromDegrees(155)); //155
                 
-                public static final ArmPose FRONT_L2_ALGIE_ROTATED = new ArmPose(
+                public static final ArmPose FRONT_L2_ALGAE_ROTATED = new ArmPose(
                                 Units.inchesToMeters(22), //34
                                 Units.inchesToMeters(42), //59
                                 Rotation2d.fromDegrees(160)); //185
