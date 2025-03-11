@@ -280,8 +280,8 @@ public class DriveCommands {
   public static Command pathFindToPose(Supplier<Pose2d> target, DriveSubsystem drive) {
  
      var constraints = new PathConstraints(
-         2, 
-         8.0, 
+         3, 
+         1.5, 
          4 * Math.PI, 
          8 * Math.PI);
  

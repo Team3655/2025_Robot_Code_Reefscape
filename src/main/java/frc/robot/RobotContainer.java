@@ -216,6 +216,11 @@ public class RobotContainer {
 
                 mattTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
 
+                mattRotation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() ->
+                fieldUtil.reefPoses.get("Left" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+                mattTranslation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() -> 
+                fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+
                 tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
                         .onFalse(IntakeCommands.stopIntake(intake));
 
