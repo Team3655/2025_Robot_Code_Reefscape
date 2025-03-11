@@ -70,8 +70,8 @@ public class ArmIOTalonFX implements ArmIO {
         elbowConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.ELBOW_REDUCTION;
         wristConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.WRIST_REDUCTION;
 
-        shoulderLeaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        shoulderLeaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         wristConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         // Set soft limts and enable them

@@ -86,7 +86,7 @@ public class ArmConstants {
         public static final double KS_WRIST = 2.5;
         public static final double KV_WRIST = 0.0;
         public static final double KA_WRIST = 0.0;
-        public static final double KP_WRIST = 100.0;
+        public static final double KP_WRIST = 150.0;
         public static final double KI_WRIST = 0.0;
         public static final double KD_WRIST = 0.0;
         public static final double WRIST_MAX_VELOCITY_RPS = 1.0;
@@ -115,7 +115,7 @@ public class ArmConstants {
                  */
                 public static final ArmPose START = new ArmPose(
                                 Units.inchesToMeters(19.0), //cad number = 18.138
-                                Units.inchesToMeters(35.1), //cad number = 35.059
+                                Units.inchesToMeters(34.9), //cad number = 35.059
                                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FEEDER_START_TRANSITION = new ArmPose(
@@ -130,7 +130,7 @@ public class ArmConstants {
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
                                 Units.inchesToMeters(24),
-                                Units.inchesToMeters(39),
+                                Units.inchesToMeters(38),
                                 Rotation2d.fromDegrees(30));
 
                 public static final ArmPose FRONT_FEEDER_STRETCH = new ArmPose(
