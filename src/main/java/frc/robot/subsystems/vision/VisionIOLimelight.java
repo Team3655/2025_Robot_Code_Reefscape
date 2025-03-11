@@ -17,9 +17,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.RobotState;
+import frc.robot.subsystems.vision.VisionConstants.ObservationType;
 import frc.robot.subsystems.vision.VisionConstants.PoseObservation;
 import frc.robot.subsystems.vision.VisionConstants.TargetObservation;
-import frc.robot.subsystems.vision.VisionConstants.ObservationType;
 import frc.robot.util.LimelightHelpers;
 
 /** Uses a Limelight camera to do vision calculations. */
@@ -32,7 +32,9 @@ public class VisionIOLimelight implements VisionIO {
   public VisionIOLimelight(String name) {
     this.name = name;
     table = NetworkTableInstance.getDefault().getTable(name);
-    latencySubscriber = table.getDoubleTopic("t1").subscribe(0.0);
+
+    // "hb" is Limelights heartbeat value, it updates once every frame and resets at 2 billion
+    latencySubscriber = table.getDoubleTopic("hb").subscribe(0.0);
     
     LimelightHelpers.SetIMUMode(name, 0);
   }
