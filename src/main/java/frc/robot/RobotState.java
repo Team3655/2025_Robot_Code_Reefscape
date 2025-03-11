@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.util.NoSuchElementException;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.math.Matrix;
