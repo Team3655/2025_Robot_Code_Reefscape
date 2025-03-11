@@ -13,7 +13,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -36,6 +38,8 @@ public final class Constants {
   // Prevent initializing a real robot as sim 
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
+  public static final Alliance alliance = (currentMode == Mode.REAL) ? DriverStation.getAlliance().get() : Alliance.Red;
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,
@@ -47,7 +51,7 @@ public final class Constants {
     REPLAY
   }
 
-  public static final Driver currentDriver = Driver.MATT;
+  public static final Driver currentDriver = Driver.MACBOOK;
 
   public static enum Driver {
     MATT,

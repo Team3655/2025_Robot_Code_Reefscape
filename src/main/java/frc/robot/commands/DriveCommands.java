@@ -15,12 +15,17 @@ package frc.robot.commands;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -36,6 +41,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotState;
 import frc.robot.subsystems.drive.DriveConstants;
@@ -270,6 +276,19 @@ public class DriveCommands {
                               + " inches");
                     })));
   }
+
+  public static Command pathFindToPose(Supplier<Pose2d> target, DriveSubsystem drive) {
+ 
+     var constraints = new PathConstraints(
+         2, 
+         8.0, 
+         4 * Math.PI, 
+         8 * Math.PI);
+ 
+     return Commands.defer(
+         () -> AutoBuilder.pathfindToPose(target.get(), constraints), 
+         new HashSet<Subsystem>(Arrays.asList(drive)));
+   }
 
   private static class WheelRadiusCharacterizationState {
     double[] positions = new double[4];

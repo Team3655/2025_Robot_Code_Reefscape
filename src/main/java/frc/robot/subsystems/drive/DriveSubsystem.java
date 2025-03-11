@@ -24,6 +24,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -33,14 +34,12 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -130,6 +129,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Allows AdvatangeKit to interface with PP
     Pathfinding.setPathfinder(new LocalADStarAK());
+    PathfindingCommand.warmupCommand().schedule();
 
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
@@ -335,57 +335,6 @@ public class DriveSubsystem extends SubsystemBase {
       output += modules[i].getFFCharacterizationVelocity() / 4.0;
     }
     return output;
-  }
-
-  public int getReefSextant(){
-    Translation2d blueReefPosition = new Translation2d(4, 4);
-    Translation2d redReefPosition = new Translation2d(13, 4);
-
-
-
-    Translation2d reefPosition = DriverStation.getAlliance().get() == Alliance.Red ? redReefPosition : blueReefPosition;
-    Rotation2d rotation = reefPosition.minus(RobotState.getInstance().getEstimatedPose().getTranslation()).getAngle();
-
-    
-    double angle = reefPosition.minus(RobotState.getInstance().getEstimatedPose().getTranslation()).getAngle().getDegrees();
-
-    switch (DriverStation.getAlliance().get()) {
-      case Blue:
-      if(angle < 30 && angle > -30){
-        return 1;
-      } else if(angle < 90 && angle > 30){
-        return 6;
-      } else if(angle < 150 && angle > 90){
-        return 5;
-      } else if(angle < 180 && angle > 150){
-        return 4;
-      } else if(angle < -150 && angle > -180){
-        return 4;
-      } else if(angle < -90 && angle > -150){
-        return 3;
-      } else if(angle < -30 && angle > -90){
-        return 2;
-      }
-      case Red:
-      if(angle < 30 && angle > -30){
-        return 4;
-      } else if(angle < 90 && angle > 30){
-        return 3;
-      } else if(angle < 150 && angle > 90){
-        return 2;
-      } else if(angle < 180 && angle > 150){
-        return 1;
-      } else if(angle < -150 && angle > -180){
-        return 1;
-      } else if(angle < -90 && angle > -150){
-        return 6;
-      } else if(angle < -30 && angle > -90){
-        return 5;
-      }
-      default:
-      DriverStation.reportError("Your angle is not even real brah. How did we get here", null);
-      return 0;
-    }
   }
 
 }
