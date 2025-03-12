@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5307499999999998,
-        "y": 7.31075
+        "x": 1.5104508196721311,
+        "y": 0.7403688524590154
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.181835111763603,
-        "y": 6.579512692629042
+        "x": 1.8590912056759343,
+        "y": 1.704177484459008
       },
       "isLocked": false,
-      "linkedName": "Left Outer Intake"
+      "linkedName": "Right Outer Intake"
     },
     {
       "anchor": {
-        "x": 3.75375,
-        "y": 5.048749999999999
+        "x": 5.00175,
+        "y": 2.815999999999999
       },
       "prevControl": {
-        "x": 3.4247773864844464,
-        "y": 5.418125911346112
+        "x": 4.61175,
+        "y": 1.9482499999999994
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "L Back"
+      "linkedName": "E Front"
     }
   ],
   "rotationTargets": [],
@@ -45,10 +45,10 @@
     "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "Back Left Side Paths",
+  "folder": "Front Right Side Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 125.00000000000001
+    "rotation": -125.00000000000001
   },
   "useDefaultConstraints": true
 }
