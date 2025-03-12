@@ -5,20 +5,26 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "C1 - A Back"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.75
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "ArmState_L4"
                 }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "C3 - I Back"
-                }
               }
             ]
           }
@@ -50,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "I Back - Left Outer Intake"
+            "pathName": "A Back - Left Inner Intake"
           }
         },
         {
@@ -64,7 +70,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.6
+                        "waitTime": 0.8
                       }
                     },
                     {
@@ -79,69 +85,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Outer Intake - K Back"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Place"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ArmState_Intake"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "K Back - Left Outer Intake"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.6
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "ArmState_L4"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Left Outer Intake - L Back"
+                  "pathName": "Left Inner Intake - B Back"
                 }
               }
             ]
@@ -163,6 +107,12 @@
           "type": "named",
           "data": {
             "name": "Stop_Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ArmState_Start"
           }
         }
       ]

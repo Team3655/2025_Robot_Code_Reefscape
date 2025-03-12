@@ -50,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "F Back - Outer Intake"
+            "pathName": "F Back - Right Outer Intake"
           }
         },
         {
@@ -79,7 +79,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Outer Intake - C Back"
+                  "pathName": "Right Outer Intake - C Back"
                 }
               }
             ]
@@ -112,7 +112,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "C Back - Outer Intake"
+            "pathName": "C Back - Right Outer Intake"
           }
         },
         {
@@ -141,7 +141,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Outer Intake - D Back"
+                  "pathName": "Right Outer Intake - D Back"
                 }
               }
             ]
