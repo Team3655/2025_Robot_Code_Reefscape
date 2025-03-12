@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.5307499999999998,
+        "y": 7.31075
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8537480371173847,
+        "y": 6.395732193722793
+      },
+      "isLocked": false,
+      "linkedName": "Left Outer Intake"
+    },
+    {
+      "anchor": {
+        "x": 4.953,
+        "y": 5.24375
+      },
+      "prevControl": {
+        "x": 3.9000000000000012,
+        "y": 6.287000000000001
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "J Front"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "reversed": false,
+  "folder": "Front Left Side Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 125.00000000000001
+  },
+  "useDefaultConstraints": true
+}

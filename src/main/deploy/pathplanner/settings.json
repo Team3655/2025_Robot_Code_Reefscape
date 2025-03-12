@@ -6,13 +6,15 @@
     "Back Center Paths",
     "Back Left Side Paths",
     "Back Right Side Paths",
-    "Front Right Side Paths"
+    "Front Right Side Paths",
+    "Front Left Side Paths"
   ],
   "autoFolders": [
     "Back Left Side",
     "Back Right Side",
     "Center Autos",
     "Front Right Side",
+    "Front Left Side",
     "Tests"
   ],
   "defaultMaxVel": 4.0,

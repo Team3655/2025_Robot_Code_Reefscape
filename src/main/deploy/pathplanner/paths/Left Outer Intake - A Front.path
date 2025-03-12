@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.5307499999999998,
+        "y": 7.31075
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7745,
+        "y": 6.735499999999999
+      },
+      "isLocked": false,
+      "linkedName": "Left Outer Intake"
+    },
+    {
+      "anchor": {
+        "x": 3.20775,
+        "y": 4.17125
+      },
+      "prevControl": {
+        "x": 2.6129999999999995,
+        "y": 4.4735
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "A Front"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Front Left Side Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 125.00000000000001
+  },
+  "useDefaultConstraints": true
+}
