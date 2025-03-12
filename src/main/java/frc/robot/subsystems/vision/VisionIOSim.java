@@ -70,12 +70,12 @@ public class VisionIOSim implements VisionIO {
     // Enable the raw and processed streams for the cameras
     // Access processed stream with localhost:1182
     // Access raw stream with localhost:1181
-    cameraSim.enableProcessedStream(true);
-    cameraSim.enableRawStream(true);
+    cameraSim.enableProcessedStream(false);
+    cameraSim.enableRawStream(false);
 
     // Enable drawing a wireframe visualization of the field to the camera
     // This is extremely resource-intensive and is disabled by default.
-    cameraSim.enableDrawWireframe(true);
+    cameraSim.enableDrawWireframe(false);
 
     // Add the april tags as vision targets
     visionSystem.addAprilTags(tagLayout);
