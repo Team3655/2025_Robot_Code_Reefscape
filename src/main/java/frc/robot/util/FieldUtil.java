@@ -53,6 +53,8 @@ public class FieldUtil {
        * INCREASING THE HORIZONTAL OFFSET MOVES YOUR ROBOT RIGHT
        * 
        *  INCREASING THE FORWARD OFFSET MOVES YOUR ROBOT FORWARD
+       * 
+       * BLUE SIDE OFFSETS
        */
       left1 = new PoseOffset(0, 0);
       left2 = new PoseOffset(0, 0);
@@ -75,19 +77,20 @@ public class FieldUtil {
       reefTags[4] = 9;
       reefTags[5] = 8;
 
-      left1 = new PoseOffset(0, 0);
-      left2 = new PoseOffset(0, 0);
-      left3 = new PoseOffset(0, 0);
-      left4 = new PoseOffset(0, 0);
-      left5 = new PoseOffset(0, 0);
-      left6 = new PoseOffset(0, 0);
+      // RED SIDE OFFSETS
+      left1 = new PoseOffset(Units.inchesToMeters(0), 0);
+      left2 = new PoseOffset(Units.inchesToMeters(0), 0);
+      left3 = new PoseOffset(Units.inchesToMeters(-1), 0);
+      left4 = new PoseOffset(Units.inchesToMeters(0), 0);
+      left5 = new PoseOffset(Units.inchesToMeters(-1.5), 0);
+      left6 = new PoseOffset(Units.inchesToMeters(0), 0);
 
-      right1 = new PoseOffset(0, 0);
-      right2 = new PoseOffset(0, 0);
-      right3 = new PoseOffset(0, 0);
-      right4 = new PoseOffset(0, 0);
-      right5 = new PoseOffset(0, 0);
-      right6 = new PoseOffset(0, 0);
+      right1 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right2 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right3 = new PoseOffset(Units.inchesToMeters(1.5), 0);
+      right4 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right5 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right6 = new PoseOffset(Units.inchesToMeters(-1.5), 0);
     }
 
     offsets[0] = new Pair<Transform2d, Transform2d>(
@@ -134,11 +137,11 @@ public class FieldUtil {
         leftAlignment = leftAlignment.transformBy(offsets[i].getFirst());
 
         rightAlignment = tagPose.transformBy(new Transform2d(DriveConstants.BUMPER_WIDTH_X / 2,
-            -Units.inchesToMeters(6.47) + intakeOffset, Rotation2d.kZero));
+            -Units.inchesToMeters(6.47) - intakeOffset, Rotation2d.kZero));
         rightAlignment = rightAlignment.transformBy(offsets[i].getSecond());
       }
-      reefPoses.put("Left" + (i + 1), leftAlignment);
 
+      reefPoses.put("Left" + (i + 1), leftAlignment);
       reefPoses.put("Right" + (i + 1), rightAlignment);
     }
   }
