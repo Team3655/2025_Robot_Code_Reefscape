@@ -9,8 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.Constants;
 import frc.robot.subsystems.drive.DriveConstants;
 
 public class FieldUtil {
@@ -42,7 +42,7 @@ public class FieldUtil {
     PoseOffset right5;
     PoseOffset right6;
 
-    if (Constants.alliance.equals(Alliance.Blue)) {
+    if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
       reefTags[0] = 18;
       reefTags[1] = 19;
       reefTags[2] = 20;
@@ -56,19 +56,19 @@ public class FieldUtil {
        * 
        * BLUE SIDE OFFSETS
        */
-      left1 = new PoseOffset(0, 0);
-      left2 = new PoseOffset(0, 0);
-      left3 = new PoseOffset(0, 0);
-      left4 = new PoseOffset(0, 0);
-      left5 = new PoseOffset(0, 0);
-      left6 = new PoseOffset(0, 0);
+      left1 = new PoseOffset(Units.inchesToMeters(0), 0);
+      left2 = new PoseOffset(Units.inchesToMeters(0.5), 0);
+      left3 = new PoseOffset(Units.inchesToMeters(0), 0);
+      left4 = new PoseOffset(Units.inchesToMeters(0), 0);
+      left5 = new PoseOffset(Units.inchesToMeters(0), 0);
+      left6 = new PoseOffset(Units.inchesToMeters(0), 0);
 
-      right1 = new PoseOffset(0, 0);
-      right2 = new PoseOffset(0, 0);
-      right3 = new PoseOffset(0, 0);
-      right4 = new PoseOffset(0, 0);
-      right5 = new PoseOffset(0, 0);
-      right6 = new PoseOffset(0, 0);
+      right1 = new PoseOffset(Units.inchesToMeters(-0.5), 0);
+      right2 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right3 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right4 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right5 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right6 = new PoseOffset(Units.inchesToMeters(0), 0);
     } else {
       reefTags[0] = 7;
       reefTags[1] = 6;
@@ -80,16 +80,16 @@ public class FieldUtil {
       // RED SIDE OFFSETS
       left1 = new PoseOffset(Units.inchesToMeters(0), 0);
       left2 = new PoseOffset(Units.inchesToMeters(0), 0);
-      left3 = new PoseOffset(Units.inchesToMeters(-1), 0);
-      left4 = new PoseOffset(Units.inchesToMeters(0), 0);
-      left5 = new PoseOffset(Units.inchesToMeters(-1.5), 0);
+      left3 = new PoseOffset(Units.inchesToMeters(0), 0);
+      left4 = new PoseOffset(Units.inchesToMeters(1), 0);
+      left5 = new PoseOffset(Units.inchesToMeters(0), 0);
       left6 = new PoseOffset(Units.inchesToMeters(0), 0);
 
       right1 = new PoseOffset(Units.inchesToMeters(0), 0);
       right2 = new PoseOffset(Units.inchesToMeters(0), 0);
-      right3 = new PoseOffset(Units.inchesToMeters(1.5), 0);
+      right3 = new PoseOffset(Units.inchesToMeters(1), 0);
       right4 = new PoseOffset(Units.inchesToMeters(0), 0);
-      right5 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right5 = new PoseOffset(Units.inchesToMeters(1), 0);
       right6 = new PoseOffset(Units.inchesToMeters(-1.5), 0);
     }
 
@@ -128,12 +128,12 @@ public class FieldUtil {
         leftAlignment = leftAlignment.transformBy(offsets[i].getFirst());
 
         rightAlignment = tagPose.transformBy(new Transform2d(DriveConstants.BUMPER_WIDTH_X / 2,
-            Units.inchesToMeters(6.47) + intakeOffset, Rotation2d.kZero));
+            Units.inchesToMeters(6.47) - intakeOffset, Rotation2d.kZero));
         rightAlignment = rightAlignment.transformBy(offsets[i].getSecond());
       } else {
 
         leftAlignment = tagPose.transformBy(new Transform2d(DriveConstants.BUMPER_WIDTH_X / 2,
-            Units.inchesToMeters(6.47) + intakeOffset, Rotation2d.kZero));
+            Units.inchesToMeters(6.47) - intakeOffset, Rotation2d.kZero));
         leftAlignment = leftAlignment.transformBy(offsets[i].getFirst());
 
         rightAlignment = tagPose.transformBy(new Transform2d(DriveConstants.BUMPER_WIDTH_X / 2,

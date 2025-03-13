@@ -179,11 +179,11 @@ public class RobotState {
     Translation2d blueReefPosition = new Translation2d(4, 4);
     Translation2d redReefPosition = new Translation2d(13, 4);
 
-    Translation2d reefPosition = Constants.alliance.equals(Alliance.Red) ? redReefPosition : blueReefPosition; 
+    Translation2d reefPosition = DriverStation.getAlliance().get().equals(Alliance.Red) ? redReefPosition : blueReefPosition; 
 
     double angle = reefPosition.minus(getEstimatedPose().getTranslation()).getAngle().getDegrees();
 
-    switch (Constants.alliance) {
+    switch (DriverStation.getAlliance().get()) {
       case Blue:
       if(angle < 30 && angle > -30){
         return 1;
