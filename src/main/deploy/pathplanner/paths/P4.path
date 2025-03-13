@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.953,
-        "y": 5.24375
+        "x": 4.943250000000001,
+        "y": 5.234
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8025,
-        "y": 6.2675
+        "x": 3.7927500000000007,
+        "y": 6.25775
       },
       "isLocked": false,
       "linkedName": "J Front"
