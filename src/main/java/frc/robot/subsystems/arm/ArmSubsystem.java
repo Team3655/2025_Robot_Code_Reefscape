@@ -154,6 +154,9 @@ public class ArmSubsystem extends SubsystemBase {
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
     armKinematics.currentArmAngles[1] = inputs.elbowPosition;
 
+    SmartDashboard.putNumber("WRIST DEGREES", inputs.wristPosition.getDegrees());
+    SmartDashboard.putNumber("SHOULDER DEGREES", inputs.shoulderPosition.getDegrees());
+
     // Update visualizers
     // setpointVisualizer.update(
     //     shoulderSetPoint.getDegrees() - 90,

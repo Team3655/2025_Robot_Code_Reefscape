@@ -42,7 +42,7 @@ public class ArmConstants {
         public static final Rotation2d SHOULDER_MIN_ANGLE = Rotation2d.fromDegrees(-80);
         public static final Rotation2d SHOULDER_MAX_ANGLE = Rotation2d.fromDegrees(90);
         public static final double SHOULDER_REDUCTION = 63; //63.7755
-        public static final double KG_SHOULDER = 0.70;
+        public static final double KG_SHOULDER = 0.7;
         public static final double KS_SHOULDER = 3.0;
         public static final double KV_SHOULDER = 0.0;
         public static final double KA_SHOULDER = 0.0;
@@ -81,15 +81,15 @@ public class ArmConstants {
         public static final double WRIST_MASS_KG = 1;
         public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-360);
         public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(360);
-        public static final double WRIST_REDUCTION = 66.96; //56.842 = (36 / 1) * (93 / 50)
-        public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm
-        public static final double KS_WRIST = 2.5;
+        public static final double WRIST_REDUCTION = 9 * (41/13);
+        public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm (changed to greater than 0 because change in construction of arm)
+        public static final double KS_WRIST = 0.0;
         public static final double KV_WRIST = 0.0;
         public static final double KA_WRIST = 0.0;
-        public static final double KP_WRIST = 150.0;
+        public static final double KP_WRIST = 100.0;
         public static final double KI_WRIST = 0.0;
         public static final double KD_WRIST = 0.0;
-        public static final double WRIST_MAX_VELOCITY_RPS = 1.0;
+        public static final double WRIST_MAX_VELOCITY_RPS = 0.5;
         public static final double WRIST_MAX_ACCELERATION_RPS2 = 8.0;
         public static final double WRIST_MAX_JERK_RPS3 = 60.0;
 

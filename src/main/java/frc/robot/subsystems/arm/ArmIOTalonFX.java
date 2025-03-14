@@ -49,7 +49,7 @@ public class ArmIOTalonFX implements ArmIO {
     shoulderFollowerTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_FOLLOWER_ID, Constants.CANIVORE_NAME);
     elbowLeaderTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_ID, Constants.CANIVORE_NAME);
     elbowFollowerTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_FOLLOWER_ID, Constants.CANIVORE_NAME);
-    wristTalon = new TalonFX(ArmConstants.WRIST_MOTOR_ID, Constants.CANIVORE_NAME);
+    wristTalon = new TalonFX(ArmConstants.WRIST_MOTOR_ID, "rio");
 
     shoulderLeaderConfig = new TalonFXConfiguration();
     elbowConfiguration = new TalonFXConfiguration();
@@ -195,8 +195,10 @@ public class ArmIOTalonFX implements ArmIO {
     BaseStatusSignal.refreshAll(
         shoulderPosition, shoulderVelocity, shoulderAppliedVolts,
         shoulderCurrent, elbowPosition, elbowVelocity, elbowAppliedVolts,
-        elbowCurrent, wristPosition, wristVelocity,
+        elbowCurrent, wristVelocity,
         wristAppliedVolts, wristCurrent);
+
+    BaseStatusSignal.refreshAll(wristPosition);
 
     inputs.shoulderAppliedVolts = shoulderAppliedVolts.getValueAsDouble();
     inputs.shoulderCurrentAmps = new double[] { shoulderCurrent.getValueAsDouble() };
