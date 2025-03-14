@@ -195,10 +195,9 @@ public class ArmIOTalonFX implements ArmIO {
     BaseStatusSignal.refreshAll(
         shoulderPosition, shoulderVelocity, shoulderAppliedVolts,
         shoulderCurrent, elbowPosition, elbowVelocity, elbowAppliedVolts,
-        elbowCurrent, wristVelocity,
-        wristAppliedVolts, wristCurrent);
+        elbowCurrent);
 
-    BaseStatusSignal.refreshAll(wristPosition);
+    BaseStatusSignal.refreshAll(wristVelocity, wristPosition, wristAppliedVolts, wristCurrent);
 
     inputs.shoulderAppliedVolts = shoulderAppliedVolts.getValueAsDouble();
     inputs.shoulderCurrentAmps = new double[] { shoulderCurrent.getValueAsDouble() };
@@ -253,7 +252,6 @@ public class ArmIOTalonFX implements ArmIO {
     // create a Motion Magic request, voltage output
     final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
-    // set target position to 100 rotations
     wristTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 

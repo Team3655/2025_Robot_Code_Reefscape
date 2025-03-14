@@ -62,7 +62,7 @@ public class ArmConstants {
         public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(0);
         public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(180);
         public static final double ELBOW_REDUCTION = 63.7755;
-        public static final double KG_ELBOW = 0.8; 
+        public static final double KG_ELBOW = 0.95; 
         public static final double KS_ELBOW = 2.5;
         public static final double KV_ELBOW = 0.0;
         public static final double KA_ELBOW = 0.0;
