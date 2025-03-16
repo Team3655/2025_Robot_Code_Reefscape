@@ -5,6 +5,8 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -80,6 +82,11 @@ public class ArmIOTalonFX implements ArmIO {
         // shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         // shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
+        // wristConfiguration.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.WRIST_MIN_ANGLE_RADS.getRotations();
+        // wristConfiguration.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        // wristConfiguration.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.WRIST_MAX_ANGLE_RADS.getRotations();
+        // wristConfiguration.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+
         break;
       default:
 
@@ -146,6 +153,7 @@ public class ArmIOTalonFX implements ArmIO {
     motionMagicConfigsWrist.MotionMagicExpo_kA = ArmConstants.KA_WRIST;
     motionMagicConfigsWrist.MotionMagicAcceleration = ArmConstants.WRIST_MAX_ACCELERATION_RPS2;
     motionMagicConfigsWrist.MotionMagicJerk = ArmConstants.WRIST_MAX_JERK_RPS3;
+
 
     // Apply configurations to the motors
     shoulderLeaderTalon.getConfigurator().apply(shoulderLeaderConfig);

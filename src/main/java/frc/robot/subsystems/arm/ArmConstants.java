@@ -79,17 +79,17 @@ public class ArmConstants {
         public static final double WRIST_LENGTH_METERS = Units.inchesToMeters(8);
         public static final Rotation2d ARM_DEFAULT_SETPOINT = Rotation2d.fromDegrees(75);
         public static final double WRIST_MASS_KG = 1;
-        public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-360);
-        public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(360);
+        public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-20);
+        public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(340);
         public static final double WRIST_REDUCTION = 9 * (41/13);
         public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm (changed to greater than 0 because change in construction of arm)
         public static final double KS_WRIST = 0.0;
         public static final double KV_WRIST = 0.0;
         public static final double KA_WRIST = 0.0;
-        public static final double KP_WRIST = 100.0;
+        public static final double KP_WRIST = 150.0;
         public static final double KI_WRIST = 0.0;
         public static final double KD_WRIST = 0.0;
-        public static final double WRIST_MAX_VELOCITY_RPS = 0.5;
+        public static final double WRIST_MAX_VELOCITY_RPS = 1.0;
         public static final double WRIST_MAX_ACCELERATION_RPS2 = 8.0;
         public static final double WRIST_MAX_JERK_RPS3 = 60.0;
 
@@ -129,8 +129,8 @@ public class ArmConstants {
                 //                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
-                                Units.inchesToMeters(23.5),
-                                Units.inchesToMeters(38),
+                                Units.inchesToMeters(25.5),
+                                Units.inchesToMeters(41), //Actual 38
                                 Rotation2d.fromDegrees(30));
 
                 public static final ArmPose FRONT_FEEDER_STRETCH = new ArmPose(
@@ -156,7 +156,7 @@ public class ArmConstants {
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
                                 Units.inchesToMeters(6.5),
                                 Units.inchesToMeters(78),
-                                Rotation2d.fromDegrees(210));
+                                Rotation2d.fromDegrees(220));
 
                  public static final ArmPose ALGAE_STORE = new ArmPose(
                                 Units.inchesToMeters(19),
