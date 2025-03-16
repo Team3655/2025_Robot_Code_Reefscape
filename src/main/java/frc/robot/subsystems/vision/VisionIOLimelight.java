@@ -34,7 +34,7 @@ public class VisionIOLimelight implements VisionIO {
     table = NetworkTableInstance.getDefault().getTable(name);
 
     // "hb" is Limelights heartbeat value, it updates once every frame and resets at 2 billion
-    latencySubscriber = table.getDoubleTopic("hb").subscribe(0.0);
+    latencySubscriber = table.getDoubleTopic("").subscribe(0.0);
     
     LimelightHelpers.SetIMUMode(name, 0);
   }
