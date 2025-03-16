@@ -6,7 +6,7 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -14,7 +14,6 @@ public class ClimberSubsystem extends SubsystemBase {
   private ClimberIO io;
   private static ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   private static double climberVolts = 0.0;
-  private static Rotation2d armPosition = new Rotation2d();
   public static double ArmFeedforward = 0.0;
 
   /** Creates a new ClimberSubsystem. */
@@ -27,14 +26,17 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     io.setClimberVoltage(climberVolts);
-    io.setArmPosition(armPosition, ArmFeedforward);
+
+    SmartDashboard.putNumber("Climber Volts", inputs.climberAppliedVolts);
   }
 
   public void updateClimberVoltage(double volts) {
     climberVolts = volts;
   }
 
-  public void updateArmPosition(Rotation2d position) {
-    armPosition = position;
+  public void driveClimber(double volts) {
+    io.driveClimber(volts);
   }
+
+
 }

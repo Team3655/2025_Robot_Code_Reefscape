@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ArmCommands;
+import frc.robot.commands.ClimbCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
@@ -47,6 +48,9 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOSim;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOTalonFX;
 import frc.robot.util.CommandNXT;
 import frc.robot.util.FieldUtil;
 
@@ -69,7 +73,7 @@ public class RobotContainer {
     @SuppressWarnings("unused")
     private final VisionSubsystem vision;
 
-    // private final ClimberSubsystem climber;
+    private final ClimberSubsystem climber;
     private final ArmSubsystem arm;
     private final IntakeSubsystem intake;
 
@@ -116,6 +120,8 @@ public class RobotContainer {
                 arm = new ArmSubsystem(new ArmIOTalonFX());
                 // climber = new ClimberSubsystem(new ClimberIOTalonFX());
                 intake = new IntakeSubsystem(new IntakeIOReal());
+
+                climber = new ClimberSubsystem(new ClimberIOTalonFX());
                 break;
 
             case SIM:
@@ -136,6 +142,9 @@ public class RobotContainer {
                 // climber = new ClimberSubsystem(new ClimberIO() {
                 // });
                 intake = new IntakeSubsystem(new IntakeIOSim() {
+                });
+
+                climber = new ClimberSubsystem(new ClimberIO() {
                 });
 
                 break;
@@ -160,8 +169,8 @@ public class RobotContainer {
                 arm = new ArmSubsystem(new ArmIO() {
                 });
 
-                // climber = new ClimberSubsystem(new ClimberIO() {
-                // });
+                climber = new ClimberSubsystem(new ClimberIO() {
+                });
                 intake = new IntakeSubsystem(new IntakeIO() {
                 });
                 break;
@@ -309,26 +318,17 @@ public class RobotContainer {
                                 driveMultiplier,
                                 programmingController.leftTrigger()));
 
+                climber.setDefaultCommand(ClimbCommands.driveClimber(climber, 
+                                () -> programmingController.getRightTriggerAxis(),
+                                () -> programmingController.getLeftTriggerAxis()));
+
+
                 programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
 
                 programmingController.a().onTrue(ArmCommands.updateSetpoint(arm,
                 ArmStates.START));
                 programmingController.b().onTrue(ArmCommands.updateSetpoint(arm,
-                ArmStates.FRONT_FEEDER));
-                programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm,
-                ArmStates.FRONT_L1_REEF));
-                programmingController.povRight().onTrue(ArmCommands.updateSetpoint(arm,
-                ArmStates.FRONT_L2_REEF));
-                programmingController.povUp().onTrue(ArmCommands.updateSetpoint(arm,
-                ArmStates.REAR_L3_REEF));
-                programmingController.povLeft().onTrue(ArmCommands.updateSetpoint(arm,
-                ArmStates.REAR_L4_REEF));
-
-                programmingController.rightBumper().whileTrue(IntakeCommands.runIntake(intake, -6))
-                        .onFalse(IntakeCommands.stopIntake(intake));
-
-                programmingController.leftBumper().whileTrue(IntakeCommands.runIntake(intake, 6))
-                        .onFalse(IntakeCommands.stopIntake(intake));
+                ArmStates.CLIMB_STRETCH));
 
                 break;
 

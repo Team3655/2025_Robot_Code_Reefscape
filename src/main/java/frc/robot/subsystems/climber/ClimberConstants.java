@@ -4,17 +4,11 @@
 
 package frc.robot.subsystems.climber;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 
 /** Add your docs here. */
 public class ClimberConstants {
 
-  public static final int CLIMBER_MOTOR_PORT = 7;
-  public static final int ARM_MOTOR_PORT = 8;
-
-  public static final Rotation2d ARM_INIT_POSITION = Rotation2d.fromDegrees(0);
-  public static final Rotation2d ARM_CLIMB_POSITION = Rotation2d.fromDegrees(0);
-
-  public static final double ARM_FEED_FORWARD = 0.0;
+  public static final int CLIMBER_MOTOR_PORT = 50;
+  public static final int CLIMBER_GEAR_RATIO = 125;
 
 }

@@ -148,13 +148,13 @@ public class ArmSubsystem extends SubsystemBase {
     // Updates arm position
     io.setShoulderPosition(shoulderSetPoint);
     io.setElbowPosition(elbowSetPoint);
-    io.setWristPosition(wristSetPoint);
+    // io.setWristPosition(wristSetPoint);
 
     // Updates the current arm angles in ArmKinematics
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
     armKinematics.currentArmAngles[1] = inputs.elbowPosition;
 
-    // Update visualizers
+    // // Update visualizers
     // setpointVisualizer.update(
     //     shoulderSetPoint.getDegrees() - 90,
     //     elbowSetPoint.getDegrees(),

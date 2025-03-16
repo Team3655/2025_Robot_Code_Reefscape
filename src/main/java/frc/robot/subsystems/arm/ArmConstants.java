@@ -188,5 +188,9 @@ public class ArmConstants {
                                 Units.inchesToMeters(78.5),
                                 Rotation2d.fromDegrees(220));
 
+                public static final ArmPose CLIMB_STRETCH = new ArmPose(
+                                Units.inchesToMeters(41), 
+                                Units.inchesToMeters(35),
+                                Rotation2d.fromDegrees(0));
         }
 }
