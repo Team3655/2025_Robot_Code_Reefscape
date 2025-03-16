@@ -296,8 +296,65 @@ public class RobotContainer {
                                 () -> -ethanTranslation.StickXAxis(),
                                 () -> -ethanRotation.StickXAxis(),
                                 driveMultiplier,
-                                ethanTranslation.A2()));
+                                ethanTranslation.fireStage1().or(ethanTranslation.fireStage2())));
 
+                                ethanTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
+
+                                ethanTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
+                
+                                ethanTranslation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() ->
+                                fieldUtil.reefPoses.get("Left" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+                                ethanRotation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() -> 
+                                fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+                
+                                tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
+                                        .onFalse(IntakeCommands.stopIntake(intake));
+                
+                                tractorController.button(10).onTrue(Commands.parallel(
+                                        ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)));
+                
+                                tractorController.button(5)
+                        .onTrue(Commands
+                                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
+                                        IntakeCommands.runIntake(intake, -6)))
+                        .onFalse(Commands
+                                .sequence(IntakeCommands.stopIntake(intake),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                                        new WaitCommand(0.5),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
+
+                tractorController.button(4)
+                        .onTrue(Commands
+                                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER_STRETCH),
+                                        IntakeCommands.runIntake(intake, -6)))
+                        .onFalse(Commands
+                                .sequence(IntakeCommands.stopIntake(intake),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                                        new WaitCommand(0.5),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
+
+                tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+                
+                tractorController.button(1)
+                        .onTrue(Commands
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF),
+                                        IntakeCommands.runIntake(intake, 0)));
+
+                tractorController.button(2)
+                        .onTrue(Commands
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF),
+                                        IntakeCommands.runIntake(intake, -3)));
+
+                tractorController.button(3)
+                        .onTrue(Commands
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
+                                        IntakeCommands.runIntake(intake, -3)));
+
+                // X Postive is TOWARDS battery
+                // Y positive is UP
+                tractorController.button(18).onTrue(Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm));
+                // Bump up
+                tractorController.button(17).onTrue((Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm)));
                 break;
             case PROGRAMMING:
                 drive.setDefaultCommand(
