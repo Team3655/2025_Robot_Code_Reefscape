@@ -5,6 +5,8 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -49,7 +51,7 @@ public class ArmIOTalonFX implements ArmIO {
     shoulderFollowerTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_FOLLOWER_ID, Constants.CANIVORE_NAME);
     elbowLeaderTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_ID, Constants.CANIVORE_NAME);
     elbowFollowerTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_FOLLOWER_ID, Constants.CANIVORE_NAME);
-    wristTalon = new TalonFX(ArmConstants.WRIST_MOTOR_ID, Constants.CANIVORE_NAME);
+    wristTalon = new TalonFX(ArmConstants.WRIST_MOTOR_ID, "rio");
 
     shoulderLeaderConfig = new TalonFXConfiguration();
     elbowConfiguration = new TalonFXConfiguration();
@@ -79,6 +81,11 @@ public class ArmIOTalonFX implements ArmIO {
         // shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.SHOULDER_MIN_ANGLE_RADS.getDegrees();
         // shoulderLeaderConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         // shoulderLeaderConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+        // wristConfiguration.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.WRIST_MIN_ANGLE_RADS.getRotations();
+        // wristConfiguration.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        // wristConfiguration.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.WRIST_MAX_ANGLE_RADS.getRotations();
+        // wristConfiguration.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
 
         break;
       default:
@@ -147,6 +154,7 @@ public class ArmIOTalonFX implements ArmIO {
     motionMagicConfigsWrist.MotionMagicAcceleration = ArmConstants.WRIST_MAX_ACCELERATION_RPS2;
     motionMagicConfigsWrist.MotionMagicJerk = ArmConstants.WRIST_MAX_JERK_RPS3;
 
+
     // Apply configurations to the motors
     shoulderLeaderTalon.getConfigurator().apply(shoulderLeaderConfig);
     elbowLeaderTalon.getConfigurator().apply(elbowConfiguration);
@@ -195,8 +203,9 @@ public class ArmIOTalonFX implements ArmIO {
     BaseStatusSignal.refreshAll(
         shoulderPosition, shoulderVelocity, shoulderAppliedVolts,
         shoulderCurrent, elbowPosition, elbowVelocity, elbowAppliedVolts,
-        elbowCurrent, wristPosition, wristVelocity,
-        wristAppliedVolts, wristCurrent);
+        elbowCurrent);
+
+    BaseStatusSignal.refreshAll(wristVelocity, wristPosition, wristAppliedVolts, wristCurrent);
 
     inputs.shoulderAppliedVolts = shoulderAppliedVolts.getValueAsDouble();
     inputs.shoulderCurrentAmps = new double[] { shoulderCurrent.getValueAsDouble() };
@@ -251,7 +260,6 @@ public class ArmIOTalonFX implements ArmIO {
     // create a Motion Magic request, voltage output
     final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
-    // set target position to 100 rotations
     wristTalon.setControl(m_request.withPosition(position.getRotations()));
   }
 

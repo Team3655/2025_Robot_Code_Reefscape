@@ -42,7 +42,7 @@ public class ArmConstants {
         public static final Rotation2d SHOULDER_MIN_ANGLE = Rotation2d.fromDegrees(-80);
         public static final Rotation2d SHOULDER_MAX_ANGLE = Rotation2d.fromDegrees(90);
         public static final double SHOULDER_REDUCTION = 63; //63.7755
-        public static final double KG_SHOULDER = 0.70;
+        public static final double KG_SHOULDER = 0.7;
         public static final double KS_SHOULDER = 3.0;
         public static final double KV_SHOULDER = 0.0;
         public static final double KA_SHOULDER = 0.0;
@@ -62,7 +62,7 @@ public class ArmConstants {
         public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(0);
         public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(180);
         public static final double ELBOW_REDUCTION = 63.7755;
-        public static final double KG_ELBOW = 0.8; 
+        public static final double KG_ELBOW = 0.95; 
         public static final double KS_ELBOW = 2.5;
         public static final double KV_ELBOW = 0.0;
         public static final double KA_ELBOW = 0.0;
@@ -79,11 +79,11 @@ public class ArmConstants {
         public static final double WRIST_LENGTH_METERS = Units.inchesToMeters(8);
         public static final Rotation2d ARM_DEFAULT_SETPOINT = Rotation2d.fromDegrees(75);
         public static final double WRIST_MASS_KG = 1;
-        public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-360);
-        public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(360);
-        public static final double WRIST_REDUCTION = 66.96; //56.842 = (36 / 1) * (93 / 50)
-        public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm
-        public static final double KS_WRIST = 2.5;
+        public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-20);
+        public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(340);
+        public static final double WRIST_REDUCTION = 9 * (41/13);
+        public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm (changed to greater than 0 because change in construction of arm)
+        public static final double KS_WRIST = 0.0;
         public static final double KV_WRIST = 0.0;
         public static final double KA_WRIST = 0.0;
         public static final double KP_WRIST = 150.0;
@@ -129,8 +129,8 @@ public class ArmConstants {
                 //                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
-                                Units.inchesToMeters(23.5),
-                                Units.inchesToMeters(38),
+                                Units.inchesToMeters(25.5),
+                                Units.inchesToMeters(41), //Actual 38
                                 Rotation2d.fromDegrees(30));
 
                 public static final ArmPose FRONT_FEEDER_STRETCH = new ArmPose(
@@ -156,7 +156,7 @@ public class ArmConstants {
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
                                 Units.inchesToMeters(6.5),
                                 Units.inchesToMeters(78),
-                                Rotation2d.fromDegrees(210));
+                                Rotation2d.fromDegrees(220));
 
                  public static final ArmPose ALGAE_STORE = new ArmPose(
                                 Units.inchesToMeters(19),
