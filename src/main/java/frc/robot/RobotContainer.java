@@ -373,7 +373,7 @@ public class RobotContainer {
                                 () -> programmingController.getLeftX(),
                                 () -> -programmingController.getRightX(),
                                 driveMultiplier,
-                                programmingController.leftTrigger()));
+                                programmingController.leftBumper()));
 
                 climber.setDefaultCommand(ClimbCommands.driveClimber(climber, 
                                 () -> programmingController.getRightTriggerAxis(),
@@ -385,6 +385,8 @@ public class RobotContainer {
                 programmingController.a().onTrue(ArmCommands.updateSetpoint(arm,
                 ArmStates.START));
                 programmingController.b().onTrue(ArmCommands.updateSetpoint(arm,
+                ArmStates.FRONT_FEEDER_STRETCH));
+                programmingController.y().onTrue(ArmCommands.updateSetpoint(arm, 
                 ArmStates.CLIMB_STRETCH));
 
                 break;
