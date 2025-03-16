@@ -1,6 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -77,45 +76,12 @@ public class ArmIOSim implements ArmIO {
 
     inputs.shoulderPosition = Rotation2d.fromRadians(shoulderSim.getAngleRads());
     inputs.shoulderCurrentAmps = new double[] { shoulderSim.getCurrentDrawAmps() };
-    inputs.shoulderVelocityRadPerSec = shoulderSim.getVelocityRadPerSec();
 
     inputs.elbowPosition = Rotation2d.fromRadians(elbowSim.getAngleRads());
     inputs.elbowCurrentAmps = new double[] { elbowSim.getCurrentDrawAmps() };
-    inputs.elbowVelocityRadPerSec = elbowSim.getVelocityRadPerSec();
 
     inputs.wristPosition = Rotation2d.fromRadians(wristSim.getAngleRads());
     inputs.wristCurrentAmps = new double[] { wristSim.getCurrentDrawAmps() };
-    inputs.wristVelocityRadPerSec = wristSim.getVelocityRadPerSec();
-  }
-
-  /**
-   * Sets the shoulder voltage, clamps the input value between 12 and -12
-   * 
-   * @param volts the volts to set
-   */
-  @Override
-  public void setShoulderVoltage(double volts) {
-    shoulderVolts = MathUtil.clamp(volts, -12, 12);
-  }
-
-  /**
-   * Sets the elbow voltage, clamps the input value between 12 and -12
-   * 
-   * @param volts the volts to set
-   */
-  @Override
-  public void setElbowVoltage(double volts) {
-    elbowVolts = MathUtil.clamp(volts, -12, 12);
-  }
-
-  /**
-   * Sets the shoulder voltage, clamps the input value between 12 and -12
-   * 
-   * @param volts the volts to set
-   */
-  @Override
-  public void setWristVoltage(double volts) {
-    wristVolts = MathUtil.clamp(volts, -12, 12);
   }
 
   /**

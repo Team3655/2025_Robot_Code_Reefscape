@@ -5,16 +5,12 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
@@ -28,17 +24,14 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFX wristTalon;
 
   private final StatusSignal<Angle> shoulderPosition;
-  private final StatusSignal<AngularVelocity> shoulderVelocity;
   private final StatusSignal<Voltage> shoulderAppliedVolts;
   private final StatusSignal<Current> shoulderCurrent;
 
   private final StatusSignal<Angle> elbowPosition;
-  private final StatusSignal<AngularVelocity> elbowVelocity;
   private final StatusSignal<Voltage> elbowAppliedVolts;
   private final StatusSignal<Current> elbowCurrent;
 
   private final StatusSignal<Angle> wristPosition;
-  private final StatusSignal<AngularVelocity> wristVelocity;
   private final StatusSignal<Voltage> wristAppliedVolts;
   private final StatusSignal<Current> wristCurrent;
 
@@ -179,17 +172,14 @@ public class ArmIOTalonFX implements ArmIO {
 
     // Configure inputs
     shoulderPosition = shoulderLeaderTalon.getPosition();
-    shoulderVelocity = shoulderLeaderTalon.getVelocity();
     shoulderAppliedVolts = shoulderLeaderTalon.getMotorVoltage();
     shoulderCurrent = shoulderLeaderTalon.getSupplyCurrent();
 
     elbowPosition = elbowLeaderTalon.getPosition();
     elbowAppliedVolts = elbowLeaderTalon.getMotorVoltage();
-    elbowVelocity = elbowLeaderTalon.getVelocity();
     elbowCurrent = elbowLeaderTalon.getSupplyCurrent();
 
     wristPosition = wristTalon.getPosition();
-    wristVelocity = wristTalon.getVelocity();
     wristAppliedVolts = wristTalon.getMotorVoltage();
     wristCurrent = wristTalon.getSupplyCurrent();
   }
@@ -201,26 +191,20 @@ public class ArmIOTalonFX implements ArmIO {
   public void updateInputs(ArmIOInputs inputs) {
 
     BaseStatusSignal.refreshAll(
-        shoulderPosition, shoulderVelocity, shoulderAppliedVolts,
-        shoulderCurrent, elbowPosition, elbowVelocity, elbowAppliedVolts,
+        shoulderPosition, shoulderAppliedVolts,
+        shoulderCurrent, elbowPosition, elbowAppliedVolts,
         elbowCurrent);
 
-    BaseStatusSignal.refreshAll(wristVelocity, wristPosition, wristAppliedVolts, wristCurrent);
+    BaseStatusSignal.refreshAll(wristPosition, wristAppliedVolts, wristCurrent);
 
-    inputs.shoulderAppliedVolts = shoulderAppliedVolts.getValueAsDouble();
     inputs.shoulderCurrentAmps = new double[] { shoulderCurrent.getValueAsDouble() };
     inputs.shoulderPosition = Rotation2d.fromRotations(shoulderPosition.getValueAsDouble());
-    inputs.shoulderVelocityRadPerSec = shoulderVelocity.getValueAsDouble();
 
-    inputs.elbowAppliedVolts = elbowAppliedVolts.getValueAsDouble();
     inputs.elbowCurrentAmps = new double[] { elbowCurrent.getValueAsDouble() };
     inputs.elbowPosition = Rotation2d.fromRotations(elbowPosition.getValueAsDouble());
-    inputs.elbowVelocityRadPerSec = elbowVelocity.getValueAsDouble();
 
-    inputs.wristAppliedVolts = wristAppliedVolts.getValueAsDouble();
     inputs.wristCurrentAmps = new double[] { wristCurrent.getValueAsDouble() };
     inputs.wristPosition = Rotation2d.fromRotations(wristPosition.getValueAsDouble());
-    inputs.wristVelocityRadPerSec = wristVelocity.getValueAsDouble();
   }
 
   /**
@@ -261,35 +245,5 @@ public class ArmIOTalonFX implements ArmIO {
     final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
     wristTalon.setControl(m_request.withPosition(position.getRotations()));
-  }
-
-  /**
-   * Sets the shoulder voltage using voltage requests
-   * 
-   * @param volts the volts to set
-   */
-  @Override
-  public void setShoulderVoltage(double volts) {
-    shoulderLeaderTalon.setControl(new VoltageOut(volts));
-  }
-
-  /**
-   * Sets the elbow voltage using voltage requests
-   * 
-   * @param volts the volts to set
-   */
-  @Override
-  public void setElbowVoltage(double volts) {
-    elbowLeaderTalon.setControl(new VoltageOut(volts));
-  }
-
-  /**
-   * Sets the wrist voltage using voltage requests
-   * 
-   * @param volts the volts to set
-   */
-  @Override
-  public void setWristVoltage(double volts) {
-    wristTalon.setControl(new VoltageOut(volts));
   }
 }

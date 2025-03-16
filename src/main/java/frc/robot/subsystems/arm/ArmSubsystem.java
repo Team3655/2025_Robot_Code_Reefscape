@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems.arm;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -44,7 +41,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   public final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
 
+  @SuppressWarnings("unused")
   private final ArmVisualizer currentVisualizer = new ArmVisualizer("Current");
+  @SuppressWarnings("unused")
   private final ArmVisualizer setpointVisualizer = new ArmVisualizer("Setpoint");
 
   private static ArmPose setpoint;
@@ -90,19 +89,6 @@ public class ArmSubsystem extends SubsystemBase {
         NotificationLevel.ERROR,
         "INVALID ARM STATE",
         "x and y setpoints are resulting in invalid arm angles.  Check your calculations");
-
-    shoulderRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            Volts.of(0.25).per(Second),
-            Volts.of(0.5),
-            Seconds.of(5),
-            (state) -> Logger.recordOutput("Arm/SysIdState",
-                state.toString())),
-
-        new SysIdRoutine.Mechanism(
-            (voltage) -> io.setShoulderVoltage(voltage.in(Volts)),
-            null,
-            this));
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -150,14 +136,9 @@ public class ArmSubsystem extends SubsystemBase {
     io.setElbowPosition(elbowSetPoint);
     io.setWristPosition(Rotation2d.fromDegrees(Rotation2d.fromDegrees(90).minus(elbowSetPoint).getDegrees() + (wristSetPoint).getDegrees()));
 
-    //// io.setWristPosition(wristSetPoint);
-
     // Updates the current arm angles in ArmKinematics
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
     armKinematics.currentArmAngles[1] = inputs.elbowPosition;
-
-    SmartDashboard.putNumber("WRIST DEGREES", inputs.wristPosition.getDegrees());
-    SmartDashboard.putNumber("SHOULDER DEGREES", inputs.shoulderPosition.getDegrees());
 
     SmartDashboard.putNumber("WRIST DEGREES", inputs.wristPosition.getDegrees());
     SmartDashboard.putNumber("SHOULDER DEGREES", inputs.shoulderPosition.getDegrees());
