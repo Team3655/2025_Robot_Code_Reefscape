@@ -91,6 +91,10 @@ public class ArmIOTalonFX implements ArmIO {
         shoulderLeaderConfig.Feedback.SensorToMechanismRatio = ArmConstants.SHOULDER_REDUCTION;
         elbowConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.ELBOW_REDUCTION;
         wristConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.WRIST_REDUCTION;
+
+        shoulderLeaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        wristConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         break;
 
     }

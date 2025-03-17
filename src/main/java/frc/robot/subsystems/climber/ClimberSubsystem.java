@@ -6,6 +6,7 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,6 +29,7 @@ public class ClimberSubsystem extends SubsystemBase {
     io.setClimberVoltage(climberVolts);
 
     SmartDashboard.putNumber("Climber Volts", inputs.climberAppliedVolts);
+    SmartDashboard.putNumber("Climber Position", getClimberPosition().getDegrees());
   }
 
   public void updateClimberVoltage(double volts) {
@@ -36,6 +38,10 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void driveClimber(double volts) {
     io.driveClimber(volts);
+  }
+
+  public Rotation2d getClimberPosition() {
+    return inputs.climberPosition;
   }
 
 

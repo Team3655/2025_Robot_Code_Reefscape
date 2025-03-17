@@ -6,6 +6,9 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
+
 /** Add your docs here. */
 public interface ClimberIO {
 
@@ -15,6 +18,7 @@ public interface ClimberIO {
     public double climberVelocityRadPerSec = 0.0;
     public double climberAppliedVolts = 0.0;
     public double[] climberCurrentAmps = new double[] {};
+    public Rotation2d climberPosition = new Rotation2d();
 
   }
 
@@ -26,4 +30,6 @@ public interface ClimberIO {
 
   public default void driveClimber(double volts) {
   }
+  public default void runToPosition(Rotation2d position){}
+
 }

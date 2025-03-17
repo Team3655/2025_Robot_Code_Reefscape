@@ -4,11 +4,9 @@
 
 package frc.robot.subsystems.climber;
 
-
 /** Add your docs here. */
 public class ClimberConstants {
 
   public static final int CLIMBER_MOTOR_PORT = 50;
-  public static final int CLIMBER_GEAR_RATIO = 125;
-
+  public static final int CLIMBER_GEAR_RATIO = 5 * 5 * 9;
 }
