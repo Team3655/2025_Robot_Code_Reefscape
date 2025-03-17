@@ -95,6 +95,7 @@ public class RobotContainer {
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
     private double driveMultiplier = 0.4;
+    private double garrettDriveMultiplier = 0.2;
 
     private final FieldUtil fieldUtil = new FieldUtil();
 
@@ -224,6 +225,12 @@ public class RobotContainer {
                 mattTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
                 mattTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
+
+                mattRotation.firePaddleDown().and(mattTranslation.firePaddleDown()).whileTrue(
+                        ClimbCommands.climbUp(climber))
+                        .onFalse(ClimbCommands.stopClimber(climber));
+
+                mattRotation.A2().onTrue(ClimbCommands.climbDown(climber));
 
                 mattRotation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() ->
                 fieldUtil.reefPoses.get("Left" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
@@ -372,7 +379,7 @@ public class RobotContainer {
                                 () -> programmingController.getLeftY(),
                                 () -> programmingController.getLeftX(),
                                 () -> -programmingController.getRightX(),
-                                driveMultiplier,
+                                garrettDriveMultiplier,
                                 programmingController.leftBumper()));
 
                 climber.setDefaultCommand(ClimbCommands.driveClimber(climber, 

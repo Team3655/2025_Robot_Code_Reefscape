@@ -20,11 +20,19 @@ public class ClimbCommands {
     }
 
     public static Command stopClimber(ClimberSubsystem climber){
-        return Commands.runOnce(() -> climber.updateClimberVoltage(0), climber);
+        return Commands.runOnce(() -> climber.driveClimber(0), climber);
     }
 
     public static Command driveClimber(ClimberSubsystem climber, DoubleSupplier positiveVolts, DoubleSupplier negativeVolts) {
         return Commands.run(() -> climber.driveClimber(maxClimberVoltage * positiveVolts.getAsDouble() - maxClimberVoltage * negativeVolts.getAsDouble()), climber);
+    }
+
+    public static Command climbUp(ClimberSubsystem climber) {
+        return Commands.run(()-> climber.driveClimber(maxClimberVoltage), climber);
+    }
+
+    public static Command climbDown(ClimberSubsystem climber) {
+        return Commands.run(()-> climber.driveClimber(maxClimberVoltage));
     }
 
 }
