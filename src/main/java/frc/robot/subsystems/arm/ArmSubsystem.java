@@ -140,9 +140,6 @@ public class ArmSubsystem extends SubsystemBase {
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
     armKinematics.currentArmAngles[1] = inputs.elbowPosition;
 
-    SmartDashboard.putNumber("WRIST DEGREES", inputs.wristPosition.getDegrees());
-    SmartDashboard.putNumber("SHOULDER DEGREES", inputs.shoulderPosition.getDegrees());
-
     // Update visualizers
     // setpointVisualizer.update(
     //     shoulderSetPoint.getDegrees() - 90,
@@ -170,7 +167,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("WristSetpoint", wristSetPoint.getDegrees());
     SmartDashboard.putNumber("ShoulderDeg", inputs.shoulderPosition.getDegrees());
     SmartDashboard.putNumber("ElbowDeg", inputs.elbowPosition.getDegrees());
-    SmartDashboard.putNumber("WristDeg", inputs.wristPosition.getDegrees());
+    //TODO: Unpack this
+    SmartDashboard.putNumber("WristDeg", inputs.wristPosition.getDegrees() + inputs.elbowPosition.getDegrees() - 90);
 
   }
 

@@ -13,7 +13,7 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 /** Add your docs here. */
 public class ClimbCommands {
 
-    private static final double maxClimberVoltage = 6;
+    private static final double maxClimberVoltage = 12;
 
     public static Command runClimber(ClimberSubsystem climber, double volts){
         return Commands.runOnce(() -> climber.updateClimberVoltage(volts), climber);
@@ -28,11 +28,11 @@ public class ClimbCommands {
     }
 
     public static Command climbUp(ClimberSubsystem climber) {
-        return Commands.run(()-> climber.driveClimber(maxClimberVoltage), climber);
+        return Commands.run(()-> climber.driveClimber(-maxClimberVoltage), climber);
     }
 
     public static Command climbDown(ClimberSubsystem climber) {
-        return Commands.run(()-> climber.driveClimber(maxClimberVoltage));
+        return Commands.run(()-> climber.driveClimber(maxClimberVoltage), climber);
     }
 
 }

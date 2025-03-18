@@ -83,10 +83,10 @@ public class ArmConstants {
         public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(340);
         public static final double WRIST_REDUCTION = 9 * (41/13);
         public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm (changed to greater than 0 because change in construction of arm)
-        public static final double KS_WRIST = 0.0;
+        public static final double KS_WRIST = 0.5;
         public static final double KV_WRIST = 0.0;
         public static final double KA_WRIST = 0.0;
-        public static final double KP_WRIST = 150.0;
+        public static final double KP_WRIST = 300.0;
         public static final double KI_WRIST = 0.0;
         public static final double KD_WRIST = 0.0;
         public static final double WRIST_MAX_VELOCITY_RPS = 1.0;
@@ -123,14 +123,9 @@ public class ArmConstants {
                                 Units.inchesToMeters(41),
                                 Rotation2d.fromDegrees(40));
 
-                // public static final ArmPose TRANSITION = new ArmPose(
-                //                 Units.inchesToMeters(22),
-                //                 Units.inchesToMeters(47),
-                //                 Rotation2d.fromDegrees(0));
-
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
-                                Units.inchesToMeters(25.5),
-                                Units.inchesToMeters(41), //Actual 38
+                                Units.inchesToMeters(24), //Actual 25.5
+                                Units.inchesToMeters(38), //Actual 38
                                 Rotation2d.fromDegrees(30));
 
                 public static final ArmPose FRONT_FEEDER_STRETCH = new ArmPose(
@@ -151,12 +146,12 @@ public class ArmConstants {
                 public static final ArmPose REAR_L3_REEF = new ArmPose(
                                 Units.inchesToMeters(6),
                                 Units.inchesToMeters(55.5),
-                                Rotation2d.fromDegrees(205));
+                                Rotation2d.fromDegrees(213));
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
-                                Units.inchesToMeters(6.5),
+                                Units.inchesToMeters(7.5), //6.5
                                 Units.inchesToMeters(78),
-                                Rotation2d.fromDegrees(220));
+                                Rotation2d.fromDegrees(235));
 
                  public static final ArmPose ALGAE_STORE = new ArmPose(
                                 Units.inchesToMeters(19),
@@ -189,8 +184,8 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(220));
 
                 public static final ArmPose CLIMB_STRETCH = new ArmPose(
-                                Units.inchesToMeters(41), 
-                                Units.inchesToMeters(35),
-                                Rotation2d.fromDegrees(0));
+                                Units.inchesToMeters(34), 
+                                Units.inchesToMeters(28),
+                                Rotation2d.fromDegrees(100));
         }
 }
