@@ -124,7 +124,7 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(40));
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
-                                Units.inchesToMeters(24), //Actual 25.5
+                                Units.inchesToMeters(25.5), //Actual 25.5
                                 Units.inchesToMeters(38), //Actual 38
                                 Rotation2d.fromDegrees(30));
 
@@ -150,7 +150,7 @@ public class ArmConstants {
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
                                 Units.inchesToMeters(7.5), //6.5
-                                Units.inchesToMeters(78),
+                                Units.inchesToMeters(78.5),
                                 Rotation2d.fromDegrees(235));
 
                  public static final ArmPose ALGAE_STORE = new ArmPose(
