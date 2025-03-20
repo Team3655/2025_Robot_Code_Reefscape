@@ -208,7 +208,7 @@ public class ArmIOTalonFX implements ArmIO {
     inputs.elbowPosition = Rotation2d.fromRotations(elbowPosition.getValueAsDouble());
 
     inputs.wristCurrentAmps = new double[] { wristCurrent.getValueAsDouble() };
-    inputs.wristPosition = Rotation2d.fromRotations(wristPosition.getValueAsDouble());
+    inputs.wristPosition = Rotation2d.fromDegrees(Rotation2d.fromDegrees(90).minus(inputs.elbowPosition).getDegrees() + Rotation2d.fromRotations(wristPosition.getValueAsDouble()).getDegrees());
   }
 
   /**
