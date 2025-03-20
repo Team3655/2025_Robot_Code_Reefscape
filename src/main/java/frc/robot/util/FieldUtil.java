@@ -50,7 +50,7 @@ public class FieldUtil {
       reefTags[4] = 22;
       reefTags[5] = 17;
       /*
-       * INCREASING THE HORIZONTAL OFFSET MOVES YOUR ROBOT RIGHT
+       * INCREASING THE HORIZONTAL OFFSET MOVES YOUR ROBOT RIGHT (ROBOT RELATIVE)
        * 
        *  INCREASING THE FORWARD OFFSET MOVES YOUR ROBOT FORWARD
        * 
@@ -59,7 +59,7 @@ public class FieldUtil {
       left1 = new PoseOffset(Units.inchesToMeters(0), 0);
       left2 = new PoseOffset(Units.inchesToMeters(0.5), 0);
       left3 = new PoseOffset(Units.inchesToMeters(0), 0);
-      left4 = new PoseOffset(Units.inchesToMeters(0), 0);
+      left4 = new PoseOffset(Units.inchesToMeters(1), 0);
       left5 = new PoseOffset(Units.inchesToMeters(0), 0);
       left6 = new PoseOffset(Units.inchesToMeters(0), 0);
 

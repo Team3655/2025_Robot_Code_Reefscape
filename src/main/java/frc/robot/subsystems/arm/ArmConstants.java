@@ -124,7 +124,7 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(40));
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
-                                Units.inchesToMeters(25.5), //Actual 25.5
+                                Units.inchesToMeters(25), //Actual 25.5
                                 Units.inchesToMeters(38), //Actual 38
                                 Rotation2d.fromDegrees(30));
 
@@ -139,9 +139,9 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FRONT_L2_REEF = new ArmPose(
-                                Units.inchesToMeters(23), //25
-                                Units.inchesToMeters(34.5), //36
-                                Rotation2d.fromDegrees(0)); //-10
+                                Units.inchesToMeters(23),
+                                Units.inchesToMeters(34.5),
+                                Rotation2d.fromDegrees(0));
 
                 public static final ArmPose REAR_L3_REEF = new ArmPose(
                                 Units.inchesToMeters(6),
@@ -149,9 +149,9 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(213));
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
-                                Units.inchesToMeters(7.5), //6.5
-                                Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(235));
+                                Units.inchesToMeters(6), //6.5
+                                Units.inchesToMeters(78), //78.5
+                                Rotation2d.fromDegrees(235)); //235
 
                  public static final ArmPose ALGAE_STORE = new ArmPose(
                                 Units.inchesToMeters(19),
