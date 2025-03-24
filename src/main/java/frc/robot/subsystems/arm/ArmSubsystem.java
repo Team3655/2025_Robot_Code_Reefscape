@@ -220,6 +220,10 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
+  public boolean isAtSetpoint(double toleranceDegrees) {
+    return io.isAtSetpoint(toleranceDegrees);
+  }
+
   /**
    * Increment the wrist angle by degrees
    * 

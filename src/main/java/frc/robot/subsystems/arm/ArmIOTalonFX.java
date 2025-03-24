@@ -250,4 +250,13 @@ public class ArmIOTalonFX implements ArmIO {
 
     wristTalon.setControl(m_request.withPosition(position.getRotations()));
   }
+
+  @Override
+  public boolean isAtSetpoint(double toleranceDegrees) {
+    boolean shoulderAtTarget = Math.abs(shoulderLeaderTalon.getClosedLoopError().getValueAsDouble()) < toleranceDegrees;
+    boolean elbowAtTarget = Math.abs(elbowLeaderTalon.getClosedLoopError().getValueAsDouble()) < toleranceDegrees;
+    boolean wristAtTarget = Math.abs(wristTalon.getClosedLoopError().getValueAsDouble()) < toleranceDegrees;
+
+    return shoulderAtTarget && elbowAtTarget && wristAtTarget;
+  }
 }

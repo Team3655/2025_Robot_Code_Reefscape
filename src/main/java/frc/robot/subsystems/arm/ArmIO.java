@@ -27,4 +27,5 @@ public interface ArmIO {
   public default void setShoulderPosition(Rotation2d position) {}
   public default void setElbowPosition(Rotation2d position) {}
   public default void setWristPosition(Rotation2d position) {}
+  public default boolean isAtSetpoint(double toleranceDegrees){return false;}
 }
