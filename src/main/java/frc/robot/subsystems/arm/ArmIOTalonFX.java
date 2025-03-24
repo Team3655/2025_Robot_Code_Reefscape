@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -253,9 +254,9 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public boolean isAtSetpoint(double toleranceDegrees) {
-    boolean shoulderAtTarget = Math.abs(shoulderLeaderTalon.getClosedLoopError().getValueAsDouble()) < toleranceDegrees;
-    boolean elbowAtTarget = Math.abs(elbowLeaderTalon.getClosedLoopError().getValueAsDouble()) < toleranceDegrees;
-    boolean wristAtTarget = Math.abs(wristTalon.getClosedLoopError().getValueAsDouble()) < toleranceDegrees;
+    boolean shoulderAtTarget = Math.abs(shoulderLeaderTalon.getClosedLoopError().getValueAsDouble()) < Units.degreesToRotations(toleranceDegrees);
+    boolean elbowAtTarget = Math.abs(elbowLeaderTalon.getClosedLoopError().getValueAsDouble()) < Units.degreesToRotations(toleranceDegrees);
+    boolean wristAtTarget = Math.abs(wristTalon.getClosedLoopError().getValueAsDouble()) < Units.degreesToRotations(toleranceDegrees);
 
     return shoulderAtTarget && elbowAtTarget && wristAtTarget;
   }
