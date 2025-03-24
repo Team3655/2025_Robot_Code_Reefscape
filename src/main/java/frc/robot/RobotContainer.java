@@ -29,7 +29,7 @@ import frc.robot.commands.ArmCommands;
 import frc.robot.commands.ClimbCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommands;
-import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.subsystems.arm.ArmConstants.ArmPose;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -178,12 +178,12 @@ public class RobotContainer {
                 break;
         }
 
-        NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
+        NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmPose.START));
         NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(
-                ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, -6)));
+                ArmCommands.updateSetpoint(arm, ArmPose.FRONT_FEEDER), IntakeCommands.runIntake(intake, -6)));
         //NamedCommands.registerCommand("ArmState_L1", ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
-        NamedCommands.registerCommand("ArmState_L2", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, -2)));
-        NamedCommands.registerCommand("ArmState_L4", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
+        NamedCommands.registerCommand("ArmState_L2", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmPose.FRONT_L2_REEF), IntakeCommands.runIntake(intake, -2)));
+        NamedCommands.registerCommand("ArmState_L4", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmPose.REAR_L4_REEF),
                 IntakeCommands.runIntake(intake, -3)));
         NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 6));
         NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
@@ -227,7 +227,7 @@ public class RobotContainer {
 
                 mattTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
 
-                tractorController.button(21).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmStates.CLIMB_STRETCH), arm)));
+                tractorController.button(21).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmPose.CLIMB_STRETCH), arm)));
                 
                 tractorController.button(21).and(mattRotation.fireStage2()).whileTrue(
                         ClimbCommands.climbUp(climber))
@@ -245,7 +245,7 @@ public class RobotContainer {
                         .onFalse(IntakeCommands.stopIntake(intake));
 
                 tractorController.button(10).onTrue(Commands.parallel(
-                        ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)));
+                        ArmCommands.updateSetpoint(arm, ArmPose.START), IntakeCommands.stopAll(intake)));
 
                 // tractorController.button(10)
                 //         .onTrue(Commands
@@ -256,39 +256,39 @@ public class RobotContainer {
 
                 tractorController.button(5)
                         .onTrue(Commands
-                                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
+                                .sequence(ArmCommands.updateSetpoint(arm, ArmPose.FRONT_FEEDER),
                                         IntakeCommands.runIntake(intake, -6)))
                         .onFalse(Commands
                                 .sequence(IntakeCommands.stopIntake(intake),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                                        ArmCommands.updateSetpoint(arm, ArmPose.FEEDER_START_TRANSITION),
                                         new WaitCommand(0.5),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
+                                        ArmCommands.updateSetpoint(arm, ArmPose.START)));
 
                 tractorController.button(4)
                         .onTrue(Commands
-                                .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER_STRETCH),
+                                .sequence(ArmCommands.updateSetpoint(arm, ArmPose.FRONT_FEEDER_STRETCH),
                                         IntakeCommands.runIntake(intake, -6)))
                         .onFalse(Commands
                                 .sequence(IntakeCommands.stopIntake(intake),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                                        ArmCommands.updateSetpoint(arm, ArmPose.FEEDER_START_TRANSITION),
                                         new WaitCommand(0.5),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
+                                        ArmCommands.updateSetpoint(arm, ArmPose.START)));
 
-                tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+                tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmPose.FRONT_L1_REEF));
                 
                 tractorController.button(1)
                         .onTrue(Commands
-                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF),
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmPose.FRONT_L2_REEF),
                                         IntakeCommands.runIntake(intake, 0)));
 
                 tractorController.button(2)
                         .onTrue(Commands
-                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF),
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmPose.REAR_L3_REEF),
                                         IntakeCommands.runIntake(intake, -3)));
 
                 tractorController.button(3)
                         .onTrue(Commands
-                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmPose.REAR_L4_REEF),
                                         IntakeCommands.runIntake(intake, -3)));
 
                 // tractorController.button(3)
@@ -321,7 +321,7 @@ public class RobotContainer {
                                         driveMultiplier,
                                         ethanTranslation.fireStage1().or(ethanTranslation.fireStage2())));
 
-                        tractorController.button(21).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmStates.CLIMB_STRETCH), arm)));
+                        tractorController.button(21).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmPose.CLIMB_STRETCH), arm)));
                         
                         tractorController.button(21).and(ethanRotation.fireStage2()).whileTrue(
                                 ClimbCommands.climbUp(climber))
@@ -343,43 +343,43 @@ public class RobotContainer {
                                         .onFalse(IntakeCommands.stopIntake(intake));
                 
                         tractorController.button(10).onTrue(Commands.parallel(
-                                ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)));
+                                ArmCommands.updateSetpoint(arm, ArmPose.START), IntakeCommands.stopAll(intake)));
                 
                         tractorController.button(5)
                                 .onTrue(Commands
-                                        .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
+                                        .sequence(ArmCommands.updateSetpoint(arm, ArmPose.FRONT_FEEDER),
                                         IntakeCommands.runIntake(intake, -6)))
                                 .onFalse(Commands
                                         .sequence(IntakeCommands.stopIntake(intake),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                                        ArmCommands.updateSetpoint(arm, ArmPose.FEEDER_START_TRANSITION),
                                         new WaitCommand(0.5),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
+                                        ArmCommands.updateSetpoint(arm, ArmPose.START)));
 
                         tractorController.button(4)
                                 .onTrue(Commands
-                                        .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER_STRETCH),
+                                        .sequence(ArmCommands.updateSetpoint(arm, ArmPose.FRONT_FEEDER_STRETCH),
                                         IntakeCommands.runIntake(intake, -6)))
                                 .onFalse(Commands
                                         .sequence(IntakeCommands.stopIntake(intake),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                                        ArmCommands.updateSetpoint(arm, ArmPose.FEEDER_START_TRANSITION),
                                         new WaitCommand(0.5),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
+                                        ArmCommands.updateSetpoint(arm, ArmPose.START)));
 
-                        tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
+                        tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmPose.FRONT_L1_REEF));
                 
                         tractorController.button(1)
                                 .onTrue(Commands
-                                        .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF),
+                                        .parallel(ArmCommands.updateSetpoint(arm, ArmPose.FRONT_L2_REEF),
                                         IntakeCommands.runIntake(intake, 0)));
 
                         tractorController.button(2)
                                 .onTrue(Commands
-                                        .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF),
+                                        .parallel(ArmCommands.updateSetpoint(arm, ArmPose.REAR_L3_REEF),
                                         IntakeCommands.runIntake(intake, -3)));
 
                         tractorController.button(3)
                                 .onTrue(Commands
-                                        .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
+                                        .parallel(ArmCommands.updateSetpoint(arm, ArmPose.REAR_L4_REEF),
                                                 IntakeCommands.runIntake(intake, -3)));
 
                         // X Postive is TOWARDS battery
@@ -388,7 +388,7 @@ public class RobotContainer {
                         // Bump up
                         tractorController.button(17).onTrue((Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm)));
 
-                        tractorController.button(22).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER_STRETCH), arm)));
+                        tractorController.button(22).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmPose.FRONT_FEEDER_STRETCH), arm)));
                 break;
 
             case PROGRAMMING:
@@ -409,11 +409,11 @@ public class RobotContainer {
                 programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
 
                 programmingController.a().onTrue(ArmCommands.updateSetpoint(arm,
-                ArmStates.START));
+                ArmPose.START));
                 programmingController.b().onTrue(ArmCommands.updateSetpoint(arm,
-                ArmStates.FRONT_FEEDER_STRETCH));
+                ArmPose.FRONT_FEEDER_STRETCH));
                 programmingController.y().onTrue(ArmCommands.updateSetpoint(arm, 
-                ArmStates.CLIMB_STRETCH));
+                ArmPose.CLIMB_STRETCH));
 
                 break;
 

@@ -17,6 +17,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.subsystems.arm.ArmConstants.ArmPose;
 import frc.robot.subsystems.drive.DriveConstants;
 
 public class RobotState {
@@ -35,6 +36,7 @@ public class RobotState {
   }
 
   private record ArmState(
+      ArmPose pose,
       Rotation2d shoulderAngle,
       Rotation2d elbowAngle,
       Rotation2d wristAngle,
@@ -87,7 +89,7 @@ public class RobotState {
 
     rawGyroRotation = new Rotation2d();
 
-    armState = new ArmState(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), 0, 0);
+    armState = new ArmState(ArmPose.START, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), 0, 0);
   }
 
   public synchronized void addOdometryMeasurement(OdometryMeasurement measurement) {
@@ -119,13 +121,14 @@ public class RobotState {
   }
 
   public synchronized void updateArmState(
+      ArmPose pose,
       Rotation2d shoulderAngle,
       Rotation2d elbowAngle,
       Rotation2d wristAngle,
       double xPosition,
       double yPosition) {
 
-    armState = new ArmState(shoulderAngle, elbowAngle, wristAngle, xPosition, yPosition);
+    armState = new ArmState(pose, shoulderAngle, elbowAngle, wristAngle, xPosition, yPosition);
   }
 
   public synchronized void resetPose(Pose2d pose) {

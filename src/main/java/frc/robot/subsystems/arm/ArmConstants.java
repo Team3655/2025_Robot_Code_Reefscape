@@ -2,7 +2,6 @@ package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
 
 public class ArmConstants {
 
@@ -103,89 +102,123 @@ public class ArmConstants {
 
         public static final int LIMIT_SWITCH_ID = 8;
 
+        public enum ArmPose{
+                START (19.0, 34.9, Rotation2d.fromDegrees(0)),
+                FEEDER_START_TRANSITION (20, 41, Rotation2d.fromDegrees(40)),
+                FRONT_FEEDER (25, 38, Rotation2d.fromDegrees(30)),
+                FRONT_FEEDER_STRETCH (28.5, 39, Rotation2d.fromDegrees(30)),
+                FRONT_L1_REEF (36, 29, Rotation2d.fromDegrees(0)),
+                FRONT_L2_REEF (23, 34.5, Rotation2d.fromDegrees(0)),
+                REAR_L3_REEF (6, 55.5, Rotation2d.fromDegrees(213)),
+                REAR_L4_REEF (6, 78, Rotation2d.fromDegrees(235)),
+                ALGAE_STORE (19, 34.5, Rotation2d.fromDegrees(160)),
+                FRONT_L1_ALGAE (21, 35.5, Rotation2d.fromDegrees(115)),
+                FRONT_L2_ALGAE (29, 39, Rotation2d.fromDegrees(155)),
+                FRONT_L2_ALGAE_ROTATED (22, 42, Rotation2d.fromDegrees(160)),
+                FRONT_BARGE (11, 78.5, Rotation2d.fromDegrees(160)),
+                FRONT_BARGE_ROTATED (11, 78.5, Rotation2d.fromDegrees(220)),
+                CLIMB_STRETCH (34, 28, Rotation2d.fromDegrees(100));
+
+                private final double xSetpoint;
+                private final double ySetpoint;
+                private final Rotation2d wristSetpoint;
+
+                ArmPose(double xSetpoint, double ySetpoint, Rotation2d wristSetPoint){
+                        this.xSetpoint = xSetpoint;
+                        this.ySetpoint = ySetpoint;
+                        this.wristSetpoint = wristSetPoint;
+                }
+
+                public double xSetpoint() { return xSetpoint; }
+                public double ySetpoint() { return ySetpoint; }
+                public Rotation2d wristSetpoint() {return wristSetpoint; }
+        }
+
+
+
         /**
          * A class that stores all the states the arm could be at.
          * <br></br> <code> ArmStates.STATE; </code>
          */
-        public class ArmStates {
-                /**
-                 * WARNING - Changing the initial/START pose of the robot arm
-                 * to an invalid state could BREAK the robot.  Ensure the 
-                 * setpoints are physically possible before deploying.
-                 */
-                public static final ArmPose START = new ArmPose(
-                                Units.inchesToMeters(19.0), //cad number = 18.138
-                                Units.inchesToMeters(34.9), //cad number = 35.059
-                                Rotation2d.fromDegrees(0));
+        // public class ArmStates {
+        //         /**
+        //          * WARNING - Changing the initial/START pose of the robot arm
+        //          * to an invalid state could BREAK the robot.  Ensure the 
+        //          * setpoints are physically possible before deploying.
+        //          */
+        //         public static final ArmPose START = new ArmPose(
+        //                         Units.inchesToMeters(19.0), //cad number = 18.138
+        //                         Units.inchesToMeters(34.9), //cad number = 35.059
+        //                         Rotation2d.fromDegrees(0));
 
-                public static final ArmPose FEEDER_START_TRANSITION = new ArmPose(
-                                Units.inchesToMeters(20),
-                                Units.inchesToMeters(41),
-                                Rotation2d.fromDegrees(40));
+        //         public static final ArmPose FEEDER_START_TRANSITION = new ArmPose(
+        //                         Units.inchesToMeters(20),
+        //                         Units.inchesToMeters(41),
+        //                         Rotation2d.fromDegrees(40));
 
-                public static final ArmPose FRONT_FEEDER = new ArmPose(
-                                Units.inchesToMeters(25), //Actual 25.5
-                                Units.inchesToMeters(38), //Actual 38
-                                Rotation2d.fromDegrees(30));
+        //         public static final ArmPose FRONT_FEEDER = new ArmPose(
+        //                         Units.inchesToMeters(25), //Actual 25.5
+        //                         Units.inchesToMeters(38), //Actual 38
+        //                         Rotation2d.fromDegrees(30));
 
-                public static final ArmPose FRONT_FEEDER_STRETCH = new ArmPose(
-                                Units.inchesToMeters(28.5),
-                                Units.inchesToMeters(39),
-                                Rotation2d.fromDegrees(30));
+        //         public static final ArmPose FRONT_FEEDER_STRETCH = new ArmPose(
+        //                         Units.inchesToMeters(28.5),
+        //                         Units.inchesToMeters(39),
+        //                         Rotation2d.fromDegrees(30));
 
-                public static final ArmPose FRONT_L1_REEF = new ArmPose(
-                                Units.inchesToMeters(36),
-                                Units.inchesToMeters(29),
-                                Rotation2d.fromDegrees(0));
+        //         public static final ArmPose FRONT_L1_REEF = new ArmPose(
+        //                         Units.inchesToMeters(36),
+        //                         Units.inchesToMeters(29),
+        //                         Rotation2d.fromDegrees(0));
 
-                public static final ArmPose FRONT_L2_REEF = new ArmPose(
-                                Units.inchesToMeters(23),
-                                Units.inchesToMeters(34.5),
-                                Rotation2d.fromDegrees(0));
+        //         public static final ArmPose FRONT_L2_REEF = new ArmPose(
+        //                         Units.inchesToMeters(23),
+        //                         Units.inchesToMeters(34.5),
+        //                         Rotation2d.fromDegrees(0));
 
-                public static final ArmPose REAR_L3_REEF = new ArmPose(
-                                Units.inchesToMeters(6),
-                                Units.inchesToMeters(55.5),
-                                Rotation2d.fromDegrees(213));
+        //         public static final ArmPose REAR_L3_REEF = new ArmPose(
+        //                         Units.inchesToMeters(6),
+        //                         Units.inchesToMeters(55.5),
+        //                         Rotation2d.fromDegrees(213));
 
-                public static final ArmPose REAR_L4_REEF = new ArmPose(
-                                Units.inchesToMeters(6), //6.5
-                                Units.inchesToMeters(78), //78.5
-                                Rotation2d.fromDegrees(235)); //235
+        //         public static final ArmPose REAR_L4_REEF = new ArmPose(
+        //                         Units.inchesToMeters(6), //6.5
+        //                         Units.inchesToMeters(78), //78.5
+        //                         Rotation2d.fromDegrees(235)); //235
 
-                 public static final ArmPose ALGAE_STORE = new ArmPose(
-                                Units.inchesToMeters(19),
-                                Units.inchesToMeters(34.5),
-                                Rotation2d.fromDegrees(160));
+        //          public static final ArmPose ALGAE_STORE = new ArmPose(
+        //                         Units.inchesToMeters(19),
+        //                         Units.inchesToMeters(34.5),
+        //                         Rotation2d.fromDegrees(160));
 
-                public static final ArmPose FRONT_L1_ALGAE = new ArmPose(
-                                Units.inchesToMeters(21), //34
-                                Units.inchesToMeters(35.5), //42
-                                Rotation2d.fromDegrees(115)); //100
+        //         public static final ArmPose FRONT_L1_ALGAE = new ArmPose(
+        //                         Units.inchesToMeters(21), //34
+        //                         Units.inchesToMeters(35.5), //42
+        //                         Rotation2d.fromDegrees(115)); //100
 
-                public static final ArmPose FRONT_L2_ALGAE = new ArmPose(
-                                Units.inchesToMeters(29), //30
-                                Units.inchesToMeters(39), //38
-                                Rotation2d.fromDegrees(155)); //155
+        //         public static final ArmPose FRONT_L2_ALGAE = new ArmPose(
+        //                         Units.inchesToMeters(29), //30
+        //                         Units.inchesToMeters(39), //38
+        //                         Rotation2d.fromDegrees(155)); //155
                 
-                public static final ArmPose FRONT_L2_ALGAE_ROTATED = new ArmPose(
-                                Units.inchesToMeters(22), //34
-                                Units.inchesToMeters(42), //59
-                                Rotation2d.fromDegrees(160)); //185
+        //         public static final ArmPose FRONT_L2_ALGAE_ROTATED = new ArmPose(
+        //                         Units.inchesToMeters(22), //34
+        //                         Units.inchesToMeters(42), //59
+        //                         Rotation2d.fromDegrees(160)); //185
 
-                public static final ArmPose FRONT_BARGE = new ArmPose(
-                                Units.inchesToMeters(11),
-                                Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(160));
+        //         public static final ArmPose FRONT_BARGE = new ArmPose(
+        //                         Units.inchesToMeters(11),
+        //                         Units.inchesToMeters(78.5),
+        //                         Rotation2d.fromDegrees(160));
 
-                public static final ArmPose FRONT_BARGE_ROTATED = new ArmPose(
-                                Units.inchesToMeters(11),
-                                Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(220));
+        //         public static final ArmPose FRONT_BARGE_ROTATED = new ArmPose(
+        //                         Units.inchesToMeters(11),
+        //                         Units.inchesToMeters(78.5),
+        //                         Rotation2d.fromDegrees(220));
 
-                public static final ArmPose CLIMB_STRETCH = new ArmPose(
-                                Units.inchesToMeters(34), 
-                                Units.inchesToMeters(28),
-                                Rotation2d.fromDegrees(100));
-        }
+        //         public static final ArmPose CLIMB_STRETCH = new ArmPose(
+        //                         Units.inchesToMeters(34), 
+        //                         Units.inchesToMeters(28),
+        //                         Rotation2d.fromDegrees(100));
+        // }
 }

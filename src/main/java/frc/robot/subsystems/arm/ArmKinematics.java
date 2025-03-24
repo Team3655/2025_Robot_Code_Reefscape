@@ -19,7 +19,8 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
-import frc.robot.subsystems.arm.ArmSubsystem.ArmPose;
+import frc.robot.subsystems.arm.ArmConstants.ArmPose;
+import frc.robot.subsystems.arm.ArmSubsystem.ArmSetpoint;
 import frc.robot.util.Elastic;
 import frc.robot.util.Elastic.Notification;
 import frc.robot.util.Elastic.Notification.NotificationLevel;
@@ -72,8 +73,8 @@ public class ArmKinematics {
         this.L3 = L3;
 
         currentArmAngles = getArmAngles(
-            ArmConstants.ArmStates.START.xTarget(), 
-            ArmConstants.ArmStates.START.yTarget(),
+            ArmPose.START.xSetpoint(),
+            ArmPose.START.ySetpoint(),
             ArmConstants.activeEncoders);
     }
 
@@ -215,19 +216,11 @@ public class ArmKinematics {
     /**
      * Validates that the requested state of the arm is possible to achieve
      * 
-     * @param L4             Line segment between first joint and end of arm
-     * @param L5             Line segment between base of tower to second joint
-     * @param L6             Line segment between base of tower and end of arm
-     * @param theta1         Angle of the shoulder relative to the horizontal
-     * @param relativeTheta2 Angle of the elbow relative to the Earth
-     * @param theta3         Angle between shoulder and L4
-     * @param theta4        Obtuse angle between shoulder and elbow - across from
-     *                       L4
-     * @throws InvalidArmState Error to throw when state is not valid
+     * @param ArmPosesEnum The arm pose to validate
      */
-    public boolean isValidState(ArmPose pose) {
+    public boolean isValidSetpoint(ArmSetpoint setpoint) {
 
-        calculateInverseKinematics(pose.xTarget(), pose.yTarget());
+        calculateInverseKinematics(setpoint.xTarget(), setpoint.yTarget());
 
         double[] values = new double[6];
         values[0] = L4;
