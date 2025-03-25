@@ -291,6 +291,14 @@ public class RobotContainer {
                                 .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
                                         IntakeCommands.runIntake(intake, -3)));
 
+                tractorController.button(12)
+                .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE))
+                .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L1_ALGAE));
+
+                tractorController.button(11)
+                .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE))
+                .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L2_ALGAE));
+
                 // tractorController.button(3)
                 //         .onTrue(Commands
                 //                 .sequence(IntakeCommands.stopIntake(intake),
@@ -382,6 +390,7 @@ public class RobotContainer {
                                         .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
                                                 IntakeCommands.runIntake(intake, -3)));
 
+
                         // X Postive is TOWARDS battery
                         // Y positive is UP
                         tractorController.button(18).onTrue(Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm));
@@ -389,6 +398,14 @@ public class RobotContainer {
                         tractorController.button(17).onTrue((Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm)));
 
                         tractorController.button(22).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER_STRETCH), arm)));
+
+                        tractorController.button(12)
+                        .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE))
+                        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L1_ALGAE));
+        
+                        tractorController.button(11)
+                        .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE))
+                        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L2_ALGAE));
                 break;
 
             case PROGRAMMING:

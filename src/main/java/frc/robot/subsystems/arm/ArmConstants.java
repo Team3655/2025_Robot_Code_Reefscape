@@ -81,7 +81,7 @@ public class ArmConstants {
         public static final double WRIST_MASS_KG = 1;
         public static final Rotation2d WRIST_MIN_ANGLE_RADS = Rotation2d.fromDegrees(-20);
         public static final Rotation2d WRIST_MAX_ANGLE_RADS = Rotation2d.fromDegrees(340);
-        public static final double WRIST_REDUCTION = 9 * (41/13);
+        public static final double WRIST_REDUCTION = 3 * 9 * (41/13);
         public static final double KG_WRIST = 0.0; // This should remain zero based on construction of the arm (changed to greater than 0 because change in construction of arm)
         public static final double KS_WRIST = 0.5;
         public static final double KV_WRIST = 0.0;
@@ -139,7 +139,7 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(0));
 
                 public static final ArmPose FRONT_L2_REEF = new ArmPose(
-                                Units.inchesToMeters(23),
+                                Units.inchesToMeters(25),
                                 Units.inchesToMeters(34.5),
                                 Rotation2d.fromDegrees(0));
 
@@ -149,8 +149,8 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(213));
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
-                                Units.inchesToMeters(6), //6.5
-                                Units.inchesToMeters(78), //78.5
+                                Units.inchesToMeters(6), //6
+                                Units.inchesToMeters(77), //78
                                 Rotation2d.fromDegrees(235)); //235
 
                  public static final ArmPose ALGAE_STORE = new ArmPose(
@@ -158,30 +158,25 @@ public class ArmConstants {
                                 Units.inchesToMeters(34.5),
                                 Rotation2d.fromDegrees(160));
 
-                public static final ArmPose FRONT_L1_ALGAE = new ArmPose(
-                                Units.inchesToMeters(21), //34
-                                Units.inchesToMeters(35.5), //42
-                                Rotation2d.fromDegrees(115)); //100
+                public static final ArmPose PREP_L1_ALGAE = new ArmPose(
+                                Units.inchesToMeters(26),
+                                Units.inchesToMeters(40),
+                                Rotation2d.fromDegrees(180));
 
-                public static final ArmPose FRONT_L2_ALGAE = new ArmPose(
-                                Units.inchesToMeters(29), //30
-                                Units.inchesToMeters(39), //38
-                                Rotation2d.fromDegrees(155)); //155
-                
-                public static final ArmPose FRONT_L2_ALGAE_ROTATED = new ArmPose(
-                                Units.inchesToMeters(22), //34
-                                Units.inchesToMeters(42), //59
-                                Rotation2d.fromDegrees(160)); //185
+                public static final ArmPose L1_ALGAE = new ArmPose(
+                                Units.inchesToMeters(26),
+                                Units.inchesToMeters(36),
+                                Rotation2d.fromDegrees(170));
 
-                public static final ArmPose FRONT_BARGE = new ArmPose(
-                                Units.inchesToMeters(11),
-                                Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(160));
-
-                public static final ArmPose FRONT_BARGE_ROTATED = new ArmPose(
-                                Units.inchesToMeters(11),
-                                Units.inchesToMeters(78.5),
-                                Rotation2d.fromDegrees(220));
+                public static final ArmPose PREP_L2_ALGAE = new ArmPose(
+                                        Units.inchesToMeters(26),
+                                        Units.inchesToMeters(58),
+                                        Rotation2d.fromDegrees(180));
+        
+                public static final ArmPose L2_ALGAE = new ArmPose(
+                                        Units.inchesToMeters(26),
+                                        Units.inchesToMeters(54),
+                                        Rotation2d.fromDegrees(170));
 
                 public static final ArmPose CLIMB_STRETCH = new ArmPose(
                                 Units.inchesToMeters(34), 
