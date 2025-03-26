@@ -120,7 +120,7 @@ public class FieldUtil {
       boolean shouldFlip = i == 2 || i == 3 || i == 4;
 
       // Intake is not centered on the robot
-      double intakeOffset = Units.inchesToMeters(1);
+      double intakeOffset = Units.inchesToMeters(0);
 
       if (!shouldFlip) {
         leftAlignment = tagPose.transformBy(new Transform2d(DriveConstants.BUMPER_WIDTH_X / 2,

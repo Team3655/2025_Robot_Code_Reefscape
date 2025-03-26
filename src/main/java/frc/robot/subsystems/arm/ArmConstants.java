@@ -49,8 +49,8 @@ public class ArmConstants {
         public static final double KP_SHOULDER = 100.0;
         public static final double KI_SHOULDER = 0.0;
         public static final double KD_SHOULDER = 0.0;
-        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.3;
-        public static final double SHOULDER_MAX_ACCELERATION_RPS2 = 0.1;
+        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.4; //0.3
+        public static final double SHOULDER_MAX_ACCELERATION_RPS2 = 0.1; //0.1
         public static final double SHOULDER_MAX_JERK_RPS3 = 60.0;
 
         public static final int ELBOW_MOTOR_ID = 33;
@@ -63,14 +63,14 @@ public class ArmConstants {
         public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(180);
         public static final double ELBOW_REDUCTION = 63.7755;
         public static final double KG_ELBOW = 0.95; 
-        public static final double KS_ELBOW = 2.5;
+        public static final double KS_ELBOW = 2.75;
         public static final double KV_ELBOW = 0.0;
         public static final double KA_ELBOW = 0.0;
         public static final double KP_ELBOW = 100;
         public static final double KI_ELBOW = 0.0;
         public static final double KD_ELBOW = 0.0;
-        public static final double ELBOW_MAX_VELOCITY_RPS = 0.2;
-        public static final double ELBOW_MAX_ACCELERATION_RPS2 = 0.1;
+        public static final double ELBOW_MAX_VELOCITY_RPS = 0.4; //0.2
+        public static final double ELBOW_MAX_ACCELERATION_RPS2 = 0.1; //0.1
         public static final double ELBOW_MAX_JERK_RPS3 = 60.0;
 
         public static final int WRIST_MOTOR_ID = 36;
@@ -89,7 +89,7 @@ public class ArmConstants {
         public static final double KP_WRIST = 300.0;
         public static final double KI_WRIST = 0.0;
         public static final double KD_WRIST = 0.0;
-        public static final double WRIST_MAX_VELOCITY_RPS = 1.0;
+        public static final double WRIST_MAX_VELOCITY_RPS = 2.5; //1.5
         public static final double WRIST_MAX_ACCELERATION_RPS2 = 8.0;
         public static final double WRIST_MAX_JERK_RPS3 = 60.0;
 
@@ -125,7 +125,7 @@ public class ArmConstants {
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
                                 Units.inchesToMeters(25), //Actual 25.5
-                                Units.inchesToMeters(38), //Actual 38
+                                Units.inchesToMeters(39), //Actual 39
                                 Rotation2d.fromDegrees(30));
 
                 public static final ArmPose FRONT_FEEDER_STRETCH = new ArmPose(
@@ -148,9 +148,14 @@ public class ArmConstants {
                                 Units.inchesToMeters(55.5),
                                 Rotation2d.fromDegrees(213));
 
+                public static final ArmPose REAR_L4_REEF_TRANSITION = new ArmPose(
+                                Units.inchesToMeters(14),
+                                Units.inchesToMeters(60),
+                                Rotation2d.fromDegrees(0));
+
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
                                 Units.inchesToMeters(6), //6
-                                Units.inchesToMeters(77), //78
+                                Units.inchesToMeters(78), //77
                                 Rotation2d.fromDegrees(235)); //235
 
                  public static final ArmPose ALGAE_STORE = new ArmPose(
@@ -169,14 +174,14 @@ public class ArmConstants {
                                 Rotation2d.fromDegrees(170));
 
                 public static final ArmPose PREP_L2_ALGAE = new ArmPose(
-                                        Units.inchesToMeters(26),
-                                        Units.inchesToMeters(58),
-                                        Rotation2d.fromDegrees(180));
+                                Units.inchesToMeters(26),
+                                Units.inchesToMeters(58),
+                                Rotation2d.fromDegrees(180));
         
                 public static final ArmPose L2_ALGAE = new ArmPose(
-                                        Units.inchesToMeters(26),
-                                        Units.inchesToMeters(54),
-                                        Rotation2d.fromDegrees(170));
+                                Units.inchesToMeters(26),
+                                Units.inchesToMeters(54),
+                                Rotation2d.fromDegrees(170));
 
                 public static final ArmPose CLIMB_STRETCH = new ArmPose(
                                 Units.inchesToMeters(34), 
