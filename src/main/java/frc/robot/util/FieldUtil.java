@@ -56,17 +56,17 @@ public class FieldUtil {
        * 
        * BLUE SIDE OFFSETS
        */
-      left1 = new PoseOffset(Units.inchesToMeters(0), 0);
-      left2 = new PoseOffset(Units.inchesToMeters(0.5), 0);
+      left1 = new PoseOffset(Units.inchesToMeters(-1.5), 0);
+      left2 = new PoseOffset(Units.inchesToMeters(0), 0);
       left3 = new PoseOffset(Units.inchesToMeters(0), 0);
-      left4 = new PoseOffset(Units.inchesToMeters(1), 0);
+      left4 = new PoseOffset(Units.inchesToMeters(-1), 0);
       left5 = new PoseOffset(Units.inchesToMeters(0), 0);
       left6 = new PoseOffset(Units.inchesToMeters(0), 0);
 
       right1 = new PoseOffset(Units.inchesToMeters(-0.5), 0);
       right2 = new PoseOffset(Units.inchesToMeters(0), 0);
-      right3 = new PoseOffset(Units.inchesToMeters(0), 0);
-      right4 = new PoseOffset(Units.inchesToMeters(0), 0);
+      right3 = new PoseOffset(Units.inchesToMeters(-1), 0);
+      right4 = new PoseOffset(Units.inchesToMeters(-0.5), 0);
       right5 = new PoseOffset(Units.inchesToMeters(0), 0);
       right6 = new PoseOffset(Units.inchesToMeters(0), 0);
     } else {

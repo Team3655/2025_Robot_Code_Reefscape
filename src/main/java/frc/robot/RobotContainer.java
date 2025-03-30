@@ -184,7 +184,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(
                 ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, -6)));
         NamedCommands.registerCommand("ArmState_Intake_Snap", Commands.sequence(IntakeCommands.stopIntake(intake),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN),
                                         new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
                                         IntakeCommands.runIntake(intake, -6),
                                         ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER)));
@@ -192,7 +192,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("ArmState_L2", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, -2)));
         NamedCommands.registerCommand("ArmState_L4", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake, -3)));
         NamedCommands.registerCommand("ArmState_L4_Snap", Commands.sequence(IntakeCommands.runIntake(intake, -3),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_UP),
                                         new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
                                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF)));
 
@@ -307,24 +307,35 @@ public class RobotContainer {
                 // tractorController.button(14)
                 //         .onTrue(Commands
                 //                 .sequence(IntakeCommands.runIntake(intake, -3),
-                //                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                //                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_UP),
                 //                         new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
                 //                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF)));
 
                 // tractorController.button(16)
                 //         .onTrue(Commands
                 //                 .sequence(IntakeCommands.stopIntake(intake),
-                //                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                //                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN),
                 //                         new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
                 //                         ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
+                //Algae Positions
+                tractorController.button(16).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.ALGAE_STORE));
+
                 tractorController.button(12)
-                .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE))
-                .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L1_ALGAE));
+                        .onTrue(Commands
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE),
+                                        IntakeCommands.runIntake(intake, -10)))
+                        .onFalse(Commands
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L1_ALGAE),
+                                        IntakeCommands.stopIntake(intake)));
 
                 tractorController.button(11)
-                .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE))
-                .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L2_ALGAE));
+                        .onTrue(Commands
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE),
+                                        IntakeCommands.runIntake(intake, -10)))
+                        .onFalse(Commands
+                                .parallel(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L2_ALGAE),
+                                        IntakeCommands.stopIntake(intake)));
 
 
                 // X Postive is TOWARDS battery
@@ -418,11 +429,11 @@ public class RobotContainer {
 
                         tractorController.button(12)
                         .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE))
-                        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L1_ALGAE));
+                        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L1_ALGAE));
         
                         tractorController.button(11)
                         .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE))
-                        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L2_ALGAE));
+                        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L2_ALGAE));
                 break;
 
             case PROGRAMMING:

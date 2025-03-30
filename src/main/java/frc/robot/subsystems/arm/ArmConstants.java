@@ -43,13 +43,13 @@ public class ArmConstants {
         public static final Rotation2d SHOULDER_MAX_ANGLE = Rotation2d.fromDegrees(90);
         public static final double SHOULDER_REDUCTION = 63; //63.7755
         public static final double KG_SHOULDER = 0.7;
-        public static final double KS_SHOULDER = 3.0;
+        public static final double KS_SHOULDER = 3.25;
         public static final double KV_SHOULDER = 0.0;
         public static final double KA_SHOULDER = 0.0;
         public static final double KP_SHOULDER = 100.0;
         public static final double KI_SHOULDER = 0.0;
         public static final double KD_SHOULDER = 0.0;
-        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.4; //0.3
+        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.3; //0.3
         public static final double SHOULDER_MAX_ACCELERATION_RPS2 = 0.1; //0.1
         public static final double SHOULDER_MAX_JERK_RPS3 = 60.0;
 
@@ -69,7 +69,7 @@ public class ArmConstants {
         public static final double KP_ELBOW = 100;
         public static final double KI_ELBOW = 0.0;
         public static final double KD_ELBOW = 0.0;
-        public static final double ELBOW_MAX_VELOCITY_RPS = 0.4; //0.2
+        public static final double ELBOW_MAX_VELOCITY_RPS = 0.2; //0.2
         public static final double ELBOW_MAX_ACCELERATION_RPS2 = 0.1; //0.1
         public static final double ELBOW_MAX_JERK_RPS3 = 60.0;
 
@@ -113,11 +113,14 @@ public class ArmConstants {
                  * to an invalid state could BREAK the robot.  Ensure the 
                  * setpoints are physically possible before deploying.
                  */
+
+                 //Stored Positions
                 public static final ArmPose START = new ArmPose(
                                 Units.inchesToMeters(19.0), //cad number = 18.138
                                 Units.inchesToMeters(34.9), //cad number = 35.059
                                 Rotation2d.fromDegrees(0));
 
+                //Feeder Station Positions
                 public static final ArmPose FEEDER_START_TRANSITION = new ArmPose(
                                 Units.inchesToMeters(20),
                                 Units.inchesToMeters(41),
@@ -133,6 +136,7 @@ public class ArmConstants {
                                 Units.inchesToMeters(39),
                                 Rotation2d.fromDegrees(30));
 
+                //Coral Postitions
                 public static final ArmPose FRONT_L1_REEF = new ArmPose(
                                 Units.inchesToMeters(36),
                                 Units.inchesToMeters(29),
@@ -148,41 +152,58 @@ public class ArmConstants {
                                 Units.inchesToMeters(55.5),
                                 Rotation2d.fromDegrees(213));
 
-                public static final ArmPose REAR_L4_REEF_TRANSITION = new ArmPose(
+                public static final ArmPose REAR_L4_REEF_TRANSITION_UP = new ArmPose(
                                 Units.inchesToMeters(14),
                                 Units.inchesToMeters(60),
                                 Rotation2d.fromDegrees(0));
 
+                public static final ArmPose REAR_L4_REEF_TRANSITION_DOWN = new ArmPose(
+                                Units.inchesToMeters(20),
+                                Units.inchesToMeters(60),
+                                Rotation2d.fromDegrees(0));
+
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
-                                Units.inchesToMeters(6), //6
+                                Units.inchesToMeters(5.5), //6
                                 Units.inchesToMeters(78), //77
                                 Rotation2d.fromDegrees(235)); //235
 
-                 public static final ArmPose ALGAE_STORE = new ArmPose(
-                                Units.inchesToMeters(19),
-                                Units.inchesToMeters(34.5),
-                                Rotation2d.fromDegrees(160));
+                //Algae Positions
+                public static final ArmPose ALGAE_STORE = new ArmPose(
+                        Units.inchesToMeters(30),
+                        Units.inchesToMeters(34.9),
+                        Rotation2d.fromDegrees(180));
 
                 public static final ArmPose PREP_L1_ALGAE = new ArmPose(
-                                Units.inchesToMeters(26),
-                                Units.inchesToMeters(40),
-                                Rotation2d.fromDegrees(180));
+                                Units.inchesToMeters(31),
+                                Units.inchesToMeters(45),
+                                Rotation2d.fromDegrees(-30));
 
-                public static final ArmPose L1_ALGAE = new ArmPose(
-                                Units.inchesToMeters(26),
-                                Units.inchesToMeters(36),
-                                Rotation2d.fromDegrees(170));
+                public static final ArmPose PULL_L1_ALGAE = new ArmPose(
+                                Units.inchesToMeters(24),
+                                Units.inchesToMeters(40),
+                                Rotation2d.fromDegrees(10));
 
                 public static final ArmPose PREP_L2_ALGAE = new ArmPose(
-                                Units.inchesToMeters(26),
+                                Units.inchesToMeters(4),
+                                Units.inchesToMeters(60),
+                                Rotation2d.fromDegrees(210));
+        
+                public static final ArmPose PULL_L2_ALGAE = new ArmPose(
+                                Units.inchesToMeters(10),
                                 Units.inchesToMeters(58),
                                 Rotation2d.fromDegrees(180));
-        
-                public static final ArmPose L2_ALGAE = new ArmPose(
-                                Units.inchesToMeters(26),
-                                Units.inchesToMeters(54),
-                                Rotation2d.fromDegrees(170));
 
+                public static final ArmPose PROCESSOR = new ArmPose(
+                                Units.inchesToMeters(34), 
+                                Units.inchesToMeters(28),
+                                Rotation2d.fromDegrees(-30));
+
+                public static final ArmPose BARGE = new ArmPose(
+                                Units.inchesToMeters(9),
+                                Units.inchesToMeters(78),
+                                Rotation2d.fromDegrees(135));
+
+                //Climb Positions
                 public static final ArmPose CLIMB_STRETCH = new ArmPose(
                                 Units.inchesToMeters(34), 
                                 Units.inchesToMeters(28),
