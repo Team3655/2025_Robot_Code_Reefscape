@@ -10,7 +10,9 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
+
 package frc.robot;
+
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -56,10 +58,12 @@ import frc.robot.util.FieldUtil;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
- * Command-based is a "declarative" paradigm, very little robot logic should
- * actually be handled in the {@link Robot} periodic methods (other than the
- * scheduler calls). Instead, the structure of the robot (including subsystems,
- * commands, and button mappings) should be declared here.
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
+ * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
 
@@ -98,8 +102,7 @@ public class RobotContainer {
     private final FieldUtil fieldUtil = new FieldUtil();
 
     /**
-     * The container for the robot. Contains subsystems, IO devices, and
-     * commands.
+     * The container for the robot. Contains subsystems, IO devices, and commands.
      */
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -114,7 +117,7 @@ public class RobotContainer {
 
                 vision = new VisionSubsystem(
                         new VisionIOLimelight("limelight-left"),
-                        new VisionIOLimelight("limelight-right"),
+                        new VisionIOLimelight("limelight-right"),                       
                         new VisionIOLimelight("limelight-back"));
 
                 arm = new ArmSubsystem(new ArmIOTalonFX());
@@ -128,7 +131,7 @@ public class RobotContainer {
                 // Sim robot, instantiate physics sim IO implementations
                 drive = new DriveSubsystem(
                         new GyroIO() {
-                },
+                        },
                         new ModuleIOSim(),
                         new ModuleIOSim(),
                         new ModuleIOSim(),
@@ -153,18 +156,18 @@ public class RobotContainer {
                 // Replayed robot, disable IO implementations
                 drive = new DriveSubsystem(
                         new GyroIO() {
-                },
+                        },
                         new ModuleIO() {
-                },
+                        },
                         new ModuleIO() {
-                },
+                        },
                         new ModuleIO() {
-                },
+                        },
                         new ModuleIO() {
-                });
+                        });
                 vision = new VisionSubsystem(
                         new VisionIO() {
-                });
+                        });
 
                 arm = new ArmSubsystem(new ArmIO() {
                 });
@@ -180,17 +183,17 @@ public class RobotContainer {
         NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(
                 ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, -6)));
         NamedCommands.registerCommand("ArmState_Intake_Snap", Commands.sequence(IntakeCommands.stopIntake(intake),
-                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
-                new WaitCommand(0.3 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
-                IntakeCommands.runIntake(intake, -6),
-                ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER)));
+                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN),
+                                        new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                        IntakeCommands.runIntake(intake, -6),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER)));
 
         NamedCommands.registerCommand("ArmState_L2", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, -2)));
         NamedCommands.registerCommand("ArmState_L4", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake, -3)));
         NamedCommands.registerCommand("ArmState_L4_Snap", Commands.sequence(IntakeCommands.runIntake(intake, -3),
-                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
-                new WaitCommand(0.3 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
-                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF)));
+                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN),
+                                        new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF)));
 
         NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 6));
         NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
@@ -237,35 +240,36 @@ public class RobotContainer {
                 mattRotation.A2().onTrue(ClimbCommands.climbDown(climber))
                         .onFalse(ClimbCommands.stopClimber(climber));
 
-                mattRotation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(()
-                        -> fieldUtil.reefPoses.get("Left" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
-
-                mattTranslation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(()
-                        -> fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+                mattRotation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() ->
+                fieldUtil.reefPoses.get("Left" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+                
+                mattTranslation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() -> 
+                fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
                 break;
 
-            case ETHAN:
-                drive.setDefaultCommand(
-                        DriveCommands.joystickDrive(
-                                drive,
-                                () -> -ethanTranslation.StickYAxis(),
-                                () -> -ethanTranslation.StickXAxis(),
-                                () -> -ethanRotation.StickXAxis(),
-                                driveMultiplier,
-                                ethanTranslation.fireStage1().or(ethanTranslation.fireStage2())));
+                case ETHAN:
+                        drive.setDefaultCommand(
+                                DriveCommands.joystickDrive(
+                                        drive,
+                                        () -> -ethanTranslation.StickYAxis(),
+                                        () -> -ethanTranslation.StickXAxis(),
+                                        () -> -ethanRotation.StickXAxis(),
+                                        driveMultiplier,
+                                        ethanTranslation.fireStage1().or(ethanTranslation.fireStage2())));
 
-                ethanRotation.A2().onTrue(ClimbCommands.climbDown(climber))
-                        .onFalse(ClimbCommands.stopClimber(climber));
 
-                ethanTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
+                        ethanRotation.A2().onTrue(ClimbCommands.climbDown(climber))
+                                .onFalse(ClimbCommands.stopClimber(climber));
 
-                ethanTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
+                        ethanTranslation.B1().onTrue(Commands.runOnce(robotState::zeroHeading));
 
-                ethanTranslation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(()
-                        -> fieldUtil.reefPoses.get("Left" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
-
-                ethanRotation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(()
-                        -> fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+                        ethanTranslation.A2().whileTrue(Commands.run(() -> drive.stopWithX(), drive));
+                
+                        ethanTranslation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() ->
+                        fieldUtil.reefPoses.get("Left" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+                        
+                        ethanRotation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() -> 
+                        fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
                 break;
 
             case PROGRAMMING:
@@ -278,18 +282,19 @@ public class RobotContainer {
                                 garrettDriveMultiplier,
                                 programmingController.leftBumper()));
 
-                climber.setDefaultCommand(ClimbCommands.driveClimber(climber,
-                        () -> programmingController.getRightTriggerAxis(),
-                        () -> programmingController.getLeftTriggerAxis()));
+                climber.setDefaultCommand(ClimbCommands.driveClimber(climber, 
+                                () -> programmingController.getRightTriggerAxis(),
+                                () -> programmingController.getLeftTriggerAxis()));
+
 
                 programmingController.button(8).onTrue(Commands.runOnce(robotState::zeroHeading));
 
                 programmingController.a().onTrue(ArmCommands.updateSetpoint(arm,
-                        ArmStates.START));
+                ArmStates.START));
                 programmingController.b().onTrue(ArmCommands.updateSetpoint(arm,
-                        ArmStates.FRONT_FEEDER_STRETCH));
-                programmingController.y().onTrue(ArmCommands.updateSetpoint(arm,
-                        ArmStates.CLIMB_STRETCH));
+                ArmStates.FRONT_FEEDER_STRETCH));
+                programmingController.y().onTrue(ArmCommands.updateSetpoint(arm, 
+                ArmStates.CLIMB_STRETCH));
 
                 break;
 
@@ -306,10 +311,10 @@ public class RobotContainer {
                 programmingController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
                 programmingController.button(12).onTrue(Commands.runOnce(robotState::zeroHeading));
 
-                programmingController.button(1).whileTrue(DriveCommands.pathFindToPose(()
-                        -> fieldUtil.reefPoses.get("Left" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
-                programmingController.button(2).whileTrue(DriveCommands.pathFindToPose(()
-                        -> fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+                programmingController.button(1).whileTrue(DriveCommands.pathFindToPose(() ->
+                fieldUtil.reefPoses.get("Left" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+                programmingController.button(2).whileTrue(DriveCommands.pathFindToPose(() -> 
+                fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
                 // programmingController.button(1).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.START));
                 // programmingController.button(2).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER));
                 // programmingController.povDown().onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
@@ -327,6 +332,7 @@ public class RobotContainer {
                 // 5)).onFalse(ClimbCommands.stopClimber(climber));
                 // programmingController.povUp().onTrue(ClimbCommands.setArmClimbPosition(climber));
                 // programmingController.povDown().onTrue(ClimbCommands.setArmInitPosition(climber));
+
                 // programmingController.a().onTrue(Commands.runOnce(() ->
                 // arm.updateSetpoint(ArmStates.FRONT_FEEDER), arm));
                 // programmingController.b().onTrue(Commands.runOnce(() ->
@@ -335,13 +341,13 @@ public class RobotContainer {
         }
 
         tractorController.button(21).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmStates.CLIMB_STRETCH), arm)));
-
+                        
         tractorController.button(21).and(ethanRotation.fireStage2()).whileTrue(
                 ClimbCommands.climbUp(climber))
                 .onFalse(ClimbCommands.stopClimber(climber));
 
         tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
-                .onFalse(IntakeCommands.stopIntake(intake));
+                        .onFalse(IntakeCommands.stopIntake(intake));
 
         tractorController.button(10).onTrue(Commands.parallel(
                 ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)));
@@ -349,56 +355,56 @@ public class RobotContainer {
         tractorController.button(5)
                 .onTrue(Commands
                         .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
-                                IntakeCommands.runIntake(intake, -6)))
+                        IntakeCommands.runIntake(intake, -6)))
                 .onFalse(Commands
                         .sequence(IntakeCommands.stopIntake(intake),
-                                ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
-                                new WaitCommand(0.5),
-                                ArmCommands.updateSetpoint(arm, ArmStates.START)));
+                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                        new WaitCommand(0.5),
+                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
         tractorController.button(4)
                 .onTrue(Commands
                         .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER_STRETCH),
-                                IntakeCommands.runIntake(intake, -6)))
+                        IntakeCommands.runIntake(intake, -6)))
                 .onFalse(Commands
                         .sequence(IntakeCommands.stopIntake(intake),
-                                ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
-                                new WaitCommand(0.5),
-                                ArmCommands.updateSetpoint(arm, ArmStates.START)));
+                        ArmCommands.updateSetpoint(arm, ArmStates.FEEDER_START_TRANSITION),
+                        new WaitCommand(0.5),
+                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
         tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
 
         tractorController.button(1)
                 .onTrue(Commands
                         .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF),
-                                IntakeCommands.runIntake(intake, 0)));
+                        IntakeCommands.runIntake(intake, 0)));
 
         tractorController.button(2)
                 .onTrue(Commands
                         .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L3_REEF),
-                                IntakeCommands.runIntake(intake, -3)));
+                        IntakeCommands.runIntake(intake, -3)));
 
         tractorController.button(3)
                 .onTrue(Commands
                         .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
                                 IntakeCommands.runIntake(intake, -3)));
 
+
         // X Postive is TOWARDS battery
         // Y positive is UP
-        tractorController.button(18).onTrue(Commands.runOnce(() -> arm.bumpArmUsingArc(1), arm));
+        tractorController.button(18).onTrue(Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm));
         // Bump up
-        tractorController.button(17).onTrue((Commands.runOnce(() -> arm.bumpArmUsingArc(1), arm)));
+        tractorController.button(17).onTrue((Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm)));
 
         tractorController.button(22).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER_STRETCH), arm)));
 
         tractorController.button(12)
-                .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE))
-                .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L1_ALGAE));
+        .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE))
+        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L1_ALGAE));
 
         tractorController.button(11)
-                .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE))
-                .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.L2_ALGAE));
-
+        .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE))
+        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L2_ALGAE));
     }
 
     /**
