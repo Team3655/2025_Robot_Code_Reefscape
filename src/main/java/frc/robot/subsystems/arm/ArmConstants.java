@@ -33,7 +33,7 @@ public class ArmConstants {
         public static final int SHOULDER_MOTOR_ID = 30;
         public static final int SHOULDER_MOTOR_FOLLOWER_ID = 31;
         public static final Rotation2d SHOULDER_ENCODER_OFFSET = Rotation2d.fromRotations(0);
-        public static final double SHOULDER_LENGTH_METERS = Units.inchesToMeters(22.75);
+        public static final double SHOULDER_LENGTH_METERS = Units.inchesToMeters(22.5);
         public static final double SHOULDER_MASS_KG = 1;
         // Used the check the validity of the arm setpoints only
         // MATT, FOR THE LOVE OF GOD MAKE SURE THIS ANGLE IS SMALL ENOUGH TO ACCOUNT FOR
@@ -57,7 +57,7 @@ public class ArmConstants {
         public static final int ELBOW_MOTOR_ID = 33;
         public static final int ELBOW_MOTOR_FOLLOWER_ID = 34;
         public static final Rotation2d ELBOW_ENCODER_OFFSET = Rotation2d.fromRotations(0);
-        public static final double ELBOW_LENGTH_METERS = Units.inchesToMeters(24.75);
+        public static final double ELBOW_LENGTH_METERS = Units.inchesToMeters(24.25);
         public static final double ELBOW_MASS_KG = 1;
         public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(0);
         public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(180);
