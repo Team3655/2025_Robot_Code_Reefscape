@@ -28,9 +28,10 @@ public class ArmConstants {
                 ABSOLUTE
         }
 
+        public static final int ARM_CANDI_ID = 32;
+
         public static final int SHOULDER_MOTOR_ID = 30;
         public static final int SHOULDER_MOTOR_FOLLOWER_ID = 31;
-        public static final int SHOULDER_CANCODER_ID = 32;
         public static final Rotation2d SHOULDER_ENCODER_OFFSET = Rotation2d.fromRotations(0);
         public static final double SHOULDER_LENGTH_METERS = Units.inchesToMeters(22.75);
         public static final double SHOULDER_MASS_KG = 1;
@@ -55,7 +56,6 @@ public class ArmConstants {
 
         public static final int ELBOW_MOTOR_ID = 33;
         public static final int ELBOW_MOTOR_FOLLOWER_ID = 34;
-        public static final int ELBOW_CANCODER_ID = 35;
         public static final Rotation2d ELBOW_ENCODER_OFFSET = Rotation2d.fromRotations(0);
         public static final double ELBOW_LENGTH_METERS = Units.inchesToMeters(24.75);
         public static final double ELBOW_MASS_KG = 1;
@@ -74,7 +74,6 @@ public class ArmConstants {
         public static final double ELBOW_MAX_JERK_RPS3 = 60.0;
 
         public static final int WRIST_MOTOR_ID = 36;
-        public static final int WRIST_CANCODER_ID = 37;
         public static final Rotation2d WRIST_ENCODER_OFFSET = Rotation2d.fromRotations(0);
         public static final double WRIST_LENGTH_METERS = Units.inchesToMeters(8);
         public static final Rotation2d ARM_DEFAULT_SETPOINT = Rotation2d.fromDegrees(75);

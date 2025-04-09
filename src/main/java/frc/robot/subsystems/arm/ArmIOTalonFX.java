@@ -53,6 +53,22 @@ public class ArmIOTalonFX implements ArmIO {
     switch (ArmConstants.activeEncoders) {
       case ABSOLUTE:
 
+      // PWM1 of CANdi
+      shoulderLeaderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANdiPWM1;
+      shoulderLeaderConfig.Feedback.FeedbackRemoteSensorID = ArmConstants.ARM_CANDI_ID;
+      shoulderLeaderConfig.Feedback.RotorToSensorRatio = ArmConstants.SHOULDER_REDUCTION;
+      shoulderLeaderConfig.Feedback.SensorToMechanismRatio = 1;
+      shoulderLeaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      shoulderLeaderConfig.ClosedLoopGeneral.ContinuousWrap = true;
+
+      // PWM2 of CANdi
+      elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANdiPWM2;
+      elbowConfiguration.Feedback.FeedbackRemoteSensorID = ArmConstants.ARM_CANDI_ID;
+      elbowConfiguration.Feedback.RotorToSensorRatio = ArmConstants.ELBOW_REDUCTION;
+      elbowConfiguration.Feedback.SensorToMechanismRatio = 1;
+      elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      elbowConfiguration.ClosedLoopGeneral.ContinuousWrap = true;
+
         break;
       case RELATIVE:
 
