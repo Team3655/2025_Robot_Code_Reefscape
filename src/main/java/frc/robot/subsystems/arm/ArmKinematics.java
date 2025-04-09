@@ -6,7 +6,7 @@
  * Although only the final two move, the origin of the coordinate system sits on the ground at the back
  * of the robot.
  * 
- * When running on relative encoders within the robot, the final segment (ELBOW_LENGTH_METERS) operates on an angle relative 
+ * When running on relative encoders within the robot, the first segment (SHOULDER_LENGTH_METERS) operates on an angle relative 
  * to the horizontal/Earth
  * 
  * Absoulte encoders are fixed to the previous segment.  Measuring with absolute, the final segment (ELBOW_LENGTH_METERS)
@@ -89,14 +89,6 @@ public class ArmKinematics {
 
         calculateInverseKinematics(xTarget, yTarget);
 
-        // try {
-        //     validateState(L4,
-        //             L6,
-        //             theta1.getRadians(),
-        //             relativeTheta2.getRadians(),
-        //             theta3.getRadians(),
-        //             theta4.getRadians());
-
             calculatedArmAngles[0] = theta1;
 
             switch (encoderType) {
@@ -113,15 +105,6 @@ public class ArmKinematics {
                     Elastic.sendNotification(invalidEncodersNotification);
                     break;
             }
-
-        //     currentArmAngles = calculatedArmAngles;
-
-        //     return calculatedArmAngles;
-
-        // } catch (InvalidArmState e) {
-        //     //Elastic.sendNotification(invalidArmStateNotification);
-        //     return currentArmAngles;
-        // }
 
         return calculatedArmAngles;
 
@@ -175,7 +158,6 @@ public class ArmKinematics {
     }
 
     /**
-     * 
      * @param xTarget
      * @param yTarget
      */
