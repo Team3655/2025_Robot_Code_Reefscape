@@ -15,7 +15,6 @@
 
 package frc.robot.subsystems.arm;
 
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
@@ -39,9 +38,9 @@ public class ArmKinematics {
     private double L6 = 0.0;
 
     private Notification invalidEncodersNotification = new Notification(
-        NotificationLevel.ERROR,
-        "Invalid Arm Encoders",
-        "Arm was initialized with invalid encoders");
+            NotificationLevel.ERROR,
+            "Invalid Arm Encoders",
+            "Arm was initialized with invalid encoders");
 
     private Rotation2d theta1 = Rotation2d.fromRadians(0.0);
     private Rotation2d relativeTheta2 = Rotation2d.fromRadians(0.0);
@@ -52,8 +51,7 @@ public class ArmKinematics {
 
     // Ensure that these values are always updated
     public Rotation2d[] currentArmAngles = new Rotation2d[2];
-    private Rotation2d[] calculatedArmAngles = new Rotation2d[2];
-
+    private Rotation2d[] calculatedArmAngles = new Rotation2d[26];
 
     /**
      * Creates a new `ArmKinematics` object
@@ -72,39 +70,39 @@ public class ArmKinematics {
         this.L3 = L3;
 
         currentArmAngles = getArmAngles(
-            ArmConstants.ArmStates.START.xTarget(), 
-            ArmConstants.ArmStates.START.yTarget(),
-            ArmConstants.activeEncoders);
+                ArmConstants.ArmStates.START.xTarget(),
+                ArmConstants.ArmStates.START.yTarget(),
+                ArmConstants.activeEncoders);
     }
 
-    
     /**
      * Gets the arm angles from the calculations
      * 
      * @param xSetpoint The x coordinate of the target in meters
      * @param ySetpoint The y coordinate of the target in meters
-     * @return The angles of the arm joints - value is dependent on the active encoders.
+     * @return The angles of the arm joints - value is dependent on the active
+     *         encoders.
      */
-    public Rotation2d[] getArmAngles(double xTarget, double yTarget, ArmEncoders encoderType){
+    public Rotation2d[] getArmAngles(double xTarget, double yTarget, ArmEncoders encoderType) {
 
         calculateInverseKinematics(xTarget, yTarget);
 
-            calculatedArmAngles[0] = theta1;
+        calculatedArmAngles[0] = theta1;
 
-            switch (encoderType) {
-                case ABSOLUTE:
+        switch (encoderType) {
+            case ABSOLUTE:
 
-                    calculatedArmAngles[1] = absoluteTheta2;
-                    break;
-                case RELATIVE:
+                calculatedArmAngles[1] = absoluteTheta2;
+                break;
+            case RELATIVE:
 
-                    calculatedArmAngles[1] = relativeTheta2;
-                    break;
-                default:
+                calculatedArmAngles[1] = relativeTheta2;
+                break;
+            default:
 
-                    Elastic.sendNotification(invalidEncodersNotification);
-                    break;
-            }
+                Elastic.sendNotification(invalidEncodersNotification);
+                break;
+        }
 
         return calculatedArmAngles;
 
@@ -149,7 +147,8 @@ public class ArmKinematics {
         // Absolute angle of L3 joint is supplement to theta4 - Definition of
         // Supplemental Angles
         // Are .kPi and .fromRations(MATH.PI) the same?
-        absoluteTheta2 = Rotation2d.fromRadians(Math.PI).minus(theta4);
+        // yes
+        absoluteTheta2 = Rotation2d.kPi.minus(theta4);
 
         // Derived from theta1 and theta4 - Supplementary angles, Triangle Sum Theorem,
         // Corresponding Angles Postulate
@@ -158,8 +157,8 @@ public class ArmKinematics {
     }
 
     /**
-     * @param xTarget
-     * @param yTarget
+     * @param xTarget How far out on the x axis to go, in meters
+     * @param yTarget How far up on the y axis to go, in meters
      */
     private void calculateTheta6(double xTarget, double yTarget) {
         // Triangles used to calculate measurements change when moving the target behind
@@ -203,7 +202,7 @@ public class ArmKinematics {
      * @param theta1         Angle of the shoulder relative to the horizontal
      * @param relativeTheta2 Angle of the elbow relative to the Earth
      * @param theta3         Angle between shoulder and L4
-     * @param theta4        Obtuse angle between shoulder and elbow - across from
+     * @param theta4         Obtuse angle between shoulder and elbow - across from
      *                       L4
      * @throws InvalidArmState Error to throw when state is not valid
      */
@@ -235,58 +234,63 @@ public class ArmKinematics {
 
     /**
      * Validates that the requested setpoint is possible to achieve
-     * WARNING: THIS DOES NOT ACCOUNT FOR BUMPS THAT RUN INTO THE CHASSIS OR THE TOWER
+     * WARNING: THIS DOES NOT ACCOUNT FOR BUMPS THAT RUN INTO THE CHASSIS OR THE
+     * TOWER
      * USE ONLY TO VALIDATE UPPER CIRCLE BUMPS
+     * 
      * @param xTarget The requested x position in meters
      * @param yTarget The requested y position in meters
      * @return
      */
     public boolean isInsideArmReach(double xTarget, double yTarget) {
-      double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
-      double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
-      double r = ArmConstants.SHOULDER_LENGTH_METERS + ArmConstants.ELBOW_LENGTH_METERS;
+        double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
+        double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
+        double r = ArmConstants.SHOULDER_LENGTH_METERS + ArmConstants.ELBOW_LENGTH_METERS;
 
-      /**
-       * Equation for a circle
-       * Center (h, k) is at the shoulder pivot point
-       * Radius, r, is defined by the length of the shoulder and elbow combined
-       */
-      boolean insideArmCircle = Math.pow(xTarget - h, 2) + Math.pow(yTarget - k, 2) <= Math.pow(r, 2);
+        /**
+         * Equation for a circle
+         * Center (h, k) is at the shoulder pivot point
+         * Radius, r, is defined by the length of the shoulder and elbow combined
+         */
+        boolean insideArmCircle = Math.pow(xTarget - h, 2) + Math.pow(yTarget - k, 2) <= Math.pow(r, 2);
 
-      return insideArmCircle;
+        return insideArmCircle;
     }
 
     /**
      * Calculates the y position of the elbow given the x position of the bump
-     * Y setpoint will always be positive - dictated by the coordinate system of the robot
+     * Y setpoint will always be positive - dictated by the coordinate system of the
+     * robot
+     * 
      * @param bumpX The x position of the bump in meters
      * @return
      */
     public double calculateArcYSetpoint(double bumpX, double currentXTarget, double currentYTarget) {
 
-      L4 = Math.sqrt(
-        (Math.pow(currentXTarget - d, 2)
-                + Math.pow(currentYTarget - h, 2)));
+        L4 = Math.sqrt(
+                (Math.pow(currentXTarget - d, 2)
+                        + Math.pow(currentYTarget - h, 2)));
 
-      double r = L4;
-      double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
-      double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
+        double r = L4;
+        double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
+        double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
 
-      // Pythagorean Theorem given leg x and hypotenuse r
-      // Equation of a circle: (x-h)^2 + (y-k)^2 = r^2 where (h, k) is the center of the circle
-      double bumpY = Math.sqrt(Math.pow(r, 2) - Math.pow(bumpX - h, 2)) + k;
+        // Pythagorean Theorem given leg x and hypotenuse r
+        // Equation of a circle: (x-h)^2 + (y-k)^2 = r^2 where (h, k) is the center of
+        // the circle
+        double bumpY = Math.sqrt(Math.pow(r, 2) - Math.pow(bumpX - h, 2)) + k;
 
-      return bumpY;
+        return bumpY;
     }
 
     public double calculateArcXSetpoint(double bumpY) {
-      double r = ArmConstants.SHOULDER_LENGTH_METERS + ArmConstants.ELBOW_LENGTH_METERS;
-      double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
-      double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
+        double r = ArmConstants.SHOULDER_LENGTH_METERS + ArmConstants.ELBOW_LENGTH_METERS;
+        double h = ArmConstants.D_ARM_HORIZONTAL_OFFSET_METERS;
+        double k = ArmConstants.H_TOWER_GROUND_HEIGHT_METERS;
 
-      // Pythagorean Theorem given leg y and hypotenuse r
-      double bumpX = Math.sqrt(Math.pow(r, 2) - Math.pow(bumpY - k, 2)) + h;
+        // Pythagorean Theorem given leg y and hypotenuse r
+        double bumpX = Math.sqrt(Math.pow(r, 2) - Math.pow(bumpY - k, 2)) + h;
 
-      return bumpX;
+        return bumpX;
     }
 }

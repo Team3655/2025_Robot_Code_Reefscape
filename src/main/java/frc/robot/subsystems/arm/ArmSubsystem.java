@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.arm;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -134,22 +136,32 @@ public class ArmSubsystem extends SubsystemBase {
     // Updates arm position
     io.setShoulderPosition(shoulderSetPoint);
     io.setElbowPosition(elbowSetPoint);
-    io.setWristPosition(Rotation2d.fromDegrees(Rotation2d.fromDegrees(90).minus(elbowSetPoint).getDegrees() + (wristSetPoint).getDegrees()));
-
+    switch (ArmConstants.activeEncoders) {
+      case ABSOLUTE:
+        io.setWristPosition(Rotation2d.fromDegrees(0));
+        break;
+      case RELATIVE:
+        io.setWristPosition(Rotation2d.fromDegrees(Rotation2d.fromDegrees(90).minus(elbowSetPoint).getDegrees() + wristSetPoint.getDegrees()));
+        // TODO: Unpack this
+        SmartDashboard.putNumber("WristDeg",
+            inputs.wristPosition.getDegrees() + inputs.elbowPosition.getDegrees() - 90);
+      default:
+        break;
+    }
     // Updates the current arm angles in ArmKinematics
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
     armKinematics.currentArmAngles[1] = inputs.elbowPosition;
 
     // Update visualizers
     // setpointVisualizer.update(
-    //     shoulderSetPoint.getDegrees() - 90,
-    //     elbowSetPoint.getDegrees(),
-    //     wristSetPoint.getDegrees() - 90);
+    // shoulderSetPoint.getDegrees() - 90,
+    // elbowSetPoint.getDegrees(),
+    // wristSetPoint.getDegrees() - 90);
 
     // currentVisualizer.update(
-    //     inputs.shoulderPosition.getDegrees() - 90,
-    //     inputs.elbowPosition.getDegrees(),
-    //     inputs.wristPosition.getDegrees() - 90);
+    // inputs.shoulderPosition.getDegrees() - 90,
+    // inputs.elbowPosition.getDegrees(),
+    // inputs.wristPosition.getDegrees() - 90);
 
     // Logger.recordOutput("Arm/Mechanism2d/Setpoint", setpointVisualizer.arm);
     // Logger.recordOutput("Arm/Mechanism2d/Current", currentVisualizer.arm);
@@ -167,8 +179,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("WristSetpoint", wristSetPoint.getDegrees());
     SmartDashboard.putNumber("ShoulderDeg", inputs.shoulderPosition.getDegrees());
     SmartDashboard.putNumber("ElbowDeg", inputs.elbowPosition.getDegrees());
-    //TODO: Unpack this
-    SmartDashboard.putNumber("WristDeg", inputs.wristPosition.getDegrees() + inputs.elbowPosition.getDegrees() - 90);
+    // // TODO: Unpack this
+    // SmartDashboard.putNumber("WristDeg", inputs.wristPosition.getDegrees() + inputs.elbowPosition.getDegrees() - 90);
 
   }
 

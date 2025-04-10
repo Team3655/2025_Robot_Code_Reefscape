@@ -28,6 +28,7 @@ public class ArmConstants {
                 ABSOLUTE
         }
 
+        
         public static final int ARM_CANDI_ID = 32;
 
         public static final int SHOULDER_MOTOR_ID = 30;
@@ -47,10 +48,10 @@ public class ArmConstants {
         public static final double KS_SHOULDER = 3.25;
         public static final double KV_SHOULDER = 0.0;
         public static final double KA_SHOULDER = 0.0;
-        public static final double KP_SHOULDER = 100.0;
+        public static final double KP_SHOULDER = 1; // 100
         public static final double KI_SHOULDER = 0.0;
         public static final double KD_SHOULDER = 0.0;
-        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.3; //0.3
+        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.1; //0.3
         public static final double SHOULDER_MAX_ACCELERATION_RPS2 = 0.1; //0.1
         public static final double SHOULDER_MAX_JERK_RPS3 = 60.0;
 
@@ -66,10 +67,10 @@ public class ArmConstants {
         public static final double KS_ELBOW = 2.75;
         public static final double KV_ELBOW = 0.0;
         public static final double KA_ELBOW = 0.0;
-        public static final double KP_ELBOW = 100;
+        public static final double KP_ELBOW = 1; // 100
         public static final double KI_ELBOW = 0.0;
         public static final double KD_ELBOW = 0.0;
-        public static final double ELBOW_MAX_VELOCITY_RPS = 0.2; //0.2
+        public static final double ELBOW_MAX_VELOCITY_RPS = 0.07; //0.15
         public static final double ELBOW_MAX_ACCELERATION_RPS2 = 0.1; //0.1
         public static final double ELBOW_MAX_JERK_RPS3 = 60.0;
 
@@ -88,7 +89,7 @@ public class ArmConstants {
         public static final double KP_WRIST = 300.0;
         public static final double KI_WRIST = 0.0;
         public static final double KD_WRIST = 0.0;
-        public static final double WRIST_MAX_VELOCITY_RPS = 2.5; //1.5
+        public static final double WRIST_MAX_VELOCITY_RPS = 0.1; //2.5
         public static final double WRIST_MAX_ACCELERATION_RPS2 = 8.0;
         public static final double WRIST_MAX_JERK_RPS3 = 60.0;
 
@@ -115,8 +116,8 @@ public class ArmConstants {
 
                  //Stored Positions
                 public static final ArmPose START = new ArmPose(
-                                Units.inchesToMeters(19.0), //cad number = 18.138
-                                Units.inchesToMeters(34.9), //cad number = 35.059
+                                Units.inchesToMeters(19), //cad number = 19.512 - 19
+                                Units.inchesToMeters(34.9), //cad number = 35.74 - 34.9
                                 Rotation2d.fromDegrees(0));
 
                 //Feeder Station Positions

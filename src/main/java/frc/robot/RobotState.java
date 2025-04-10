@@ -34,7 +34,7 @@ public class RobotState {
       Matrix<N3, N1> stdDevs) {
   }
 
-  private record ArmState(
+  public record ArmState(
       Rotation2d shoulderAngle,
       Rotation2d elbowAngle,
       Rotation2d wristAngle,

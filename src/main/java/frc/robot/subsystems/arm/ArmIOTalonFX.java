@@ -39,7 +39,9 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFXConfiguration elbowConfiguration;
   private final TalonFXConfiguration wristConfiguration;
 
+
   public ArmIOTalonFX() {
+    
     shoulderLeaderTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_ID, Constants.CANIVORE_NAME);
     shoulderFollowerTalon = new TalonFX(ArmConstants.SHOULDER_MOTOR_FOLLOWER_ID, Constants.CANIVORE_NAME);
     elbowLeaderTalon = new TalonFX(ArmConstants.ELBOW_MOTOR_ID, Constants.CANIVORE_NAME);
@@ -58,20 +60,24 @@ public class ArmIOTalonFX implements ArmIO {
       shoulderLeaderConfig.Feedback.FeedbackRemoteSensorID = ArmConstants.ARM_CANDI_ID;
       shoulderLeaderConfig.Feedback.RotorToSensorRatio = ArmConstants.SHOULDER_REDUCTION;
       shoulderLeaderConfig.Feedback.SensorToMechanismRatio = 1;
-      shoulderLeaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      shoulderLeaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       shoulderLeaderConfig.ClosedLoopGeneral.ContinuousWrap = true;
+
 
       // PWM2 of CANdi
       elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANdiPWM2;
       elbowConfiguration.Feedback.FeedbackRemoteSensorID = ArmConstants.ARM_CANDI_ID;
       elbowConfiguration.Feedback.RotorToSensorRatio = ArmConstants.ELBOW_REDUCTION;
       elbowConfiguration.Feedback.SensorToMechanismRatio = 1;
-      elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      elbowConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       elbowConfiguration.ClosedLoopGeneral.ContinuousWrap = true;
+
+      wristConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+      wristConfiguration.Feedback.SensorToMechanismRatio = ArmConstants.WRIST_REDUCTION;
+      wristConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         break;
       case RELATIVE:
-
         // Use the motor's internal sensor
         shoulderLeaderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         elbowConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -186,6 +192,7 @@ public class ArmIOTalonFX implements ArmIO {
         wristTalon.setPosition(ArmConstants.WRIST_STARTING_OFFSET.getRotations());
         break;
       case ABSOLUTE:
+        wristTalon.setPosition(ArmConstants.WRIST_STARTING_OFFSET.getRotations());
         break;
 
     }
@@ -218,13 +225,14 @@ public class ArmIOTalonFX implements ArmIO {
     BaseStatusSignal.refreshAll(wristPosition, wristAppliedVolts, wristCurrent);
 
     inputs.shoulderCurrentAmps = new double[] { shoulderCurrent.getValueAsDouble() };
-    inputs.shoulderPosition = Rotation2d.fromRotations(shoulderPosition.getValueAsDouble());
+    
+      inputs.shoulderPosition = Rotation2d.fromRotations(shoulderPosition.getValueAsDouble());
+      inputs.elbowPosition = Rotation2d.fromRotations(elbowPosition.getValueAsDouble());
+      inputs.wristPosition = Rotation2d.fromRotations(wristPosition.getValueAsDouble());
 
     inputs.elbowCurrentAmps = new double[] { elbowCurrent.getValueAsDouble() };
-    inputs.elbowPosition = Rotation2d.fromRotations(elbowPosition.getValueAsDouble());
-
     inputs.wristCurrentAmps = new double[] { wristCurrent.getValueAsDouble() };
-    inputs.wristPosition = Rotation2d.fromRotations(wristPosition.getValueAsDouble());
+
   }
 
   /**
