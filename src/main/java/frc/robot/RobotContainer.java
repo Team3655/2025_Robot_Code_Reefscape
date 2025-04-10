@@ -349,8 +349,13 @@ public class RobotContainer {
         tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
                         .onFalse(IntakeCommands.stopIntake(intake));
 
-        tractorController.button(10).onTrue(Commands.parallel(
-                ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)));
+        tractorController.button(10).onTrue(
+                RobotState.getInstance().getArmState().yPosition() >= 75 ? 
+                Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)) 
+                : Commands.sequence(
+                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN), 
+                        new WaitCommand(1), 
+                        ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
         tractorController.button(5)
                 .onTrue(Commands
