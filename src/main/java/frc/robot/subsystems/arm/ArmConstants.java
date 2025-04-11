@@ -42,7 +42,7 @@ public class ArmConstants {
         // IF YOU CRASH THE CODE ON LAUNCH THIS IS WHY
         public static final Rotation2d SHOULDER_MIN_ANGLE = Rotation2d.fromDegrees(-80);
         public static final Rotation2d SHOULDER_MAX_ANGLE = Rotation2d.fromDegrees(90);
-        public static final double SHOULDER_REDUCTION = 63; //63.7755
+        public static final double SHOULDER_REDUCTION = 68.4; //63.7755
         public static final double KG_SHOULDER = 0.7;
         public static final double KS_SHOULDER = 3.25;
         public static final double KV_SHOULDER = 0.0;
@@ -61,7 +61,7 @@ public class ArmConstants {
         public static final double ELBOW_MASS_KG = 1;
         public static final Rotation2d ELBOW_MIN_ANGLE_RADS = Rotation2d.fromDegrees(0);
         public static final Rotation2d ELBOW_MAX_ANGLE_RADS = Rotation2d.fromDegrees(180);
-        public static final double ELBOW_REDUCTION = 63.7755;
+        public static final double ELBOW_REDUCTION = 68.4;
         public static final double KG_ELBOW = 0.95; 
         public static final double KS_ELBOW = 2.75;
         public static final double KV_ELBOW = 0.0;
