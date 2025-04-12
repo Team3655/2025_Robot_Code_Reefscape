@@ -50,7 +50,7 @@ public class ArmConstants {
         public static final double KP_SHOULDER = 100.0;
         public static final double KI_SHOULDER = 0.0;
         public static final double KD_SHOULDER = 0.0;
-        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.3; //0.3
+        public static final double SHOULDER_MAX_VELOCITY_RPS = 0.4; //0.3
         public static final double SHOULDER_MAX_ACCELERATION_RPS2 = 0.1; //0.1
         public static final double SHOULDER_MAX_JERK_RPS3 = 60.0;
 
@@ -151,20 +151,20 @@ public class ArmConstants {
                                 Units.inchesToMeters(55.5),
                                 Rotation2d.fromDegrees(213));
 
-                public static final ArmPose REAR_L4_REEF_TRANSITION_UP = new ArmPose(
-                                Units.inchesToMeters(14),
-                                Units.inchesToMeters(60),
-                                Rotation2d.fromDegrees(0));
-
-                public static final ArmPose REAR_L4_REEF_TRANSITION_DOWN = new ArmPose(
+                public static final ArmPose REAR_L4_REEF_TRANSITION = new ArmPose(
                                 Units.inchesToMeters(20),
                                 Units.inchesToMeters(60),
                                 Rotation2d.fromDegrees(0));
 
+                public static final ArmPose REAR_L4_REEF_WRIST_FLIP = new ArmPose(
+                                Units.inchesToMeters(5.5),
+                                Units.inchesToMeters(77),
+                                Rotation2d.fromDegrees(90));
+
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
                                 Units.inchesToMeters(5.5), //6
-                                Units.inchesToMeters(78), //77
-                                Rotation2d.fromDegrees(235)); //235
+                                Units.inchesToMeters(77), //77
+                                Rotation2d.fromDegrees(230)); //230
 
                 //Algae Positions
                 public static final ArmPose ALGAE_STORE = new ArmPose(

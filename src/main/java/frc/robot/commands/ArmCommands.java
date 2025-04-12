@@ -9,5 +9,4 @@ public class ArmCommands {
   public static Command updateSetpoint(ArmSubsystem arm, ArmPose setpoint){
     return Commands.runOnce(() -> arm.updateSetpoint(setpoint), arm);
   }
-
 }

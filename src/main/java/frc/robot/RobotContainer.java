@@ -13,12 +13,13 @@
 
 package frc.robot;
 
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -67,159 +68,175 @@ import frc.robot.util.FieldUtil;
  */
 public class RobotContainer {
 
-    private final RobotState robotState = RobotState.getInstance();
+        private final RobotState robotState = RobotState.getInstance();
 
-    // Subsystems
-    private final DriveSubsystem drive;
+        // Subsystems
+        private final DriveSubsystem drive;
 
-    @SuppressWarnings("unused")
-    private final VisionSubsystem vision;
+        @SuppressWarnings("unused")
+        private final VisionSubsystem vision;
 
-    private final ClimberSubsystem climber;
-    private final ArmSubsystem arm;
-    private final IntakeSubsystem intake;
+        private final ClimberSubsystem climber;
+        private final ArmSubsystem arm;
+        private final IntakeSubsystem intake;
 
-    // Controller
-    // Programming controller
-    private final CommandXboxController programmingController = new CommandXboxController(5);
+        // Controller
+        // Programming controller
+        private final CommandXboxController programmingController = new CommandXboxController(5);
 
-    // Matt's controller
-    private final CommandNXT mattTranslation = new CommandNXT(0);
-    private final CommandNXT mattRotation = new CommandNXT(1);
+        // Matt's controller
+        private final CommandNXT mattTranslation = new CommandNXT(0);
+        private final CommandNXT mattRotation = new CommandNXT(1);
 
-    // Ethan's controller
-    private final CommandNXT ethanTranslation = new CommandNXT(2);
-    private final CommandNXT ethanRotation = new CommandNXT(3);
+        // Ethan's controller
+        private final CommandNXT ethanTranslation = new CommandNXT(2);
+        private final CommandNXT ethanRotation = new CommandNXT(3);
 
-    // Operator controller
-    private final CommandGenericHID tractorController = new CommandGenericHID(4);
+        // Operator controller
+        private final CommandGenericHID tractorController = new CommandGenericHID(4);
 
-    // Dashboard inputs
-    private final LoggedDashboardChooser<Command> autoChooser;
-    private double driveMultiplier = 0.4;
-    private double garrettDriveMultiplier = 0.2;
+        // Dashboard inputs
+        private final LoggedDashboardChooser<Command> autoChooser;
+        private double driveMultiplier = 0.4;
+        private double garrettDriveMultiplier = 0.2;
 
-    private final FieldUtil fieldUtil = new FieldUtil();
+        private final FieldUtil fieldUtil = new FieldUtil();
 
-    /**
-     * The container for the robot. Contains subsystems, IO devices, and commands.
-     */
-    public RobotContainer() {
-        switch (Constants.currentMode) {
-            case REAL:
-                // Real robot, instantiate hardware IO implementations
-                drive = new DriveSubsystem(
-                        new GyroIOPigeon2(),
-                        new ModuleIOTalonFX(0),
-                        new ModuleIOTalonFX(1),
-                        new ModuleIOTalonFX(2),
-                        new ModuleIOTalonFX(3));
+        /**
+         * The container for the robot. Contains subsystems, IO devices, and commands.
+         */
+        public RobotContainer() {
+                switch (Constants.currentMode) {
+                        case REAL:
+                                // Real robot, instantiate hardware IO implementations
+                                drive = new DriveSubsystem(
+                                                new GyroIOPigeon2(),
+                                                new ModuleIOTalonFX(0),
+                                                new ModuleIOTalonFX(1),
+                                                new ModuleIOTalonFX(2),
+                                                new ModuleIOTalonFX(3));
 
-                vision = new VisionSubsystem(
-                        new VisionIOLimelight("limelight-left"),
-                        new VisionIOLimelight("limelight-right"),                       
-                        new VisionIOLimelight("limelight-back"));
+                                vision = new VisionSubsystem(
+                                                new VisionIOLimelight("limelight-left"),
+                                                new VisionIOLimelight("limelight-right"),
+                                                new VisionIOLimelight("limelight-back"));
 
-                arm = new ArmSubsystem(new ArmIOTalonFX());
-                // climber = new ClimberSubsystem(new ClimberIOTalonFX());
-                intake = new IntakeSubsystem(new IntakeIOReal());
+                                arm = new ArmSubsystem(new ArmIOTalonFX());
+                                // climber = new ClimberSubsystem(new ClimberIOTalonFX());
+                                intake = new IntakeSubsystem(new IntakeIOReal());
 
-                climber = new ClimberSubsystem(new ClimberIOTalonFX());
-                break;
+                                climber = new ClimberSubsystem(new ClimberIOTalonFX());
+                                break;
 
-            case SIM:
-                // Sim robot, instantiate physics sim IO implementations
-                drive = new DriveSubsystem(
-                        new GyroIO() {
-                        },
-                        new ModuleIOSim(),
-                        new ModuleIOSim(),
-                        new ModuleIOSim(),
-                        new ModuleIOSim());
+                        case SIM:
+                                // Sim robot, instantiate physics sim IO implementations
+                                drive = new DriveSubsystem(
+                                                new GyroIO() {
+                                                },
+                                                new ModuleIOSim(),
+                                                new ModuleIOSim(),
+                                                new ModuleIOSim(),
+                                                new ModuleIOSim());
 
-                vision = new VisionSubsystem(
-                        new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
-                        new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
+                                vision = new VisionSubsystem(
+                                                new VisionIOSim("left", VisionConstants.LEFT_ROBOT_TO_CAMERA),
+                                                new VisionIOSim("right", VisionConstants.RIGHT_ROBOT_TO_CAMERA));
 
-                arm = new ArmSubsystem(new ArmIOSim());
-                // climber = new ClimberSubsystem(new ClimberIO() {
-                // });
-                intake = new IntakeSubsystem(new IntakeIOSim() {
-                });
+                                arm = new ArmSubsystem(new ArmIOSim());
+                                // climber = new ClimberSubsystem(new ClimberIO() {
+                                // });
+                                intake = new IntakeSubsystem(new IntakeIOSim() {
+                                });
 
-                climber = new ClimberSubsystem(new ClimberIO() {
-                });
+                                climber = new ClimberSubsystem(new ClimberIO() {
+                                });
 
-                break;
+                                break;
 
-            default:
-                // Replayed robot, disable IO implementations
-                drive = new DriveSubsystem(
-                        new GyroIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        });
-                vision = new VisionSubsystem(
-                        new VisionIO() {
-                        });
+                        default:
+                                // Replayed robot, disable IO implementations
+                                drive = new DriveSubsystem(
+                                                new GyroIO() {
+                                                },
+                                                new ModuleIO() {
+                                                },
+                                                new ModuleIO() {
+                                                },
+                                                new ModuleIO() {
+                                                },
+                                                new ModuleIO() {
+                                                });
+                                vision = new VisionSubsystem(
+                                                new VisionIO() {
+                                                });
 
-                arm = new ArmSubsystem(new ArmIO() {
-                });
+                                arm = new ArmSubsystem(new ArmIO() {
+                                });
 
-                climber = new ClimberSubsystem(new ClimberIO() {
-                });
-                intake = new IntakeSubsystem(new IntakeIO() {
-                });
-                break;
+                                climber = new ClimberSubsystem(new ClimberIO() {
+                                });
+                                intake = new IntakeSubsystem(new IntakeIO() {
+                                });
+                                break;
+                }
+
+                NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
+                NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(
+                                ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
+                                IntakeCommands.runIntake(intake, -6)));
+                NamedCommands.registerCommand("ArmState_Intake_Snap", Commands.sequence(
+                        IntakeCommands.stopIntake(intake),
+                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_WRIST_FLIP),
+                        new WaitCommand(1 / (ArmConstants.WRIST_MAX_VELOCITY_RPS)),
+                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                        new WaitCommand(0.2 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                        ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
+                        IntakeCommands.runIntake(intake, -6)));
+                // NamedCommands.registerCommand("ArmState_Intake_Snap",
+                // Commands.sequence(IntakeCommands.stopIntake(intake),
+                // ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN),
+                // new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                // IntakeCommands.runIntake(intake, -6),
+                // ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER)));
+
+                NamedCommands.registerCommand("ArmState_L2",
+                                Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF),
+                                                IntakeCommands.runIntake(intake, -2)));
+                NamedCommands.registerCommand("ArmState_L4",
+                                Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
+                                                IntakeCommands.runIntake(intake, -3)));
+                NamedCommands.registerCommand("ArmState_L4_Snap",
+                Commands.sequence(IntakeCommands.runIntake(intake, -3),
+                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                new WaitCommand(0.2/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF)));
+
+                NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 10));
+                NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
+
+                // Set up auto routines
+                autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
+                // Set up SysId routines
+                autoChooser.addOption(
+                                "Drive Wheel Radius Characterization",
+                                DriveCommands.wheelRadiusCharacterization(drive));
+                autoChooser.addOption(
+                                "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+                autoChooser.addOption(
+                                "Drive SysId (Quasistatic Forward)",
+                                drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+                autoChooser.addOption(
+                                "Drive SysId (Quasistatic Reverse)",
+                                drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+                autoChooser.addOption(
+                                "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+                autoChooser.addOption(
+                                "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+                // Configure the button bindings
+                configureButtonBindings();
         }
-
-        NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
-        NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(
-                ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER), IntakeCommands.runIntake(intake, -6)));
-        NamedCommands.registerCommand("ArmState_Intake_Snap", Commands.sequence(IntakeCommands.stopIntake(intake),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN),
-                                        new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
-                                        IntakeCommands.runIntake(intake, -6),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER)));
-
-        NamedCommands.registerCommand("ArmState_L2", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF), IntakeCommands.runIntake(intake, -2)));
-        NamedCommands.registerCommand("ArmState_L4", Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF), IntakeCommands.runIntake(intake, -3)));
-        NamedCommands.registerCommand("ArmState_L4_Snap", Commands.sequence(IntakeCommands.runIntake(intake, -3),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN),
-                                        new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
-                                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF)));
-
-        NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 6));
-        NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
-
-        // Set up auto routines
-        autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-        // Set up SysId routines
-        autoChooser.addOption(
-                "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooser.addOption(
-                "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Forward)",
-                drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Reverse)",
-                drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption(
-                "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-        // Configure the button bindings
-        configureButtonBindings();
-    }
 
     private void configureButtonBindings() {
         switch (Constants.currentDriver) {
@@ -227,8 +244,8 @@ public class RobotContainer {
                 drive.setDefaultCommand(
                         DriveCommands.joystickDrive(
                                 drive,
-                                () -> mattTranslation.StickYAxis() * 1.0,
-                                () -> mattTranslation.StickXAxis() * 1.0,
+                                () -> -mattTranslation.StickYAxis() * 1.0,
+                                () -> -mattTranslation.StickXAxis() * 1.0,
                                 () -> -mattRotation.StickXAxis() * 0.7,
                                 driveMultiplier,
                                 mattTranslation.fireStage1().or(mattTranslation.fireStage2())));
@@ -346,15 +363,19 @@ public class RobotContainer {
                 ClimbCommands.climbUp(climber))
                 .onFalse(ClimbCommands.stopClimber(climber));
 
-        tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 6))
+        tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 10))
                         .onFalse(IntakeCommands.stopIntake(intake));
-
+        
         tractorController.button(10).onTrue(
-                RobotState.getInstance().getArmState().yPosition() >= 75 ? 
-                Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)) 
-                : Commands.sequence(
-                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN), 
-                        new WaitCommand(1), 
+                        Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)));
+        
+        tractorController.button(14).onTrue(
+                        Commands.sequence(
+                        IntakeCommands.stopIntake(intake),
+                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_WRIST_FLIP),
+                        new WaitCommand(1 / (ArmConstants.WRIST_MAX_VELOCITY_RPS)),
+                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                        new WaitCommand(0.2 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
                         ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
         tractorController.button(5)
@@ -412,12 +433,12 @@ public class RobotContainer {
         .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L2_ALGAE));
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return autoChooser.get();
-    }
+        /**
+         * Use this to pass the autonomous command to the main {@link Robot} class.
+         *
+         * @return the command to run in autonomous
+         */
+        public Command getAutonomousCommand() {
+                return autoChooser.get();
+        }
 }

@@ -44,6 +44,18 @@
         {
           "type": "named",
           "data": {
+            "name": "ArmState_Intake_Snap"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ArmState_Start"
           }
         },
