@@ -102,6 +102,27 @@ public class ArmConstants {
 
         public static final int LIMIT_SWITCH_ID = 8;
 
+        public enum ArmPoseNames {
+                START,
+                FEEDER_START_TRANSITION,
+                FRONT_FEEDER,
+                FRONT_FEEDER_STRETCH,
+                FRONT_L1_REEF,
+                FRONT_L2_REEF,
+                REAR_L3_REEF,
+                REAR_L4_REEF_TRANSITION,
+                REAR_L4_REEF_WRIST_FLIP,
+                REAR_L4_REEF,
+                ALGAE_STORE,
+                PREP_L1_ALGAE,
+                PULL_L1_ALGAE,
+                PREP_L2_ALGAE,
+                PULL_L2_ALGAE,
+                PROCESSOR,
+                BARGE,
+                CLIMB_STRETCH
+        }
+
         /**
          * A class that stores all the states the arm could be at.
          * <br></br> <code> ArmStates.STATE; </code>
@@ -117,95 +138,113 @@ public class ArmConstants {
                 public static final ArmPose START = new ArmPose(
                                 Units.inchesToMeters(19.0), //cad number = 18.138
                                 Units.inchesToMeters(34.9), //cad number = 35.059
-                                Rotation2d.fromDegrees(0));
+                                Rotation2d.fromDegrees(0),
+                                ArmPoseNames.START);
 
                 //Feeder Station Positions
                 public static final ArmPose FEEDER_START_TRANSITION = new ArmPose(
                                 Units.inchesToMeters(20),
                                 Units.inchesToMeters(41),
-                                Rotation2d.fromDegrees(40));
+                                Rotation2d.fromDegrees(40),
+                                ArmPoseNames.FEEDER_START_TRANSITION);
 
                 public static final ArmPose FRONT_FEEDER = new ArmPose(
                                 Units.inchesToMeters(25), //Actual 25.5
                                 Units.inchesToMeters(39), //Actual 39
-                                Rotation2d.fromDegrees(30));
+                                Rotation2d.fromDegrees(30),
+                                ArmPoseNames.FRONT_FEEDER);
 
                 public static final ArmPose FRONT_FEEDER_STRETCH = new ArmPose(
                                 Units.inchesToMeters(28.5),
                                 Units.inchesToMeters(39),
-                                Rotation2d.fromDegrees(30));
+                                Rotation2d.fromDegrees(30),
+                                ArmPoseNames.FRONT_FEEDER_STRETCH);
 
                 //Coral Postitions
                 public static final ArmPose FRONT_L1_REEF = new ArmPose(
                                 Units.inchesToMeters(36),
                                 Units.inchesToMeters(29),
-                                Rotation2d.fromDegrees(0));
+                                Rotation2d.fromDegrees(0),
+                                ArmPoseNames.FRONT_L1_REEF);
 
                 public static final ArmPose FRONT_L2_REEF = new ArmPose(
                                 Units.inchesToMeters(25),
                                 Units.inchesToMeters(34.5),
-                                Rotation2d.fromDegrees(0));
+                                Rotation2d.fromDegrees(0),
+                                ArmPoseNames.FRONT_L2_REEF);
 
                 public static final ArmPose REAR_L3_REEF = new ArmPose(
                                 Units.inchesToMeters(6),
                                 Units.inchesToMeters(55.5),
-                                Rotation2d.fromDegrees(213));
+                                Rotation2d.fromDegrees(213),
+                                ArmPoseNames.REAR_L3_REEF);
 
                 public static final ArmPose REAR_L4_REEF_TRANSITION = new ArmPose(
                                 Units.inchesToMeters(20),
                                 Units.inchesToMeters(60),
-                                Rotation2d.fromDegrees(0));
+                                Rotation2d.fromDegrees(0),
+                                ArmPoseNames.REAR_L4_REEF_TRANSITION);
 
                 public static final ArmPose REAR_L4_REEF_WRIST_FLIP = new ArmPose(
                                 Units.inchesToMeters(5.5),
                                 Units.inchesToMeters(77),
-                                Rotation2d.fromDegrees(90));
+                                Rotation2d.fromDegrees(90),
+                                ArmPoseNames.REAR_L4_REEF_WRIST_FLIP);
 
                 public static final ArmPose REAR_L4_REEF = new ArmPose(
                                 Units.inchesToMeters(5.5), //6
                                 Units.inchesToMeters(77), //77
-                                Rotation2d.fromDegrees(230)); //230
+                                Rotation2d.fromDegrees(230),
+                                ArmPoseNames.REAR_L4_REEF); //230
 
                 //Algae Positions
                 public static final ArmPose ALGAE_STORE = new ArmPose(
                         Units.inchesToMeters(30),
                         Units.inchesToMeters(34.9),
-                        Rotation2d.fromDegrees(180));
+                        Rotation2d.fromDegrees(180),
+                        ArmPoseNames.ALGAE_STORE);
 
                 public static final ArmPose PREP_L1_ALGAE = new ArmPose(
                                 Units.inchesToMeters(31),
                                 Units.inchesToMeters(45),
-                                Rotation2d.fromDegrees(-30));
+                                Rotation2d.fromDegrees(-30),
+                                ArmPoseNames.PREP_L1_ALGAE);
 
                 public static final ArmPose PULL_L1_ALGAE = new ArmPose(
                                 Units.inchesToMeters(24),
                                 Units.inchesToMeters(40),
-                                Rotation2d.fromDegrees(10));
+                                Rotation2d.fromDegrees(10),
+                                ArmPoseNames.PULL_L1_ALGAE);
 
                 public static final ArmPose PREP_L2_ALGAE = new ArmPose(
                                 Units.inchesToMeters(4),
                                 Units.inchesToMeters(60),
-                                Rotation2d.fromDegrees(210));
+                                Rotation2d.fromDegrees(210),
+                                ArmPoseNames.PREP_L2_ALGAE);
         
                 public static final ArmPose PULL_L2_ALGAE = new ArmPose(
                                 Units.inchesToMeters(10),
                                 Units.inchesToMeters(58),
-                                Rotation2d.fromDegrees(180));
+                                Rotation2d.fromDegrees(180),
+                                ArmPoseNames.PULL_L2_ALGAE);
 
                 public static final ArmPose PROCESSOR = new ArmPose(
                                 Units.inchesToMeters(34), 
                                 Units.inchesToMeters(28),
-                                Rotation2d.fromDegrees(-30));
+                                Rotation2d.fromDegrees(-30),
+                                ArmPoseNames.PROCESSOR);
 
                 public static final ArmPose BARGE = new ArmPose(
                                 Units.inchesToMeters(9),
                                 Units.inchesToMeters(78),
-                                Rotation2d.fromDegrees(135));
+                                Rotation2d.fromDegrees(135),
+                                ArmPoseNames.BARGE);
 
                 //Climb Positions
                 public static final ArmPose CLIMB_STRETCH = new ArmPose(
                                 Units.inchesToMeters(34), 
                                 Units.inchesToMeters(28),
-                                Rotation2d.fromDegrees(100));
+                                Rotation2d.fromDegrees(100),
+                                ArmPoseNames.CLIMB_STRETCH);
         }
 }

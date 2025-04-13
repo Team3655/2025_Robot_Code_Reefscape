@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.arm.ArmConstants.ArmEncoders;
+import frc.robot.subsystems.arm.ArmConstants.ArmPoseNames;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 import frc.robot.util.Elastic;
 import frc.robot.util.Elastic.Notification;
@@ -32,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
    * </br>
    * xTarget, yTarget, wristangle
    */
-  public record ArmPose(double xTarget, double yTarget, Rotation2d wristAngle) {
+  public record ArmPose(double xTarget, double yTarget, Rotation2d wristAngle, ArmPoseNames name) {
   }
 
   private final ArmIO io;
@@ -159,7 +160,8 @@ public class ArmSubsystem extends SubsystemBase {
         inputs.elbowPosition,
         inputs.wristPosition,
         armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[0],
-        armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[1]);
+        armKinematics.calculateForwardKinematics(inputs.shoulderPosition, inputs.elbowPosition)[1],
+        setpoint.name);
 
     // Live telemetry for arm setpoints and actual positions
     SmartDashboard.putNumber("ShoulderSetpoint", shoulderSetPoint.getDegrees());
@@ -183,7 +185,8 @@ public class ArmSubsystem extends SubsystemBase {
     return new ArmPose(
         armPosition[0],
         armPosition[1],
-        inputs.wristPosition);
+        inputs.wristPosition,
+        setpoint.name);
   }
 
   /**
@@ -217,13 +220,15 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public void jogWrist(double degrees) {
     setpoint = new ArmPose(setpoint.xTarget, setpoint.yTarget,
-        setpoint.wristAngle.plus(Rotation2d.fromDegrees(degrees)));
+        setpoint.wristAngle.plus(Rotation2d.fromDegrees(degrees)),
+        setpoint.name);
   }
 
   public void bumpXArm(double inches) {
     ArmPose bumpSetpoint = new ArmPose(setpoint.xTarget + Units.inchesToMeters(inches),
         setpoint.yTarget,
-        setpoint.wristAngle);
+        setpoint.wristAngle,
+        setpoint.name);
 
     if (armKinematics.isInsideArmReach(bumpSetpoint.xTarget, bumpSetpoint.yTarget)
         && armKinematics.isValidState(bumpSetpoint)) {
@@ -236,7 +241,8 @@ public class ArmSubsystem extends SubsystemBase {
   public void bumpYArm(double inches) {
     ArmPose bumpSetpoint = new ArmPose(setpoint.xTarget,
         setpoint.yTarget + Units.inchesToMeters(inches),
-        setpoint.wristAngle);
+        setpoint.wristAngle,
+        setpoint.name);
 
     if (armKinematics.isInsideArmReach(bumpSetpoint.xTarget, bumpSetpoint.yTarget)) {
       setpoint = bumpSetpoint;
@@ -272,7 +278,8 @@ public class ArmSubsystem extends SubsystemBase {
     ArmPose bumpSetpoint = new ArmPose(
         bumpedX,
         bumpedY,
-        setpoint.wristAngle);
+        setpoint.wristAngle,
+        setpoint.name);
 
     if (armKinematics.isInsideArmReach(bumpSetpoint.xTarget, bumpSetpoint.yTarget)
         && armKinematics.isValidState(bumpSetpoint)) {

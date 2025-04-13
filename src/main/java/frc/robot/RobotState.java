@@ -17,6 +17,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.ArmConstants.ArmPoseNames;
 import frc.robot.subsystems.drive.DriveConstants;
 
 public class RobotState {
@@ -39,7 +41,8 @@ public class RobotState {
       Rotation2d elbowAngle,
       Rotation2d wristAngle,
       double xPosition,
-      double yPosition) {
+      double yPosition,
+      ArmPoseNames name) {
   }
 
   private SwerveDriveKinematics kinematics;
@@ -87,7 +90,8 @@ public class RobotState {
 
     rawGyroRotation = new Rotation2d();
 
-    armState = new ArmState(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), 0, 0);
+    armState = new ArmState(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), 0, 0,
+        ArmPoseNames.START);
   }
 
   public synchronized void addOdometryMeasurement(OdometryMeasurement measurement) {
@@ -123,9 +127,10 @@ public class RobotState {
       Rotation2d elbowAngle,
       Rotation2d wristAngle,
       double xPosition,
-      double yPosition) {
+      double yPosition,
+      ArmConstants.ArmPoseNames name) {
 
-    armState = new ArmState(shoulderAngle, elbowAngle, wristAngle, xPosition, yPosition);
+    armState = new ArmState(shoulderAngle, elbowAngle, wristAngle, xPosition, yPosition, name);
   }
 
   public synchronized void resetPose(Pose2d pose) {
@@ -174,51 +179,52 @@ public class RobotState {
   }
 
   @AutoLogOutput(key = "RobotState/ReefSextant")
-  public int getReefSextant(){
+  public int getReefSextant() {
 
     Translation2d blueReefPosition = new Translation2d(4, 4);
     Translation2d redReefPosition = new Translation2d(13, 4);
 
-    Translation2d reefPosition = DriverStation.getAlliance().get().equals(Alliance.Red) ? redReefPosition : blueReefPosition; 
+    Translation2d reefPosition = DriverStation.getAlliance().get().equals(Alliance.Red) ? redReefPosition
+        : blueReefPosition;
 
     double angle = reefPosition.minus(getEstimatedPose().getTranslation()).getAngle().getDegrees();
 
     switch (DriverStation.getAlliance().get()) {
       case Blue:
-      if(angle < 30 && angle > -30){
-        return 1;
-      } else if(angle < 90 && angle > 30){
-        return 6;
-      } else if(angle < 150 && angle > 90){
-        return 5;
-      } else if(angle < 180 && angle > 150){
-        return 4;
-      } else if(angle < -150 && angle > -180){
-        return 4;
-      } else if(angle < -90 && angle > -150){
-        return 3;
-      } else if(angle < -30 && angle > -90){
-        return 2;
-      }
+        if (angle < 30 && angle > -30) {
+          return 1;
+        } else if (angle < 90 && angle > 30) {
+          return 6;
+        } else if (angle < 150 && angle > 90) {
+          return 5;
+        } else if (angle < 180 && angle > 150) {
+          return 4;
+        } else if (angle < -150 && angle > -180) {
+          return 4;
+        } else if (angle < -90 && angle > -150) {
+          return 3;
+        } else if (angle < -30 && angle > -90) {
+          return 2;
+        }
       case Red:
-      if(angle < 30 && angle > -30){
-        return 4;
-      } else if(angle < 90 && angle > 30){
-        return 3;
-      } else if(angle < 150 && angle > 90){
-        return 2;
-      } else if(angle < 180 && angle > 150){
-        return 1;
-      } else if(angle < -150 && angle > -180){
-        return 1;
-      } else if(angle < -90 && angle > -150){
-        return 6;
-      } else if(angle < -30 && angle > -90){
-        return 5;
-      }
+        if (angle < 30 && angle > -30) {
+          return 4;
+        } else if (angle < 90 && angle > 30) {
+          return 3;
+        } else if (angle < 150 && angle > 90) {
+          return 2;
+        } else if (angle < 180 && angle > 150) {
+          return 1;
+        } else if (angle < -150 && angle > -180) {
+          return 1;
+        } else if (angle < -90 && angle > -150) {
+          return 6;
+        } else if (angle < -30 && angle > -90) {
+          return 5;
+        }
       default:
-      DriverStation.reportError("Your angle is not even real brah. How did we get here", false);
-      return 0;
+        DriverStation.reportError("Your angle is not even real brah. How did we get here", false);
+        return 0;
     }
   }
 
