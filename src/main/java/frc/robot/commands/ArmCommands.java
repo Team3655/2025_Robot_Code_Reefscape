@@ -16,7 +16,7 @@ public class ArmCommands {
 
   public static Command toStart(ArmSubsystem arm, IntakeSubsystem intake) {
     
-    if(arm.getSetPoint().name().equals(ArmConstants.ArmPoseNames.REAR_L4_REEF)){
+    if(arm.getSetPoint().equals(ArmStates.REAR_L4_REEF)){
       return Commands.sequence(
         IntakeCommands.stopIntake(intake),
         updateSetpoint(arm, ArmStates.REAR_L4_REEF_WRIST_FLIP),
