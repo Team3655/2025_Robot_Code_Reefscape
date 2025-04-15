@@ -178,37 +178,61 @@ public class RobotContainer {
                                 break;
                 }
 
+                //Auto Store Commands
                 NamedCommands.registerCommand("ArmState_Start", ArmCommands.updateSetpoint(arm, ArmStates.START));
+                NamedCommands.registerCommand("ArmState_Start_Snap", Commands
+                        .sequence(IntakeCommands.stopIntake(intake),
+                                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_WRIST_FLIP),
+                                new WaitCommand(1 / (ArmConstants.WRIST_MAX_VELOCITY_RPS)),
+                                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                                new WaitCommand(0.2 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                ArmCommands.updateSetpoint(arm, ArmStates.START)));
+                NamedCommands.registerCommand("ArmState_Start_Algae_High_Down", Commands
+                        .sequence(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L2_ALGAE),
+                                IntakeCommands.runIntake(intake, -3),
+                                new WaitCommand(0.1 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                ArmCommands.updateSetpoint(arm, ArmStates.START),
+                                new WaitCommand(0.3 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                IntakeCommands.stopIntake(intake)));
+                 
+                //Auto Intake Commands
                 NamedCommands.registerCommand("ArmState_Intake", Commands.parallel(
                                 ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
                                 IntakeCommands.runIntake(intake, -6)));
-                NamedCommands.registerCommand("ArmState_Intake_Snap", Commands.sequence(
-                        IntakeCommands.stopIntake(intake),
-                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_WRIST_FLIP),
-                        new WaitCommand(1 / (ArmConstants.WRIST_MAX_VELOCITY_RPS)),
-                        ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
-                        new WaitCommand(0.2 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
-                        ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
-                        IntakeCommands.runIntake(intake, -6)));
-                // NamedCommands.registerCommand("ArmState_Intake_Snap",
-                // Commands.sequence(IntakeCommands.stopIntake(intake),
-                // ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION_DOWN),
-                // new WaitCommand(0.3/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
-                // IntakeCommands.runIntake(intake, -6),
-                // ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER)));
+                NamedCommands.registerCommand("ArmState_Intake_Snap", Commands
+                        .sequence(IntakeCommands.stopIntake(intake),
+                                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_WRIST_FLIP),
+                                new WaitCommand(1 / (ArmConstants.WRIST_MAX_VELOCITY_RPS)),
+                                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                                new WaitCommand(0.2 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
+                                IntakeCommands.runIntake(intake, -6)));
+                NamedCommands.registerCommand("ArmState_Algae_Low", Commands
+                        .parallel(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE),
+                                        IntakeCommands.runIntake(intake, -6)));
+                NamedCommands.registerCommand("ArmState_Algae_High", Commands
+                        .parallel(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE),
+                                        IntakeCommands.runIntake(intake, -6)));
 
+                //Auto Place Commands
                 NamedCommands.registerCommand("ArmState_L2",
                                 Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L2_REEF),
                                                 IntakeCommands.runIntake(intake, -2)));
                 NamedCommands.registerCommand("ArmState_L4",
                                 Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
                                                 IntakeCommands.runIntake(intake, -3)));
-                NamedCommands.registerCommand("ArmState_L4_Snap",
-                Commands.sequence(IntakeCommands.runIntake(intake, -3),
-                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
-                new WaitCommand(0.2/(ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
-                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF)));
+                NamedCommands.registerCommand("ArmState_Barge_Up", ArmCommands.updateSetpoint(arm, ArmStates.BARGE_PREP));
+                NamedCommands.registerCommand("ArmState_Barge_Score_And_Down", Commands
+                        .sequence(ArmCommands.updateSetpoint(arm, ArmStates.BARGE_THROW),
+                                new WaitCommand(0.5 / (ArmConstants.WRIST_MAX_VELOCITY_RPS)),
+                                IntakeCommands.runIntake(intake, 10),
+                                new WaitCommand(0.5),
+                                IntakeCommands.stopIntake(intake),
+                                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                                new WaitCommand(0.2 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
+                //Auto Intake Wheel Commands                                
                 NamedCommands.registerCommand("Place", IntakeCommands.runIntake(intake, 10));
                 NamedCommands.registerCommand("Stop_Intake", IntakeCommands.stopIntake(intake));
 
@@ -355,19 +379,22 @@ public class RobotContainer {
                 break;
         }
 
+        //Climb Commands
         tractorController.button(21).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmStates.CLIMB_STRETCH), arm)));
                         
         tractorController.button(21).and(ethanRotation.fireStage2()).whileTrue(
                 ClimbCommands.climbUp(climber))
                 .onFalse(ClimbCommands.stopClimber(climber));
 
+        //Eject Command
         tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 10))
                         .onFalse(IntakeCommands.stopIntake(intake));
         
+        //Store Commands
         tractorController.button(10).onTrue(
                         Commands.parallel(ArmCommands.updateSetpoint(arm, ArmStates.START), IntakeCommands.stopAll(intake)));
         
-        tractorController.button(14).onTrue(
+        tractorController.button(18).onTrue(
                         Commands.sequence(
                         IntakeCommands.stopIntake(intake),
                         ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_WRIST_FLIP),
@@ -376,6 +403,7 @@ public class RobotContainer {
                         new WaitCommand(0.2 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
                         ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
+        //Coral Intake Commands
         tractorController.button(5)
                 .onTrue(Commands
                         .sequence(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_FEEDER),
@@ -396,6 +424,7 @@ public class RobotContainer {
                         new WaitCommand(0.5),
                         ArmCommands.updateSetpoint(arm, ArmStates.START)));
 
+        //Coral Commands
         tractorController.button(6).onTrue(ArmCommands.updateSetpoint(arm, ArmStates.FRONT_L1_REEF));
 
         tractorController.button(1)
@@ -413,22 +442,63 @@ public class RobotContainer {
                         .parallel(ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF),
                                 IntakeCommands.runIntake(intake, -3)));
 
+        //Algae Grab Commands
+        tractorController.button(14)
+                .onTrue(Commands
+                        .parallel(ArmCommands.updateSetpoint(arm, ArmStates.FLOOR_ALGAE),
+                                IntakeCommands.runIntake(intake, -6)))
+                .onFalse(Commands
+                        .parallel(ArmCommands.updateSetpoint(arm, ArmStates.START),
+                                IntakeCommands.runIntake(intake, -3)));
 
+        tractorController.button(12)
+                .onTrue(Commands
+                        .parallel(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE),
+                                IntakeCommands.runIntake(intake, -6)))
+                .onFalse(Commands
+                        .sequence(ArmCommands.updateSetpoint(arm, ArmStates.START),
+                                IntakeCommands.runIntake(intake, -3)));
+                        
+        tractorController.button(11)
+                .onTrue(Commands
+                        .parallel(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE),
+                                IntakeCommands.runIntake(intake, -6)))
+                .onFalse(Commands
+                        .sequence(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L2_ALGAE),
+                                IntakeCommands.runIntake(intake, -3),
+                                new WaitCommand(0.1 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                ArmCommands.updateSetpoint(arm, ArmStates.START)));
+
+        //Algae Score Commands
+        tractorController.button(16)
+                .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PROCESSOR))
+                .onFalse(Commands
+                        .sequence(IntakeCommands.runIntake(intake, 10),
+                                new WaitCommand(0.5),
+                                IntakeCommands.stopIntake(intake),
+                                ArmCommands.updateSetpoint(arm, ArmStates.START)));
+
+        tractorController.button(15)
+                .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.BARGE_PREP))
+                .onFalse(Commands
+                        .sequence(ArmCommands.updateSetpoint(arm, ArmStates.BARGE_THROW),
+                                new WaitCommand(0.5 / (ArmConstants.WRIST_MAX_VELOCITY_RPS)),
+                                IntakeCommands.runIntake(intake, 10),
+                                new WaitCommand(0.5),
+                                IntakeCommands.stopIntake(intake),
+                                ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
+                                new WaitCommand(0.2 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                ArmCommands.updateSetpoint(arm, ArmStates.START)));
+
+        //Bump Commands
         // X Postive is TOWARDS battery
         // Y positive is UP
-        tractorController.button(18).onTrue(Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm));
+        tractorController.button(19).onTrue(Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm));
         // Bump up
-        tractorController.button(17).onTrue((Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm)));
+        tractorController.button(20).onTrue((Commands.runOnce(()-> arm.bumpArmUsingArc(1), arm)));
 
         tractorController.button(22).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmStates.FRONT_FEEDER_STRETCH), arm)));
 
-        tractorController.button(12)
-        .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L1_ALGAE))
-        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L1_ALGAE));
-
-        tractorController.button(11)
-        .onTrue(ArmCommands.updateSetpoint(arm, ArmStates.PREP_L2_ALGAE))
-        .onFalse(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L2_ALGAE));
     }
 
         /**
