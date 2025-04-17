@@ -284,6 +284,10 @@ public class RobotContainer {
                 
                 mattTranslation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() -> 
                 fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+
+                tractorController.button(21).and(mattRotation.fireStage2()).whileTrue(
+                        ClimbCommands.climbUp(climber))
+                        .onFalse(ClimbCommands.stopClimber(climber));
                 break;
 
                 case ETHAN:
@@ -309,6 +313,10 @@ public class RobotContainer {
                         
                         ethanRotation.firePaddleUp().whileTrue(DriveCommands.pathFindToPose(() -> 
                         fieldUtil.reefPoses.get("Right" + Integer.toString(RobotState.getInstance().getReefSextant())), drive));
+
+                        tractorController.button(21).and(ethanRotation.fireStage2()).whileTrue(
+                                ClimbCommands.climbUp(climber))
+                                .onFalse(ClimbCommands.stopClimber(climber));
                 break;
 
             case PROGRAMMING:
@@ -381,10 +389,6 @@ public class RobotContainer {
 
         //Climb Commands
         tractorController.button(21).onTrue((Commands.runOnce(() -> arm.updateSetpoint(ArmStates.CLIMB_STRETCH), arm)));
-                        
-        tractorController.button(21).and(ethanRotation.fireStage2()).whileTrue(
-                ClimbCommands.climbUp(climber))
-                .onFalse(ClimbCommands.stopClimber(climber));
 
         //Eject Command
         tractorController.button(9).onTrue(IntakeCommands.runIntake(intake, 10))
@@ -449,7 +453,7 @@ public class RobotContainer {
                                 IntakeCommands.runIntake(intake, -6)))
                 .onFalse(Commands
                         .parallel(ArmCommands.updateSetpoint(arm, ArmStates.START),
-                                IntakeCommands.runIntake(intake, -3)));
+                                IntakeCommands.stopIntake(intake)));
 
         tractorController.button(12)
                 .onTrue(Commands
@@ -457,7 +461,7 @@ public class RobotContainer {
                                 IntakeCommands.runIntake(intake, -6)))
                 .onFalse(Commands
                         .sequence(ArmCommands.updateSetpoint(arm, ArmStates.START),
-                                IntakeCommands.runIntake(intake, -3)));
+                                IntakeCommands.stopIntake(intake)));
                         
         tractorController.button(11)
                 .onTrue(Commands
@@ -467,7 +471,9 @@ public class RobotContainer {
                         .sequence(ArmCommands.updateSetpoint(arm, ArmStates.PULL_L2_ALGAE),
                                 IntakeCommands.runIntake(intake, -3),
                                 new WaitCommand(0.1 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
-                                ArmCommands.updateSetpoint(arm, ArmStates.START)));
+                                ArmCommands.updateSetpoint(arm, ArmStates.START),
+                                new WaitCommand(0.3 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
+                                IntakeCommands.stopIntake(intake)));
 
         //Algae Score Commands
         tractorController.button(16)

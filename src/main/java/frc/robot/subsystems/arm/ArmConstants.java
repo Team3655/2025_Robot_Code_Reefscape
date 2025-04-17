@@ -200,8 +200,8 @@ public class ArmConstants {
 
                 //Algae Positions
                 public static final ArmPose FLOOR_ALGAE = new ArmPose(
-                                Units.inchesToMeters(39.5),
-                                Units.inchesToMeters(21.75),
+                                Units.inchesToMeters(40), //39.5
+                                Units.inchesToMeters(21), //21.75
                                 Rotation2d.fromDegrees(-70),
                                 ArmPoseNames.FLOOR_ALGAE);
 
