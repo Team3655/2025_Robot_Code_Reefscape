@@ -495,6 +495,11 @@ public class RobotContainer {
                                 ArmCommands.updateSetpoint(arm, ArmStates.REAR_L4_REEF_TRANSITION),
                                 new WaitCommand(0.2 / (ArmConstants.SHOULDER_MAX_VELOCITY_RPS)),
                                 ArmCommands.updateSetpoint(arm, ArmStates.START)));
+        //TODO: Change the button and numbers for this bump
+        //Shoulder: Negative is down, positive is up
+        // Elbow: Negative is towards front, positive is towards back
+        tractorController.button(22)
+                .onTrue(Commands.runOnce(() -> arm.updateArmOffsets(0.0, 1.0), arm));
 
         //Bump Commands
         // X Postive is TOWARDS battery

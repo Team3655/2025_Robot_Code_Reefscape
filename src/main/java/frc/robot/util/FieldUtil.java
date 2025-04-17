@@ -42,7 +42,7 @@ public class FieldUtil {
     PoseOffset right5;
     PoseOffset right6;
 
-    if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+    if (DriverStation.getAlliance().isEmpty() || DriverStation.getAlliance().get().equals(Alliance.Blue)) {
       reefTags[0] = 18;
       reefTags[1] = 19;
       reefTags[2] = 20;
