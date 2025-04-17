@@ -60,6 +60,9 @@ public class ArmSubsystem extends SubsystemBase {
   public Notification bumpNotification;
   public Notification invalidArmStateNotification;
 
+  public Rotation2d shoulderOffset;
+  public Rotation2d elbowOffset;
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem(ArmIO io) {
     this.io = io;
@@ -90,6 +93,10 @@ public class ArmSubsystem extends SubsystemBase {
         NotificationLevel.ERROR,
         "INVALID ARM STATE",
         "x and y setpoints are resulting in invalid arm angles.  Check your calculations");
+
+    shoulderOffset = Rotation2d.fromDegrees(0.0);
+    elbowOffset = Rotation2d.fromDegrees(0.0);
+
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -98,6 +105,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return shoulderRoutine.dynamic(direction);
+
   }
 
   /**
@@ -133,9 +141,9 @@ public class ArmSubsystem extends SubsystemBase {
     Rotation2d wristSetPoint = setpoint.wristAngle;
 
     // Updates arm position
-    io.setShoulderPosition(shoulderSetPoint);
-    io.setElbowPosition(elbowSetPoint);
-    io.setWristPosition(Rotation2d.fromDegrees(Rotation2d.fromDegrees(90).minus(elbowSetPoint).getDegrees() + (wristSetPoint).getDegrees()));
+      io.setShoulderPosition(shoulderSetPoint.plus(shoulderOffset));
+      io.setElbowPosition(elbowSetPoint.plus(elbowOffset));
+      io.setWristPosition(Rotation2d.fromDegrees(Rotation2d.fromDegrees(90).minus(elbowSetPoint).getDegrees() + (wristSetPoint).getDegrees()));
 
     // Updates the current arm angles in ArmKinematics
     armKinematics.currentArmAngles[0] = inputs.shoulderPosition;
@@ -287,5 +295,15 @@ public class ArmSubsystem extends SubsystemBase {
     } else {
       Elastic.sendNotification(bumpNotification);
     }
+  }
+
+  /**
+   * 
+   * @param shoulderOffset Number of degrees to offset the shoulder setpoint.  Negative is down, positive is up.
+   * @param elbowOffset Number of degrees to offset the elbow setpoint.  Negative is towards front, positive is towards back.
+   */
+  public void updateArmOffsets(double shoulderOffset, double elbowOffset) {
+    this.shoulderOffset = this.shoulderOffset.plus(Rotation2d.fromDegrees(shoulderOffset));
+    this.elbowOffset = this.elbowOffset.plus(Rotation2d.fromDegrees(elbowOffset));
   }
 }
